@@ -1,0 +1,57 @@
+
+
+CREATE TABLE `abizeitung`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `prename` VARCHAR(45) NULL,
+  `lastname` VARCHAR(45) NULL,
+  `class` INT NULL,
+  `birthday` VARCHAR(45) NULL,
+  `nickname` VARCHAR(45) NULL,
+  `female` TINYINT NULL,
+  PRIMARY KEY (`id`));
+  
+
+CREATE TABLE `abizeitung`.`classes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NULL,
+  `tutor` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+
+CREATE TABLE `abizeitung`.`questions` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`));
+
+
+CREATE TABLE `abizeitung`.`surveys` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NULL,
+  `m` TINYINT NULL,
+  `w` TINYINT NULL,
+  PRIMARY KEY (`id`));
+  
+  
+CREATE TABLE `abizeitung`.`users_classes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user` INT NOT NULL,
+  `class` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `abizeitung`.`user_questions` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user` INT NOT NULL,
+  `text` TEXT NULL,
+  `question` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+
+CREATE TABLE `abizeitung`.`user_surveys` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user` INT NOT NULL,
+  `survey` INT NOT NULL,
+  `vote` INT NULL,
+  `female` TINYINT NOT NULL,
+  PRIMARY KEY (`id`));
+
+
