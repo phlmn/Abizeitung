@@ -85,7 +85,7 @@
 				  `birthday` varchar(45) DEFAULT NULL,
 				  `nickname` varchar(45) DEFAULT NULL,
 				  `female` tinyint(4) DEFAULT NULL,
-				  `admin` tinyint(4) DEFAULT NULL,
+				  `admin` tinyint(4) DEFAULT '0',
 				  `password` varchar(45) NOT NULL,
 				  `email` varchar(45) NOT NULL,
 				  PRIMARY KEY (`id`)
