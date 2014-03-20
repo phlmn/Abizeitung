@@ -17,7 +17,6 @@
 		if($userID > -1) {
 			$_SESSION["user"] = $userID;
 			header("Location: dashboard.php");
-			die;
 		}	
 		else {
 			$login_failed = true;
