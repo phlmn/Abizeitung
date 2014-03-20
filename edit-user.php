@@ -45,12 +45,25 @@
 					</tr>
 					<tr>
 						<td class="title">Geschlecht</td>
-						<td><select name="gender" form="data_form"><option>-</option><option <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option><option <?php if($edit["female"] == 1) echo "checked" ?>>Weiblich</option></td>
+						<td>
+                        	<select name="gender" form="data_form">
+                            	<option>-</option>
+                                <option <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option>
+                                <option <?php if($edit["female"] == 1) echo "checked" ?>>Weiblich</option>
+                            </select>
+                        </td>
 					</tr>
 
 					<tr>
 						<td class="title">Tutorium</td>
-						<td><select name="class" form="data_form"><option>-</option><option>DV1</option><option>DV2</option><option>MB1</option></td>
+						<td>
+                        	<select name="class" form="data_form">
+                        		<option>-</option>
+                                <option>DV1</option>
+                                <option>DV2</option>
+                                <option>MB1</option>
+                            </select>
+                        </td>
 					</tr>
 					<tr>
 						<td class="title">Geburtsdatum</td>
