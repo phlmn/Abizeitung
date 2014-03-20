@@ -55,7 +55,7 @@
 			$row = $res->fetch_assoc();
 			
 			
-			$data["id"] = "1";
+			$data["id"] = $id;
 			$data["class"] = $row["name"];
 			$data["tutor"] = $row["tutor"];
 			$data["prename"] = $row["prename"];
