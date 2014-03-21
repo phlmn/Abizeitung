@@ -114,6 +114,24 @@
 		
 	}
 	
+	function update_userdata($data) {
+		global $mysqli;
+		
+		if(empty($data["nickname"]) || empty($data["birthday"])) {
+			return -1;
+		}
+		
+		$res = $mysqli->query("SELECT * FROM users WHERE users.id ='".intval($data["id"])."'");
+		
+		if($mysqli->affected_rows == 0) {
+			return -2;
+		}
+		
+		$mysqli->query("UPDATE users SET birthday = ".null_on_empty($data["birthday"]).", nickname = ".null_on_empty($data["nickname"])." WHERE id = '".intval($data["id"])."'");
+		
+		return 0;
+	}
+	
 	function null_on_empty($var) {
 		
 		global $mysqli;

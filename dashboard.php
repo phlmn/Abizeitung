@@ -8,6 +8,16 @@
 	check_login();
 
 	$data = get_userdata($_SESSION["user"]);
+	
+	if(isset($_GET["update"])) {
+		$userdata["id"] = $data["id"];
+		$userdata["nickname"] = $_POST["nickname"];
+		$userdata["birthday"] = $_POST["birthday"];
+		
+		if(update_userdata($userdata) == 0) {
+			header("Location: ./dashboard.php");
+		}
+	}
 		
 
 	$students = array();
@@ -123,7 +133,7 @@
 			<h1>Hallo <?php echo $data["prename"] ?>!</h1>
 			<p>Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch werden eure Namen geschwärzt.</p>
 			<p>Bitte achte auf Rechtschreibung und <b>Speichern nicht vergessen</b> ;)</p>
-			<form id="data_form" name="data" action="dashboard.php" method="post"></form>
+			<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
 			<div class="common">
 				<h2>Allgemeines</h2>
 				<table>

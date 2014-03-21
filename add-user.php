@@ -62,12 +62,24 @@
 					</tr>
 					<tr>
 						<td class="title">Geschlecht</td>
-						<td><select name="gender" form="data_form"><option value="m">Männlich</option><option value="f">Weiblich</option></select></td>
+						<td>
+                        	<select name="gender" form="data_form">
+                            	<option value="m">Männlich</option>
+                                <option value="f">Weiblich</option>
+                            </select>
+                        </td>
 					</tr>
 
 					<tr>
 						<td class="title">Tutorium</td>
-						<td><select name="class" form="data_form"><option>-</option><option>DV1</option><option>DV2</option><option>MB1</option></select></td>
+						<td>
+                        	<select name="class" form="data_form">
+                            	<option>-</option>
+                                <option>DV1</option>
+                                <option>DV2</option>
+                                <option>MB1</option>
+                            </select>
+                        </td>
 					</tr>
 					<tr>
 						<td class="title">Geburtsdatum</td>
