@@ -51,9 +51,8 @@
 				
 			$res = $mysqli->query("
 				CREATE TABLE `teacher` (
-				  `id` int(11) NOT NULL,
-				  `name` varchar(45) DEFAULT NULL,
-				  `female` tinyint(4) DEFAULT NULL,
+				  `id` INT NOT NULL AUTO_INCREMENT,
+				  `uid` INT NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				

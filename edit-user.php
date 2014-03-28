@@ -8,9 +8,39 @@
 	check_login();
 	check_admin();
 	
+	if(isset($_GET["delete"]))
+		if($_GET["delete"] == "do") {
+			$mysqli->query("SELECT * FROM users WHERE id = '".$_GET["user"]."'");
+			
+			if($mysqli->affected_rows > 0)
+				$mysqli->query("DELETE FROM users WHERE id = '".$_GET["user"]."'");
+			
+			header("Location: ./edit-user.php?user=".($_GET["user"]-1));
+		}
+	
 	$data = get_userdata($_SESSION["user"]);
 	
 	$edit = get_userdata($_GET["user"]);
+	
+	if(isset($_GET["edit"])) {
+		if(isset($_POST["prename"]) || isset($_POST["lastname"]) || isset($_POST["email"])) {
+			$userdata["id"] 		= $_GET["user"];
+			$userdata["prename"] 	= $_POST["prename"];
+			$userdata["lastname"] 	= $_POST["lastname"];
+			$userdata["female"] 	= $_POST["gender"];
+			$userdata["class"] 		= $_POST["name"];
+			$userdata["birthday"] 	= $_POST["birthday"];
+			$userdata["nickname"] 	= $_POST["nickname"];
+			$userdata["email"] 		= $_POST["email"];
+			$userdata["password"] 	= $_POST["password"];
+			$userdata["tutor"] 		= isset($_POST["tutor"]);
+			$userdata["admin"] 		= isset($_POST["admin"]);
+			
+			header("Location: ./edit-user.php?user=".$_GET["user"]);
+		}
+		
+		edit_user($userdata);
+	}
 ?>
 
 
@@ -31,7 +61,7 @@
 		<?php require("nav-bar.php") ?>
 		<div id="user-management">
 			<h1>Nutzerverwaltung</h1>
-			<form id="data_form" name="data" action="edit-user.php" method="post"></form>
+			<form id="data_form" name="data" action="edit-user.php?user=<?php echo $_GET["user"] ?>&edit" method="post"></form>
 			<div class="add-user">
 				<h2>Nutzer bearbeiten</h2>
 				<table>
@@ -49,7 +79,7 @@
                         	<select name="gender" form="data_form">
                             	<option>-</option>
                                 <option <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option>
-                                <option <?php if($edit["female"] == 1) echo "checked" ?>>Weiblich</option>
+                                <option <?php if($edit["female"] == 1) echo "selected" ?>>Weiblich</option>
                             </select>
                         </td>
 					</tr>
@@ -81,9 +111,13 @@
 						<td class="title">Passwort</td>
 						<td><input name="password" type="password" form="data_form" placeholder="Unverändert" /></td>
 					</tr>
+                    <tr>
+                    	<td class="title">Tutor</td>
+                        <td><input name="tutor" type="checkbox" form="data_form" <?php if($edit["istutor"] == true) echo "checked" ?> /></td>
+                    </tr>
 					<tr>
 						<td class="title">Administrator</td>
-						<td><input name="admin" type="checkbox" form="data_form" <?php if($edit["admin"] == 1) echo "checked" ?> /></td>
+						<td><input name="admin" type="checkbox" form="data_form" <?php if($edit["admin"] == true) echo "checked" ?> /></td>
 					</tr>
 				</table>
 			</div>
@@ -91,9 +125,21 @@
 			<div class="buttons">
 				<input type="submit" value="Speichern" form="data_form" />
 				<a class="button" href="users.php">Zurück</a>
+                <a class="button delete" href="edit-user.php?user=<?php echo $_GET["user"] ?>&delete">Löschen</a>
 			</div>
 
-		</div>	
+		</div>
+        <?php
+    		if(isset($_GET["delete"]))
+				if($_GET["delete"] != "do") {
+					?>
+					<script type="text/javascript">
+						if(confirm("Benutzer <?php echo $edit["prename"] . " " . $edit["lastname"] ?> löschen?"))
+							window.location = window.location + "=do";
+					</script>
+					<?php
+				}
+		?>
 	</body>
 </html>
 

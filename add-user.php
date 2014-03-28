@@ -17,6 +17,7 @@
 		$userdata["nickname"] = $_POST["nickname"];
 		$userdata["email"] = $_POST["email"];
 		$userdata["password"] = $_POST["password"];
+		$userdata["tutor"] = isset($_POST["tutor"]);
 		$userdata["admin"] = isset($_POST["bla"]);
 		if($_POST["gender"] == "f") {
 			$userdata["female"] = true;
@@ -96,6 +97,10 @@
 					<tr>
 						<td class="title">Passwort</td>
 						<td><input name="password" type="password" form="data_form" /></td>
+					</tr>
+                    <tr>
+						<td class="title">Tutor</td>
+						<td><input name="tutor" type="checkbox" form="data_form" /></td>
 					</tr>
 					<tr>
 						<td class="title">Administrator</td>

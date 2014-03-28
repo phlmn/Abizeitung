@@ -55,16 +55,22 @@
 			$row = $res->fetch_assoc();
 			
 			
-			$data["id"] = $id;
-			$data["class"] = $row["name"];
-			$data["tutor"] = $row["tutor"];
-			$data["prename"] = $row["prename"];
-			$data["lastname"] = $row["lastname"];
-			$data["birthday"] = $row["birthday"];
-			$data["nickname"] = $row["nickname"];
-			$data["admin"] = $row["admin"];
-			$data["email"] = $row["email"];
-			$data["female"] = $row["female"];	
+			$data["id"] 		= $id;
+			$data["class"] 		= $row["name"];
+			$data["tutor"] 		= $row["tutor"];
+			$data["prename"] 	= $row["prename"];
+			$data["lastname"] 	= $row["lastname"];
+			$data["birthday"] 	= $row["birthday"];
+			$data["nickname"] 	= $row["nickname"];
+			$data["admin"] 		= $row["admin"];
+			$data["email"] 		= $row["email"];
+			$data["female"] 	= $row["female"];
+			$data["istutor"]	= false;
+			
+			$res = $mysqli->query("SELECT * FROM teacher WHERE uid = '".$id."'");
+		
+			if($mysqli->affected_rows > 0)
+				$data["istutor"] = true;	
 			
 			return $data;
 		}
@@ -110,8 +116,50 @@
 			return 1;
 		}
 		
+		if(intval($data["tutor"])) {
+			$mysqli->query("INSERT INTO teacher ( uid ) VALUES ( '".intval(($data["tutor"]))."')");
+			
+			if($mysqli->affected_rows > 0) {
+				return 2;
+			}
+		}
+		
 		return 0;
 		
+	}
+	
+	function edit_user($data) {
+		global $mysqli;
+		
+		$res = $mysqli->query("SELECT * FROM teacher WHERE uid = '".$data["id"]."'");
+		
+		if($data["tutor"] == 1) {
+			if($mysqli->affected_rows == 0) {
+				$mysqli->query("INSERT INTO teacher ( uid ) VALUES ( '".intval(($data["id"]))."')");
+				
+				if($mysqli->affected_rows > 0)
+					return -1;
+			}
+		} else {
+			$mysqli->query("DELETE FROM teacher WHERE uid = '".$data["id"]."'");
+		}
+		
+		$mysqli->query("
+			UPDATE users SET 
+				prename 	= '".$mysqli->real_escape_string($data["prename"])."',
+				lastname 	= '".$mysqli->real_escape_string($data["lastname"])."',
+				class 		= '".intval($data["class"])."',
+				birthday 	= '".$mysqli->real_escape_string($data["birthday"])."',
+				nickname 	= '".$mysqli->real_escape_string($data["nickname"])."',
+				female 		= '".intval($data["female"])."',
+				admin 		= '".intval($data["admin"])."',
+				".change_password($data["password"]).",
+				email 		= '".$mysqli->real_escape_string($data["email"])."'
+			WHERE id 		= '".intval($data["id"])."'");
+			
+		if($mysqli->affected_rows > 0) {
+			return -2;
+		}
 	}
 	
 	function update_userdata($data) {
@@ -143,4 +191,9 @@
 			return "'".$mysqli->real_escape_string($var)."'";
 		}
 	}
-?>
+	
+	function change_password($pw) {
+		if(isset($pw))
+			return " password = '".md5($pw)."' ";
+	}
+?>1
