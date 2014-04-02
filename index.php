@@ -29,8 +29,7 @@
 <html>
 	<head>
 		<title>Abizeitung - Login</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="style.css">
+		<?php head(); ?>
 	</head>
 	
 	<body class="login">

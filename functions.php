@@ -1,5 +1,9 @@
 <?php
 	
+	function head() {
+		require("head.php");
+	}
+	
 	function db_connect() {
 		global $mysqli;
 		include("config.php");

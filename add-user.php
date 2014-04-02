@@ -36,13 +36,7 @@
 <html>
 	<head>
 		<title>Abizeitung - Nutzerverwaltung</title>
-		<link rel="stylesheet" href="style.css">
-		<link rel="stylesheet" href="icons/css/fontello.css">
-	    <!--[if IE 7]>
-	    <link rel="stylesheet" href="icons/css/fontello-ie7.css">
-	    <![endif]-->
-		<meta charset="utf-8">
-		<script src="jquery.js" type="text/javascript"></script>
+		<?php head(); ?>
 	</head>
 	
 	<body>
