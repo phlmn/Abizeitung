@@ -18,7 +18,7 @@
 		$userdata["email"] = $_POST["email"];
 		$userdata["password"] = $_POST["password"];
 		$userdata["tutor"] = isset($_POST["tutor"]);
-		$userdata["admin"] = isset($_POST["bla"]);
+		$userdata["admin"] = isset($_POST["admin"]);
 		if($_POST["gender"] == "f") {
 			$userdata["female"] = true;
 		}
@@ -76,9 +76,13 @@
 						<td>
                         	<select name="class" form="data_form">
                             	<option>-</option>
-                                <option>DV1</option>
-                                <option>DV2</option>
-                                <option>MB1</option>
+                                <?php 
+									$res = $mysqli->query("SELECT name FROM classes");
+									
+									foreach($res as $row) {
+										echo "<option>".$row["name"]."</option>";
+									}
+								?>
                             </select>
                         </td>
 					</tr>

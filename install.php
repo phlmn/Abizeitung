@@ -99,8 +99,20 @@
 				  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				  
 			$res = $mysqli->query("
-				INSERT INTO `users` (`prename`, `lastname`, `admin`, `password`, `email`)
-				VALUES ('".$_POST['admin-prename']."', '".$_POST['admin-name']."', '1', '".md5($_POST['admin-pw'])."', '".$_POST['admin-mail']."');");
+				INSERT INTO `users` (`prename`, `lastname`, `admin`, `password`, `email`) VALUES
+				('".$_POST['admin-prename']."', '".$_POST['admin-name']."', '1', '".md5($_POST['admin-pw'])."', '".$_POST['admin-mail']."')
+				;");
+				
+			$res = $mysqli->query("
+				INSERT INTO `abizeitung`.`classes` (`name`) VALUES 
+				('DV1'),
+				('DV2'),
+				('E'),
+				('G1'),
+				('G2'),
+				('M1'),
+				('M2')
+				;");
 				
 		}
 	}

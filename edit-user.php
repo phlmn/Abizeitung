@@ -28,7 +28,7 @@
 			$userdata["prename"] 	= $_POST["prename"];
 			$userdata["lastname"] 	= $_POST["lastname"];
 			$userdata["female"] 	= $_POST["gender"];
-			$userdata["class"] 		= $_POST["name"];
+			$userdata["class"] 		= $_POST["class"];
 			$userdata["birthday"] 	= $_POST["birthday"];
 			$userdata["nickname"] 	= $_POST["nickname"];
 			$userdata["email"] 		= $_POST["email"];
@@ -36,10 +36,10 @@
 			$userdata["tutor"] 		= isset($_POST["tutor"]);
 			$userdata["admin"] 		= isset($_POST["admin"]);
 			
+			edit_user($userdata);
+			
 			header("Location: ./edit-user.php?user=".$_GET["user"]);
 		}
-		
-		edit_user($userdata);
 	}
 ?>
 
@@ -89,9 +89,16 @@
 						<td>
                         	<select name="class" form="data_form">
                         		<option>-</option>
-                                <option>DV1</option>
-                                <option>DV2</option>
-                                <option>MB1</option>
+                                <?php 
+									$res = $mysqli->query("SELECT * FROM classes");
+									
+									foreach($res as $row) {
+										if($edit["class"]["id"] == $row["id"])
+											echo "<option selected>".$row["name"]."</option>";
+										else
+											echo "<option>".$row["name"]."</option>";
+									}
+								?>
                             </select>
                         </td>
 					</tr>

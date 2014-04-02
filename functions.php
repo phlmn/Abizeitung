@@ -41,10 +41,10 @@
 	function get_userdata($id) {
 		global $mysqli;
 		$res = $mysqli->query("
-			SELECT * 
+			SELECT users.class, tutor, prename, lastname, birthday, nickname, admin, email, female, classes.name, classes.id AS cid, classes.tutor
 			FROM users
 			LEFT JOIN users_classes ON users.id = users_classes.user
-			LEFT JOIN classes ON users_classes.id = classes.id
+			LEFT JOIN classes ON users_classes.id = classes.id OR users.class = classes.id
 			WHERE users.id = '".$mysqli->real_escape_string($id)."'
 			LIMIT 1
 		");
@@ -54,10 +54,7 @@
 		
 			$row = $res->fetch_assoc();
 			
-			
 			$data["id"] 		= $id;
-			$data["class"] 		= $row["name"];
-			$data["tutor"] 		= $row["tutor"];
 			$data["prename"] 	= $row["prename"];
 			$data["lastname"] 	= $row["lastname"];
 			$data["birthday"] 	= $row["birthday"];
@@ -70,7 +67,19 @@
 			$res = $mysqli->query("SELECT * FROM teacher WHERE uid = '".$id."'");
 		
 			if($mysqli->affected_rows > 0)
-				$data["istutor"] = true;	
+				$data["istutor"] = true;
+				
+			if(!$data["istutor"]) {
+				$res = $mysqli->query("SELECT * FROM users WHERE id = (SELECT uid FROM teacher WHERE id ='".$row["tutor"]."')");
+				
+				$tutor = $res->fetch_assoc();
+				
+				$data["class"] = array(
+									"name" => $row["name"],
+									"id" => $row["cid"],
+									"tutor" => get_userdata($tutor["id"])
+								);
+			}	
 			
 			return $data;
 		}
@@ -144,11 +153,16 @@
 			$mysqli->query("DELETE FROM teacher WHERE uid = '".$data["id"]."'");
 		}
 		
+		$class = intval($mysqli->query("SELECT id FROM classes WHERE name = '".$mysqli->real_escape_string($data["class"])."'"));
+		
+		if($mysqli->affected_rows == 0)
+			$class = 0;
+		
 		$mysqli->query("
 			UPDATE users SET 
 				prename 	= '".$mysqli->real_escape_string($data["prename"])."',
 				lastname 	= '".$mysqli->real_escape_string($data["lastname"])."',
-				class 		= '".intval($data["class"])."',
+				class 		= '".$class."',
 				birthday 	= '".$mysqli->real_escape_string($data["birthday"])."',
 				nickname 	= '".$mysqli->real_escape_string($data["nickname"])."',
 				female 		= '".intval($data["female"])."',
@@ -196,4 +210,4 @@
 		if(isset($pw))
 			return " password = '".md5($pw)."' ";
 	}
-?>1
+?>
