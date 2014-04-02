@@ -7,16 +7,16 @@
 	
 	check_login();
 
-	$data = get_userdata($_SESSION["user"]);
+	$data = UserManager::get_userdata($_SESSION["user"]);
 	
 	if(isset($_GET["update"])) {
 		$userdata["id"] = $data["id"];
 		$userdata["nickname"] = $_POST["nickname"];
 		$userdata["birthday"] = $_POST["birthday"];
 		
-		update_userdata($userdata);
+		UserManager::update_userdata($userdata);
 		
-		$data = get_userdata($_SESSION["user"]);
+		$data = UserManager::get_userdata($_SESSION["user"]);
 	}
 		
 
@@ -123,7 +123,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="dashboard">
+		<div id="dashboard" class="container">
 			<h1>Hallo <?php echo $data["prename"] ?>!</h1>
 			<p>Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch werden eure Namen geschwärzt.</p>
 			<p>Bitte achte auf Rechtschreibung und <b>Speichern nicht vergessen</b> ;)</p>
@@ -151,7 +151,7 @@
 						<td class="title">Geschlecht</td>
 						<td><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></td>
 					</tr>
-					<?php if(!$data["istutor"]) { ?>
+					
 					<tr>
 						<td class="title">Tutorium</td>
 						<td><?php echo $data["class"]["name"] ?></td>
@@ -160,7 +160,6 @@
 						<td class="title">Tutor</td>
 						<td><?php echo $data["class"]["tutor"]["lastname"] ?></td>
 					</tr>
-                    <?php } ?>
 				</table>
 				
 				<div class="photo">
@@ -216,7 +215,7 @@
 						<?php if($survey["w"] === true): ?>
 							<span class="icon-female" /> 
 							<select name="survey_w_<?php echo $key ?>" form="data_form">
-								<option value=""<?php echo ($survey_answers[$key]["w"] == null) ? "" : " selected" ?>>-</option>
+								<option value="" <?php echo ($survey_answers[$key]["w"] == null) ? "" : " selected" ?>>-</option>
 								<?php foreach($students as $student) {
 									if($student["gender"] == "w") {
 										echo "<option";

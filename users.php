@@ -7,7 +7,7 @@
 	check_login();
 	check_admin(); 
 
-	$data = get_userdata($_SESSION["user"]);	
+	$data = UserManager::get_userdata($_SESSION["user"]);	
 	
 ?>
 
@@ -21,12 +21,12 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management">
+		<div id="user-management" class="container">
 			<h1>Nutzerverwaltung</h1>
 			<form id="data_form" name="data" action="save.php"></form>
 			<div class="users">
 				<h2>Nutzer</h2>
-				<table>
+				<table class="table table-striped">
 					<thead>
 						<th>Vorname</th>
 						<th>Nachname</th>
@@ -48,13 +48,12 @@
 							LEFT JOIN teacher ON classes.tutor = teacher.id
 							LEFT JOIN users tutor ON teacher.uid = tutor.id
 							ORDER BY users.lastname
-						");
-						
+						");						
 						
 					?>
 					<?php $i = 0; ?>
 					<?php while($row = $res->fetch_assoc()): ?>
-						<tr <?php if($i % 2 == 0): ?>class="alternate"<?php endif; ?>>
+						<tr>
 							<td><?php echo $row["prename"] ?></td>
 							<td><?php echo $row["lastname"] ?></td>
 							<td><?php echo $row["nickname"] ?></td>

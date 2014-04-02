@@ -26,75 +26,202 @@
 	
 	function check_admin() {
 		global $mysqli;
-		$res = $mysqli->query("SELECT admin FROM users WHERE id = '".$_SESSION["user"]."' LIMIT 1");
-
-		if($mysqli->affected_rows > 0) {
 		
-			$row = $res->fetch_assoc();
-			
-			if($row["admin"] == 1)
-				return;
-				
-		}
+		$stmt = $mysqli->prepare("SELECT admin FROM users WHERE id = ? LIMIT 1");	
+		$stmt->bind_param("i", $_SESSION["user"]);
+		$stmt->execute();
+		$stmt->bind_result($admin);
+		$stmt->fetch();
+
+		if($admin == 1)
+			return;
 		
 		header("Location: ./");
 		die;
 	
 	}
 	
-	function get_userdata($id) {
-		global $mysqli;
-		$res = $mysqli->query("
-			SELECT users.class, tutor, prename, lastname, birthday, nickname, admin, email, female, classes.name, classes.id AS cid, classes.tutor
-			FROM users
-			LEFT JOIN users_classes ON users.id = users_classes.user
-			LEFT JOIN classes ON users_classes.id = classes.id OR users.class = classes.id
-			WHERE users.id = '".$mysqli->real_escape_string($id)."'
-			LIMIT 1
-		");
+	class UserManager {
+		function get_userdata($id) {
+			global $mysqli;
 
+			$stmt = $mysqli->prepare("
+				SELECT prename, lastname, birthday, nickname, admin, email, female, class
+				FROM users
+				WHERE users.id = ?
+				LIMIT 1
+			");
+			
+			$stmt->bind_param("i", $id);
+			$stmt->execute();	
+			
+			$stmt->bind_result($data["prename"], $data["lastname"], $data["birthday"], $data["nickname"], $data["admin"], $data["email"], $data["female"], $classid);
+			
+			$stmt->store_result();	
+			if($stmt->num_rows > 0) {
+			
+				$stmt->fetch();
+			
+				$data["id"] 		= $id;
+				$data["isteacher"]	= false;
+							
+				$stmt2 = $mysqli->prepare("SELECT * FROM teacher WHERE uid = ?");
+				$stmt2->bind_param("i", $id);
+				$stmt2->execute();
+				$stmt2->store_result();
+				
+				if($stmt2->num_rows > 0)
+					$data["isteacher"] = true;
+					
+				$stmt2->free_result();
+				$stmt2->close();
+					
+				if(!$data["isteacher"]) {
+				
+					$stmt2 = $mysqli->prepare("
+						SELECT classes.name, teacher.uid
+						FROM classes
+						LEFT JOIN teacher ON classes.tutor = teacher.id
+						WHERE classes.id = ?
+					");
+					$stmt2->bind_param("i", $classid);	
+					$stmt2->execute();
+					$stmt2->bind_result($classname, $tutorid);
+					$stmt2->fetch();				
+					$stmt2->close();
+					
+					$data["class"] = array(
+						"id" => $classid,
+						"name" => $classname,
+						"tutor" => UserManager::get_userdata($tutorid)
+					);
+				}
+				
+				$stmt->free_result();
+				$stmt->close();	
+				return $data;
+			}
+			
+			$stmt->free_result();
+			$stmt->close();
+			
+		}	
 		
-		if($mysqli->affected_rows > 0) {
-		
-			$row = $res->fetch_assoc();
-			
-			$data["id"] 		= $id;
-			$data["prename"] 	= $row["prename"];
-			$data["lastname"] 	= $row["lastname"];
-			$data["birthday"] 	= $row["birthday"];
-			$data["nickname"] 	= $row["nickname"];
-			$data["admin"] 		= $row["admin"];
-			$data["email"] 		= $row["email"];
-			$data["female"] 	= $row["female"];
-			$data["istutor"]	= false;
-			
-			$res = $mysqli->query("SELECT * FROM teacher WHERE uid = '".$id."'");
-		
-			if($mysqli->affected_rows > 0)
-				$data["istutor"] = true;
+		function add_user($data) {
+			global $mysqli;
 				
-			if(!$data["istutor"]) {
 			
-				$res = $mysqli->query("
-					SELECT users.id AS id
-					FROM users
-					LEFT JOIN teacher ON teacher.uid = users.id
-					WHERE teacher.id = '".$row["tutor"]."'
-				");
-				
-				
-				$tutor = $res->fetch_assoc();
-				
-				$data["class"] = array(
-									"name" => $row["name"],
-									"id" => $row["cid"],
-									"tutor" => get_userdata($tutor["id"])
-								);
-			}	
+			if(empty($data["email"]) || empty($data["password"])) {
+				return -1;
+			}
 			
-			return $data;
+			$res = $mysqli->query("SELECT * FROM users WHERE users.email = '".$mysqli->real_escape_string($data["email"])."' LIMIT 1");
+			
+			if($mysqli->affected_rows > 0) {
+				return -2;
+			}
+			
+			$mysqli->query("
+				INSERT INTO users (prename, lastname, birthday, nickname, female, email, password, admin) 
+				VALUES (".null_on_empty($data["prename"]).", ".null_on_empty($data["lastname"]).", ".null_on_empty($data["birthday"]).", ".null_on_empty($data["nickname"]).", ".($data["female"] ? "true" : "false").", ".null_on_empty($data["email"]).", '".md5($data["password"])."', ".($data["admin"] ? "true" : "false").")");
+			
+			if($mysqli->affected_rows > 0) {
+				return 1;
+			}
+			
+			if(intval($data["tutor"])) {
+				$mysqli->query("INSERT INTO teacher ( uid ) VALUES ( '".intval(($data["tutor"]))."')");
+				
+				if($mysqli->affected_rows > 0) {
+					return 2;
+				}
+			}
+			
+			return 0;
+			
 		}
 		
+		function edit_user($data) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				UPDATE users SET 
+				prename = ?,
+				lastname = ?,
+				class = ?,
+				birthday = ?,
+				nickname = ?,
+				female = ?,
+				admin = ?,
+				email = ?
+				WHERE id = ?
+			");	
+			
+			$stmt->bind_param("ssissiisi",
+				$data["prename"],
+				$data["lastname"],
+				$data["class"]["id"],
+				$data["birthday"],
+				$data["nickname"],
+				intval($data["female"]),
+				intval($data["admin"]),
+				$data["email"],
+				$data["id"]
+			);
+			
+			$stmt->execute();
+			$stmt->store_result();
+			
+			if($stmt->affected_rows == 0) {
+				$stmt->free_result();
+				$stmt->close();
+				return -2;
+			}
+			
+			$stmt->free_result();
+			$stmt->close();
+			
+			if(isset($data["password"]) && !empty($data["password"])) {
+				$stmt = $mysqli->prepare("
+					UPDATE users SET 
+					password = ?
+					WHERE id = ?
+				");	
+				$stmt->bind_param("si", encrypt_pw($data["password"]), $id);
+				
+				$stmt->execute();
+				$stmt->store_result();
+				
+				if($stmt->affected_rows == 0) {
+					$stmt->free_result();
+					$stmt->close();
+					return -2;
+				}
+				
+				$stmt->free_result();
+				$stmt->close();	
+			}
+			
+			return 0;		
+			
+		}
+		
+		function update_userdata($data) {
+			global $mysqli;
+			
+			// TODO: Validate data
+			
+			$res = $mysqli->query("SELECT * FROM users WHERE users.id ='".intval($data["id"])."'");
+			
+			if($mysqli->affected_rows == 0) {
+				return -2;
+			}
+			
+			$mysqli->query("UPDATE users SET birthday = ".null_on_empty($data["birthday"]).", nickname = ".null_on_empty($data["nickname"])." WHERE id = '".intval($data["id"])."'");
+			
+			return 0;
+		}
+			
 	}
 	
 	function login($email, $password) {
@@ -105,7 +232,7 @@
 		
 			$row = $res->fetch_assoc();
 			
-			if($row["password"] === md5($password))
+			if($row["password"] === encrypt_pw($password))
 				return $row["id"];
 				
 		}
@@ -113,95 +240,6 @@
 		return -1;
 	}
 	
-	
-	function add_user($data) {
-		global $mysqli;
-		
-		
-		if(empty($data["email"]) || empty($data["password"])) {
-			return -1;
-		}
-		
-		$res = $mysqli->query("SELECT * FROM users WHERE users.email = '".$mysqli->real_escape_string($data["email"])."' LIMIT 1");
-		
-		if($mysqli->affected_rows > 0) {
-			return -2;
-		}
-			
-		$mysqli->query("
-			INSERT INTO users (prename, lastname, birthday, nickname, female, email, password, admin) 
-			VALUES (".null_on_empty($data["prename"]).", ".null_on_empty($data["lastname"]).", ".null_on_empty($data["birthday"]).", ".null_on_empty($data["nickname"]).", ".($data["female"] ? "true" : "false").", ".null_on_empty($data["email"]).", '".md5($data["password"])."', ".($data["admin"] ? "true" : "false").")");
-		
-		if($mysqli->affected_rows > 0) {
-			return 1;
-		}
-		
-		if(intval($data["tutor"])) {
-			$mysqli->query("INSERT INTO teacher ( uid ) VALUES ( '".intval(($data["tutor"]))."')");
-			
-			if($mysqli->affected_rows > 0) {
-				return 2;
-			}
-		}
-		
-		return 0;
-		
-	}
-	
-	function edit_user($data) {
-		global $mysqli;
-		
-		$res = $mysqli->query("SELECT * FROM teacher WHERE uid = '".$data["id"]."'");
-		
-		if($data["tutor"] == 1) {
-			if($mysqli->affected_rows == 0) {
-				$mysqli->query("INSERT INTO teacher ( uid ) VALUES ( '".intval(($data["id"]))."')");
-				
-				if($mysqli->affected_rows > 0)
-					return -1;
-			}
-		} else {
-			$mysqli->query("DELETE FROM teacher WHERE uid = '".$data["id"]."'");
-		}
-		
-		$class = intval($mysqli->query("SELECT id FROM classes WHERE name = '".$mysqli->real_escape_string($data["class"])."'"));
-		
-		if($mysqli->affected_rows == 0)
-			$class = 0;
-		
-		$mysqli->query("
-			UPDATE users SET 
-				prename 	= '".$mysqli->real_escape_string($data["prename"])."',
-				lastname 	= '".$mysqli->real_escape_string($data["lastname"])."',
-				class 		= '".$class."',
-				birthday 	= '".$mysqli->real_escape_string($data["birthday"])."',
-				nickname 	= '".$mysqli->real_escape_string($data["nickname"])."',
-				female 		= '".intval($data["female"])."',
-				admin 		= '".intval($data["admin"])."',
-				".change_password($data["password"]).",
-				email 		= '".$mysqli->real_escape_string($data["email"])."'
-			WHERE id 		= '".intval($data["id"])."'");
-			
-		if($mysqli->affected_rows > 0) {
-			return -2;
-		}
-	}
-	
-	function update_userdata($data) {
-		global $mysqli;
-		
-		// TODO: Validate data
-		
-		$res = $mysqli->query("SELECT * FROM users WHERE users.id ='".intval($data["id"])."'");
-		
-		if($mysqli->affected_rows == 0) {
-			return -2;
-		}
-		
-		$mysqli->query("UPDATE users SET birthday = ".null_on_empty($data["birthday"]).", nickname = ".null_on_empty($data["nickname"])." WHERE id = '".intval($data["id"])."'");
-		
-		return 0;
-	}
 	
 	function null_on_empty($var) {
 		
@@ -215,8 +253,8 @@
 		}
 	}
 	
-	function change_password($pw) {
-		if(isset($pw))
-			return " password = '".md5($pw)."' ";
+	function encrypt_pw($pw) {
+		return md5($pw);
 	}
+	
 ?>

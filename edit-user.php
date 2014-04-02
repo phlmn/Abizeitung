@@ -15,12 +15,12 @@
 			if($mysqli->affected_rows > 0)
 				$mysqli->query("DELETE FROM users WHERE id = '".$_GET["user"]."'");
 			
-			header("Location: ./edit-user.php?user=".($_GET["user"]-1));
+			header("Location: ./users.php");
 		}
 	
-	$data = get_userdata($_SESSION["user"]);
+	$data = UserManager::get_userdata($_SESSION["user"]);
 	
-	$edit = get_userdata($_GET["user"]);
+	$edit = UserManager::get_userdata($_GET["user"]);
 	
 	if(isset($_GET["edit"])) {
 		if(isset($_POST["prename"]) || isset($_POST["lastname"]) || isset($_POST["email"])) {
@@ -28,17 +28,17 @@
 			$userdata["prename"] 	= $_POST["prename"];
 			$userdata["lastname"] 	= $_POST["lastname"];
 			$userdata["female"] 	= $_POST["gender"];
-			$userdata["class"] 		= $_POST["class"];
+			$userdata["class"]["id"]= $_POST["class"];
 			$userdata["birthday"] 	= $_POST["birthday"];
 			$userdata["nickname"] 	= $_POST["nickname"];
 			$userdata["email"] 		= $_POST["email"];
 			$userdata["password"] 	= $_POST["password"];
-			$userdata["tutor"] 		= isset($_POST["tutor"]);
 			$userdata["admin"] 		= isset($_POST["admin"]);
 			
-			edit_user($userdata);
+			UserManager::edit_user($userdata);
 			
 			header("Location: ./edit-user.php?user=".$_GET["user"]);
+			exit();
 		}
 	}
 ?>
@@ -86,11 +86,11 @@
                                 <?php 
 									$res = $mysqli->query("SELECT * FROM classes");
 									
-									foreach($res as $row) {
+									while($row = $res->fetch_assoc()) {
 										if($edit["class"]["id"] == $row["id"])
-											echo "<option selected>".$row["name"]."</option>";
+											echo "<option selected value='".$row["id"]."'>".$row["name"]."</option>";
 										else
-											echo "<option>".$row["name"]."</option>";
+											echo "<option value='".$row["id"]."'>".$row["name"]."</option>";
 									}
 								?>
                             </select>
@@ -112,10 +112,6 @@
 						<td class="title">Passwort</td>
 						<td><input name="password" type="password" form="data_form" placeholder="Unverändert" /></td>
 					</tr>
-                    <tr>
-                    	<td class="title">Tutor</td>
-                        <td><input name="tutor" type="checkbox" form="data_form" <?php if($edit["istutor"] == true) echo "checked" ?> /></td>
-                    </tr>
 					<tr>
 						<td class="title">Administrator</td>
 						<td><input name="admin" type="checkbox" form="data_form" <?php if($edit["admin"] == true) echo "checked" ?> /></td>
