@@ -9,6 +9,15 @@ CREATE TABLE `abizeitung`.`users` (
   `nickname` VARCHAR(45) NULL,
   `female` TINYINT NULL,
   PRIMARY KEY (`id`));
+
+CREATE TABLE `abizeitung`.`teacher` (
+
+  `id` INT NOT NULL AUTO_INCREMENT,
+
+  `uid` INT NOT NULL,
+
+  PRIMARY KEY (`id`)
+);
   
 
 CREATE TABLE `abizeitung`.`classes` (

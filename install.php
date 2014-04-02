@@ -51,9 +51,8 @@
 				
 			$res = $mysqli->query("
 				CREATE TABLE `teacher` (
-				  `id` int(11) NOT NULL,
-				  `name` varchar(45) DEFAULT NULL,
-				  `female` tinyint(4) DEFAULT NULL,
+				  `id` INT NOT NULL AUTO_INCREMENT,
+				  `uid` INT NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
@@ -100,8 +99,20 @@
 				  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				  
 			$res = $mysqli->query("
-				INSERT INTO `users` (`prename`, `lastname`, `admin`, `password`, `email`)
-				VALUES ('".$_POST['admin-prename']."', '".$_POST['admin-name']."', '1', '".md5($_POST['admin-pw'])."', '".$_POST['admin-mail']."');");
+				INSERT INTO `users` (`prename`, `lastname`, `admin`, `password`, `email`) VALUES
+				('".$_POST['admin-prename']."', '".$_POST['admin-name']."', '1', '".md5($_POST['admin-pw'])."', '".$_POST['admin-mail']."')
+				;");
+				
+			$res = $mysqli->query("
+				INSERT INTO `abizeitung`.`classes` (`name`) VALUES 
+				('DV1'),
+				('DV2'),
+				('E'),
+				('G1'),
+				('G2'),
+				('M1'),
+				('M2')
+				;");
 				
 		}
 	}
@@ -112,12 +123,12 @@
 <html>
 	<head>
 		<title>Abizeitung - Installation</title>
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="style.css">
 		<link rel="stylesheet" href="icons/css/fontello.css">
 	    <!--[if IE 7]>
 	    <link rel="stylesheet" href="icons/css/fontello-ie7.css">
 	    <![endif]-->
-		<meta charset="utf-8" />
+		<meta charset="utf-8">
 		<script src="jquery.js" type="text/javascript"></script>
 	</head>
 	

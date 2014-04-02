@@ -17,7 +17,6 @@
 		if($userID > -1) {
 			$_SESSION["user"] = $userID;
 			header("Location: dashboard.php");
-			die;
 		}	
 		else {
 			$login_failed = true;
@@ -30,7 +29,8 @@
 <html>
 	<head>
 		<title>Abizeitung - Login</title>
-		<link rel="stylesheet" href="style.css" />
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="style.css">
 	</head>
 	
 	<body class="login">
