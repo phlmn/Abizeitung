@@ -74,7 +74,14 @@
 				$data["istutor"] = true;
 				
 			if(!$data["istutor"]) {
-				$res = $mysqli->query("SELECT * FROM users WHERE id = (SELECT uid FROM teacher WHERE id ='".$row["tutor"]."')");
+			
+				$res = $mysqli->query("
+					SELECT users.id AS id
+					FROM users
+					LEFT JOIN teacher ON teacher.uid = users.id
+					WHERE teacher.id = '".$row["tutor"]."'
+				");
+				
 				
 				$tutor = $res->fetch_assoc();
 				
@@ -183,9 +190,7 @@
 	function update_userdata($data) {
 		global $mysqli;
 		
-		if(empty($data["nickname"]) || empty($data["birthday"])) {
-			return -1;
-		}
+		// TODO: Validate data
 		
 		$res = $mysqli->query("SELECT * FROM users WHERE users.id ='".intval($data["id"])."'");
 		

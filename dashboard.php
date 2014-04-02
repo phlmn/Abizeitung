@@ -14,9 +14,9 @@
 		$userdata["nickname"] = $_POST["nickname"];
 		$userdata["birthday"] = $_POST["birthday"];
 		
-		if(update_userdata($userdata) == 0) {
-			header("Location: ./dashboard.php");
-		}
+		update_userdata($userdata);
+		
+		$data = get_userdata($_SESSION["user"]);
 	}
 		
 
