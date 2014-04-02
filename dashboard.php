@@ -157,15 +157,16 @@
 						<td class="title">Geschlecht</td>
 						<td><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></td>
 					</tr>
-
+					<?php if(!$data["istutor"]) { ?>
 					<tr>
 						<td class="title">Tutorium</td>
-						<td><?php echo $data["class"] ?></td>
+						<td><?php echo $data["class"]["name"] ?></td>
 					</tr>
 					<tr>
 						<td class="title">Tutor</td>
-						<td><?php echo $data["tutor"] ?></td>
+						<td><?php echo $data["class"]["tutor"]["lastname"] ?></td>
 					</tr>
+                    <?php } ?>
 				</table>
 				
 				<div class="photo">
