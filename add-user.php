@@ -27,6 +27,9 @@
 		}
 		
 		add_user($userdata);
+		
+		header("Location: ./add-user.php");
+		exit;
 	}
 	
 ?>

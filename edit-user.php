@@ -8,15 +8,15 @@
 	check_login();
 	check_admin();
 	
-	if(isset($_GET["delete"]))
-		if($_GET["delete"] == "do") {
-			$mysqli->query("SELECT * FROM users WHERE id = '".$_GET["user"]."'");
+	if(isset($_GET["delete"])) {
+		$mysqli->query("SELECT * FROM users WHERE id = '".$_GET["user"]."'");
 			
-			if($mysqli->affected_rows > 0)
-				$mysqli->query("DELETE FROM users WHERE id = '".$_GET["user"]."'");
+		if($mysqli->affected_rows > 0)
+			$mysqli->query("DELETE FROM users WHERE id = '".$_GET["user"]."'");
 			
-			header("Location: ./users.php");
-		}
+		header("Location: ./users.php");
+		exit;	
+	}
 	
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
@@ -126,17 +126,12 @@
 			</div>
 
 		</div>
-        <?php
-    		if(isset($_GET["delete"]))
-				if($_GET["delete"] != "do") {
-					?>
-					<script type="text/javascript">
-						if(confirm("Benutzer <?php echo $edit["prename"] . " " . $edit["lastname"] ?> löschen?"))
-							window.location = window.location + "=do";
-					</script>
-					<?php
-				}
-		?>
+        <?php if(isset($_GET["delete"])): ?>	
+			<script type="text/javascript">
+				if(confirm("Benutzer <?php echo $edit["prename"] . " " . $edit["lastname"] ?> löschen?"))
+					window.location = window.location + "=do";
+			</script>
+		<?php endif; ?>
 	</body>
 </html>
 

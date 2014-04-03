@@ -17,6 +17,9 @@
 		UserManager::update_userdata($userdata);
 		
 		$data = UserManager::get_userdata($_SESSION["user"]);
+		
+		header("Location: ./dashboard.php");
+		exit;
 	}
 		
 
