@@ -1,4 +1,6 @@
 <?php
+require_once("functions.php");
+
 if(!file_exists("photos/"))
 	mkdir("photos/");
 	
