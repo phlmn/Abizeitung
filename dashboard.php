@@ -104,9 +104,10 @@
 			            return myXhr;
 			        },
 			        beforeSend: function() {
-			        
+			        	$("span#photo-upload-state").html("<br>Bild wird<br/>hochgeladen ...");
 			        },
 			        success: function(data) {
+						$("span#photo-upload-state").html('<span class="icon-ok-circled"></span><br>Hochladen erfolgreich');			        	
 			        	$("div.photo").css("background-image", "url('" + data + "')");
 			        },
 			        error: function(a,b) {
@@ -164,12 +165,15 @@
 				
 				<div class="photo">
 					<form action="upload.php" id="image_form" enctype="multipart/form-data" ></form>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="500000" />
 					<input id="photo-upload" name="photo" type="file" form="image_form" onchange="uploadImage()" />
 					<div class="upload">
 						<a href="javascript: openImageSelector()">
-							<span class="icon-upload"></span>
-							<br>Einschulungsfoto
-							<br>hochladen...
+                        	<span id="photo-upload-state">
+								<span class="icon-upload"></span>
+								<br>Einschulungsfoto
+								<br>hochladen...
+                            </span>
 						</a>
 					</div>
 				</div>
