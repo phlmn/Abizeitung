@@ -168,7 +168,7 @@
 				
 				<div class="photo">
 					<form action="upload.php" id="image_form" enctype="multipart/form-data" ></form>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="500000" />
+                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
 					<input id="photo-upload" name="photo" type="file" form="image_form" onchange="uploadImage()" />
 					<div class="upload">
 						<a href="javascript: openImageSelector()">
