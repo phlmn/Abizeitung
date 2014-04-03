@@ -110,8 +110,24 @@
 			        	$("span#photo-upload-state").html("<br>Bild wird<br/>hochgeladen ...");
 			        },
 			        success: function(data) {
-						$("span#photo-upload-state").html('<span class="icon-ok-circled"></span><br>Hochladen erfolgreich');			        	
-			        	$("div.photo").css("background-image", "url('" + data + "')");
+						switch(parseInt(data[data.length-1])) {
+							case 1:
+							case 4:
+								$("span#photo-upload-state").html(
+									'<span class="icon-cancel-circled"></span><br />Fehler beim Hochladen<br />Fehlercode 0x' + data);
+								break;
+							case 2:
+								$("span#photo-upload-state").html(
+									'<span class="icon-cancel-circled"></span><br />Fehler beim Hochladen<br />Ungültiges Dateiformat<br />Fehlercode 0x' + data);
+								break;
+							case 3:
+								$("span#photo-upload-state").html(
+									'<span class="icon-cancel-circled"></span><br />Fehler beim Hochladen<br />Die Datei ist zu groß<br />Fehlercode 0x' + data);
+								break;
+							default:
+								$("span#photo-upload-state").html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');			        	
+								$("div.photo").css("background-image", "url('" + data + "')");
+						}
 			        },
 			        error: function(a,b) {
 			        	alert(b);
