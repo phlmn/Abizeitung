@@ -53,7 +53,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management">
+		<div id="user-management" class="container">
 			<h1>Nutzerverwaltung</h1>
 			<form id="data_form" name="data" action="edit-user.php?user=<?php echo $_GET["user"] ?>&edit" method="post"></form>
 			<div class="add-user">

@@ -7,7 +7,7 @@
 	check_login();
 	check_admin();
 	
-	$data = get_userdata($_SESSION["user"]);
+	$data = UserManager::get_userdata($_SESSION["user"]);
 	
 	if(isset($_GET["create"])) {
 	
@@ -44,7 +44,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management">
+		<div id="user-management" class="container">
 			<h1>Nutzerverwaltung</h1>
 			<form id="data_form" name="data" method="post" action="add-user.php?create"></form>
 			<div class="add-user">
