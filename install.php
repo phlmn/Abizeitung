@@ -50,8 +50,8 @@
 				
 			$res = $mysqli->query("
 				CREATE TABLE `teacher` (
-				  `id` INT NOT NULL AUTO_INCREMENT,
-				  `uid` INT NOT NULL,
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `uid` int(11) NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
@@ -101,6 +101,22 @@
 				INSERT INTO `users` (`prename`, `lastname`, `admin`, `password`, `email`) VALUES
 				('".$_POST['admin-prename']."', '".$_POST['admin-name']."', '1', '".md5($_POST['admin-pw'])."', '".$_POST['admin-mail']."')
 				;");
+				
+			$res = $mysqli->query("
+				CREATE TABLE `categories` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `name` varchar(45) NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				
+			$res = $mysqli->query("
+				CREATE TABLE `images` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `uid` int(11) NOT NULL,
+				  `category` int(11) NOT NULL,
+				  `file` varchar(255)
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
 			$res = $mysqli->query("
 				INSERT INTO `abizeitung`.`classes` (`name`) VALUES 
