@@ -93,7 +93,7 @@
 			function uploadImage() {
 				var formData = new FormData($('#image_form')[0]);
 			    $.ajax({
-			        url: 'upload.php',
+			        url: 'upload.php?user=<?php echo $data["id"] ?>&category=1',
 			        type: 'POST',
 			        xhr: function() {
 			            var myXhr = $.ajaxSettings.xhr();
@@ -117,8 +117,16 @@
 							error0 = error1;
 							error1 = 3;
 						}
-						
+						alert(data);
 						switch(error1) {
+							case 0:
+								$("span#photo-upload-state").html(
+									'<span class="icon-cancel-circled"></span><br />' +
+									'Fehler beim Hochladen:<br />' +
+									'Fehler bei Identifizierung<br />' +
+									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+								);
+								break;
 							case 1:
 								$("span#photo-upload-state").html(
 									'<span class="icon-cancel-circled"></span><br />' +
@@ -145,6 +153,14 @@
 								);
 								break;
 							case 4:
+								$("span#photo-upload-state").html(
+									'<span class="icon-cancel-circled"></span><br />' +
+									'Datenbankfehler:<br />' +
+									'Datei konnte nicht hinzugefügt werden<br />' +
+									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+								);
+								break;
+							case 5:
 								$("span#photo-upload-state").html(
 									'<span class="icon-cancel-circled"></span><br />' +
 									'Fehler beim Hochladen:<br />' +
