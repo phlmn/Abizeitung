@@ -11,8 +11,7 @@
 	define('DB_USER', '".mysql_real_escape_string($_POST['db-user'])."');
 	define('DB_NAME', '".mysql_real_escape_string($_POST['db-name'])."');
 	define('DB_PASSWORD', '".mysql_real_escape_string($_POST['db-password'])."');
-?>
-			");
+?>");
 			
 			db_connect();
 	
