@@ -120,10 +120,10 @@
 						
 						switch(error1) {
 							case 1:
-							case 4:
 								$("span#photo-upload-state").html(
 									'<span class="icon-cancel-circled"></span><br />' +
 									'Fehler beim Hochladen:<br />' +
+									'Die Datei wurde nicht korrekt übertragen<br />' +
 									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
 								);
 								break;
@@ -141,6 +141,14 @@
 									'<span class="icon-cancel-circled"></span><br />' +
 									'Fehler beim Hochladen:<br />' +
 									'Die Datei ist zu groß<br />' +
+									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+								);
+								break;
+							case 4:
+								$("span#photo-upload-state").html(
+									'<span class="icon-cancel-circled"></span><br />' +
+									'Fehler beim Hochladen:<br />' +
+									'Datei konnte nicht hochgeladen werden<br />' +
 									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
 								);
 								break;
