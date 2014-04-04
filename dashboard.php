@@ -110,19 +110,39 @@
 			        	$("span#photo-upload-state").html("<br>Bild wird<br/>hochgeladen ...");
 			        },
 			        success: function(data) {
-						switch(parseInt(data[data.length-1])) {
+						error1 = parseInt(data[data.length-1]);
+						error0 = "";
+						
+						if(data.indexOf("Length") != -1) {
+							error0 = error1;
+							error1 = 3;
+						}
+						
+						switch(error1) {
 							case 1:
 							case 4:
 								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />Fehler beim Hochladen<br />Fehlercode 0x' + data);
+									'<span class="icon-cancel-circled"></span><br />' +
+									'Fehler beim Hochladen:<br />' +
+									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+								);
 								break;
 							case 2:
 								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />Fehler beim Hochladen<br />Ungültiges Dateiformat<br />Fehlercode 0x' + data);
+									'<span class="icon-cancel-circled"></span><br />' +
+									'Fehler beim Hochladen:<br />' +
+									'Ungültiges Dateiformat<br />' +
+									'Erlaubte Formate: .jpg, .png<br />' +
+									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+								);
 								break;
 							case 3:
 								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />Fehler beim Hochladen<br />Die Datei ist zu groß<br />Fehlercode 0x' + data);
+									'<span class="icon-cancel-circled"></span><br />' +
+									'Fehler beim Hochladen:<br />' +
+									'Die Datei ist zu groß<br />' +
+									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+								);
 								break;
 							default:
 								$("span#photo-upload-state").html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');			        	
@@ -185,7 +205,7 @@
 				<div class="photo">
 					<form action="upload.php" id="image_form" enctype="multipart/form-data" ></form>
                     <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-					<input id="photo-upload" name="photo" type="file" form="image_form" onchange="uploadImage()" />
+					<input id="photo-upload" name="photo" type="file" form="image_form" accept="image/x-png,image/jpeg" onchange="uploadImage()" />
 					<div class="upload">
 						<a href="javascript: openImageSelector()">
                         	<span id="photo-upload-state">
