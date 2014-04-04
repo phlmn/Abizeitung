@@ -26,7 +26,7 @@
 			$userdata["female"] = false;
 		}
 		
-		add_user($userdata);
+		UserManager::add_user($userdata);
 		
 		header("Location: ./add-user.php");
 		exit;
