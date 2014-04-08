@@ -117,7 +117,9 @@
 							error0 = error1;
 							error1 = 3;
 						}
-						alert(data);
+						
+						$("div.photo").css("background-image", "none");
+						
 						switch(error1) {
 							case 0:
 								$("span#photo-upload-state").html(

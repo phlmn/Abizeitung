@@ -118,8 +118,10 @@
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
+			$res = $mysqli->query("TRUNCATE TABLE `classes`;");
+				
 			$res = $mysqli->query("
-				INSERT INTO `abizeitung`.`classes` (`name`) VALUES 
+				INSERT INTO `classes` (`name`) VALUES 
 				('DV1'),
 				('DV2'),
 				('E'),
