@@ -21,7 +21,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="class-management" class="container">
+		<div id="class-management" class="container-fluid">
 			<h1>Kursverwaltung</h1>
 			<form id="data_form" name="data" action="save.php"></form>
 			<h2>Kurse</h2>
@@ -40,10 +40,9 @@
 			<div class="classes">					
 				<?php while($stmt->fetch()): ?>
 					<div onclick="window.location='edit-class.php?class=<?php echo $class["id"] ?>'">
-						<div class="id"><?php echo $class["id"] ?></div>
 						<div class="info">
 							<div class="name"><?php echo $class["name"] ?></div>
-							<div class="teacher"><a href="edit-user.php?user=<?php echo $class["teacher"]["userid"] ?>"><?php echo $class["teacher"]["lastname"] ?></a></div>
+							<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
 						</div>
 					</div>
 				<?php endwhile; ?>

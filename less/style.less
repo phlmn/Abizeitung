@@ -1,4 +1,5 @@
 @import "../bootstrap/less/mixins.less";
+@import "colors.less";
 
 body {
 	margin-top: 60px;
@@ -297,38 +298,56 @@ td.edit a {
 	.clearfix();
 	
 	> div {
-		border: 1px solid #ddd;
-		margin: 0 20px 20px 0;
+		margin: 0 32px 32px 0;
 		float: left;
-		padding: 20px 14px;
-		height: 94px;
 		border-radius: 4px;
-		width: 210px;
+		width: 100px;
+		height: 100px;
 		cursor: pointer;
-		.transition(box-shadow .1s);
-		
+		.transition(all .2s);
+		border-radius: 50%;
+		color: #fff;
+				
 		&:hover {
-			.box-shadow(0 0 18px rgba(0, 0, 0, .1));	
+			padding: 0;
 		}
 		
-		> div {
-			float: left;
+		&:nth-child(5n+1) {
+			background: @color1;
 		}
 		
-		div.id {
-			font-size: 64px;
-			line-height: 50px;
-			padding-right: 12px;
-			color: #555;
-			font-weight: lighter;
+		&:nth-child(5n+2) {
+			background: @color2;
 		}
 		
-		div.name {
-			font-size: 20px;
+		&:nth-child(5n+3) {
+			background: @color3;
 		}
 		
-		div.teacher {
-			font-size: 16px;
+		&:nth-child(5n+4) {
+			background: @color4;
+		}
+		
+		&:nth-child(5n+5) {
+			background: @color5;
+		}
+		
+		> div.info {
+			text-align: center;
+			padding-top: 32px;
+			
+			> div.name {
+				font-size: 14px;
+				font-weight: lighter;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				padding: 0 8px;
+			}
+			
+			> div.teacher {
+				font-size: 12px;
+				opacity: .8;
+			}
 		}
 	
 	}
