@@ -11,6 +11,23 @@
 	
 ?>
 
+<?php if(isset($_GET["class"])): ?>
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title"></h4>
+		</div>
+		<div class="modal-body">
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	</div>
+</div>
+<?php exit; ?>
+<?php endif; ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -19,7 +36,8 @@
 		<?php head(); ?>
 		<script type="text/javascript">
 			function showClass(id) {
-				$('#classModal').modal();		
+				$('#classModal').modal();
+				$('#classModal').load("classes.php?class=" + id);
 			}
 		</script>
 	</head>
@@ -59,23 +77,7 @@
 
 		</div>	
 
-		<div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title">Geschichte</h4>
-					</div>
-					<div class="modal-body">
-						<p>One fine body&hellip;</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save changes</button>
-					</div>
-				</div>
-			</div>
-		</div>
+		<div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 	</body>
 </html>
 
