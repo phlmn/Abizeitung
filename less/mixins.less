@@ -1,0 +1,23 @@
+@import "colors.less";
+
+.variate-color(@property) {
+	&:nth-child(5n+1) {
+		@{property}: @color1;
+	}
+	
+	&:nth-child(5n+2) {
+		@{property}: @color2;
+	}
+	
+	&:nth-child(5n+3) {
+		@{property}: @color3;
+	}
+	
+	&:nth-child(5n+4) {
+		@{property}: @color4;
+	}
+	
+	&:nth-child(5n+5) {
+		@{property}: @color5;
+	} 
+}

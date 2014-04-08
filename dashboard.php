@@ -190,11 +190,13 @@
 	<body>
 		<?php require("nav-bar.php") ?>
 		<div id="dashboard" class="container">
-			<h1>Hallo <?php echo $data["prename"] ?>!</h1>
-			<p>Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch werden eure Namen geschwärzt.</p>
-			<p>Bitte achte auf Rechtschreibung und <b>Speichern nicht vergessen</b> ;)</p>
+			<div class="intro">
+				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
+				<p class="intro">Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.</p>
+				<p class="intro">Bitte achte auf Rechtschreibung und <b>vergiss das Speichern nicht</b> ;)</p>
+			</div>
 			<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
-			<div class="common">
+			<div class="common box">
 				<h2>Allgemeines</h2>
 				<table>
 					<tr>
@@ -244,7 +246,7 @@
 				</div>
 			</div>
 			
-			<div class="questions">
+			<div class="questions box">
 				<h2>Fragen</h2>
 				<table>
 				<?php foreach($questions as $key => $question): ?>
@@ -257,7 +259,7 @@
 			
 			</div>
 			
-			<div class="surveys">
+			<div class="surveys box">
 				<h2>Umfragen</h2>
 				<table>
 				<?php foreach($surveys as $key => $survey): ?>

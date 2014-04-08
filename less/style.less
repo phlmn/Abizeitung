@@ -1,9 +1,11 @@
 @import "../bootstrap/less/mixins.less";
 @import "colors.less";
+@import "mixins.less";
 
 body {
 	margin-top: 60px;
 	margin-bottom: 60px;
+	background: #f0efea;
 }
 
 a:focus {
@@ -120,7 +122,7 @@ body.login {
 	position: fixed;
 	width: 100%;
 	height: 40px;
-	background: #333;
+	background: @color1;
 	top: 0;
 	z-index: 20;
 	
@@ -144,7 +146,7 @@ body.login {
 				padding: 0 14px;
 				
 				&:hover {
-					background: #555;
+					background: darken(@color1, 5%);
 				}
 				
 				&.title {
@@ -158,11 +160,12 @@ body.login {
 			}
 			
 			span {
-				color: #bbb;
+				color: #fff;
 				line-height: 40px;
 				display: block;
 				padding: 0 14px;
 				font-size: 12px;
+				opacity: .8;
 			}
 		}
 	}
@@ -172,7 +175,6 @@ body.login {
 
 #dashboard {
 		
-	
 	td.title {
 		font-weight: bold;
 	}
@@ -181,8 +183,35 @@ body.login {
 		width: 100%;
 	}
 	
-	.common {
+	> div.box {
 		margin-top: 50px;
+		background: #fff;
+		padding: 20px;
+		border-top: 5px solid;
+		
+		> h2 {
+			margin-top: 6px;
+			font-size: 24px;
+			font-weight: lighter;	
+		}
+	}
+	
+	div.intro {
+		padding: 20px 0;
+		
+		h1 {
+			margin-bottom: 16px;
+		}
+		
+		p {
+			font-size: 18px;
+		}
+	}
+	
+	div.common {
+		
+		border-color: @color2;
+		
 		position: relative;
 		
 		td {
@@ -217,8 +246,9 @@ body.login {
 		}
 	}
 	
-	.questions {
-		margin-top: 50px;
+	div.questions {
+	
+		border-color: @color3;
 		
 		td {
 			&.title {
@@ -234,8 +264,9 @@ body.login {
 		}
 	}
 	
-	.surveys {
-		margin-top: 50px;
+	div.surveys {
+	
+		border-color: @color4;
 		
 		td {
 			width: 200px;
@@ -247,7 +278,7 @@ body.login {
 		}
 	}
 	
-	.buttons {
+	div.buttons {
 		margin-top: 60px;
 	}
 }
@@ -308,30 +339,11 @@ td.edit a {
 		border-radius: 50%;
 		color: #fff;
 		opacity: .85;
+		.variate-color(background);
 				
 		&:hover {
 			.scale(1.2, 1.2);
 			opacity: 1;
-		}
-		
-		&:nth-child(5n+1) {
-			background: @color1;
-		}
-		
-		&:nth-child(5n+2) {
-			background: @color2;
-		}
-		
-		&:nth-child(5n+3) {
-			background: @color3;
-		}
-		
-		&:nth-child(5n+4) {
-			background: @color4;
-		}
-		
-		&:nth-child(5n+5) {
-			background: @color5;
 		}
 		
 		> div.info {
@@ -354,4 +366,3 @@ td.edit a {
 	
 	}
 }
-

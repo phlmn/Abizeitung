@@ -17,6 +17,11 @@
 	<head>
 		<title>Abizeitung - Kursverwaltung</title>
 		<?php head(); ?>
+		<script type="text/javascript">
+			function showClass(id) {
+				$('#classModal').modal();		
+			}
+		</script>
 	</head>
 	
 	<body>
@@ -39,7 +44,7 @@
 			?>
 			<div class="classes">					
 				<?php while($stmt->fetch()): ?>
-					<div onclick="window.location='edit-class.php?class=<?php echo $class["id"] ?>'">
+					<div onclick="showClass(<?php echo $class["id"] ?>)">
 						<div class="info">
 							<div class="name"><?php echo $class["name"] ?></div>
 							<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
@@ -53,6 +58,24 @@
 			</div>
 
 		</div>	
+
+		<div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Geschichte</h4>
+					</div>
+					<div class="modal-body">
+						<p>One fine body&hellip;</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
 
