@@ -18,7 +18,7 @@
 		
 		$data = UserManager::get_userdata($_SESSION["user"]);
 		
-		header("Location: ./dashboard.php");
+		header("Location: ./dashboard.php?saved");
 		exit;
 	}
 		
@@ -190,6 +190,9 @@
 	<body>
 		<?php require("nav-bar.php") ?>
 		<div id="dashboard" class="container">
+			<?php if(isset($_GET["saved"])): ?>
+				<div class="alert alert-success">Änderungen gespeichert.</div>
+			<?php endif; ?>
 			<div class="intro">
 				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
 				<p class="intro">Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.</p>
