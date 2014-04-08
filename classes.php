@@ -61,19 +61,17 @@
 				$stmt->bind_result($class["id"], $class["name"], $class["teacher"]["id"], $class["teacher"]["userid"], $class["teacher"]["lastname"]);
 			?>
 			<div class="classes">					
+				<div class="addClass"></div>
 				<?php while($stmt->fetch()): ?>
-					<div onclick="showClass(<?php echo $class["id"] ?>)">
-						<div class="info">
-							<div class="name"><?php echo $class["name"] ?></div>
-							<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
-						</div>
+				<div onclick="showClass(<?php echo $class["id"] ?>)">
+					<div class="info">
+						<div class="name"><?php echo $class["name"] ?></div>
+						<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
 					</div>
+				</div>
 				<?php endwhile; ?>
 			</div>
-						
-			<div class="buttons">
-				<a class="button" href="add-user.php"><span class="icon-plus-circled"></span> Kurs erstellen</a>
-			</div>
+			<?php $stmt->close(); ?>
 
 		</div>	
 
