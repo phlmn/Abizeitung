@@ -91,6 +91,7 @@ if(isset($_GET["class"])) {
 						$(li).hide();
 						$(".sidebar .users ul").append(li);
 						$(li).delay(100).fadeIn(100);
+						$(li).draggable({revert: true, helper: "clone", appendTo: "#class-management"});
 					});
 				});
 			}
