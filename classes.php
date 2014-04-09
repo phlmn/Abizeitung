@@ -15,10 +15,52 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
+        <?php
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				SELECT name 
+				FROM classes
+				WHERE id = ?
+				LIMIT 1");
+				
+			$stmt->bind_param("i", intval($_GET["class"]));
+			$stmt->execute();
+			
+			$stmt->bind_result($class["name"]);
+			
+			$stmt->fetch();
+		?>
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			<h4 class="modal-title"></h4>
+			<h4 class="modal-title">Kurs <?php echo $class["name"] ?></h4>
 		</div>
 		<div class="modal-body">
+        	<div class="classes">
+        <?php
+			$stmt->close();
+		
+			$stmt = $mysqli->prepare("
+				SELECT users.id, prename, lastname, nickname
+				FROM users
+				LEFT JOIN users_classes ON users.id = user
+				WHERE users.class = ? OR users_classes.class = ?
+				ORDER BY lastname ASC;
+			");
+			
+			$stmt->bind_param("ii", intval($_GET["class"]), intval($_GET["class"]));
+			$stmt->execute();
+			
+			$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["nickname"]);
+			
+			while($stmt->fetch()) :
+			?>
+            <div class="info"><?php echo $user["lastname"] ?></div>
+            <?php
+			endwhile;
+			
+			$stmt->close();
+		?>
+        	</div>
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
