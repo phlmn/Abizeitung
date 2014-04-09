@@ -89,7 +89,6 @@
 		<div id="class-management" class="container-fluid">
 			<h1>Kursverwaltung</h1>
 			<form id="data_form" name="data" action="save.php"></form>
-			<h2>Kurse</h2>
 			<?php
 				global $mysqli;
 				$stmt = $mysqli->prepare("
@@ -102,16 +101,55 @@
 				$stmt->execute();
 				$stmt->bind_result($class["id"], $class["name"], $class["teacher"]["id"], $class["teacher"]["userid"], $class["teacher"]["lastname"]);
 			?>
-			<div class="classes">					
-				<div class="addClass"></div>
-				<?php while($stmt->fetch()): ?>
-				<div onclick="showClass(<?php echo $class["id"] ?>)">
-					<div class="info">
-						<div class="name"><?php echo $class["name"] ?></div>
-						<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="classes">					
+						<div class="addClass"></div>
+						<?php while($stmt->fetch()): ?>
+						<div onclick="showClass(<?php echo $class["id"] ?>)">
+							<div class="info">
+								<div class="name"><?php echo $class["name"] ?></div>
+								<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
+							</div>
+						</div>
+						<?php endwhile; ?>
 					</div>
 				</div>
-				<?php endwhile; ?>
+				<div class="col-sm-4">
+					<div class="sidebar affix col-sm-4">
+						<div class="filter row">
+							<div class="col-sm-6">
+								<h3>Alle Nutzer</h3>
+							</div>
+							<div class="col-sm-6">
+								<input class="form-control" type="search" placeholder="Suchen..." />
+							</div>
+						</div>
+						<div class="users">
+							<ul>
+							<?php
+								global $mysqli;
+								$res = $mysqli->query("
+									SELECT users.id AS id, users.prename, users.lastname, classes.name, tutor.lastname AS tutor 
+									FROM users
+									LEFT JOIN users_classes ON users.id = users_classes.user
+									LEFT JOIN classes ON users_classes.id = classes.id OR users.class = classes.id
+									LEFT JOIN teacher ON classes.tutor = teacher.id
+									LEFT JOIN users tutor ON teacher.uid = tutor.id
+									ORDER BY users.lastname
+								");						
+								
+							?>
+							<?php while($row = $res->fetch_assoc()): ?>
+								<li>
+									<span class="name"><?php echo $row["prename"] ?> <?php echo $row["lastname"] ?></span>
+									<span class="class"><?php echo $row["name"] ?> - <?php echo $row["tutor"] ?></span>
+								</li>
+							<?php endwhile; ?>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
 			<?php $stmt->close(); ?>
 

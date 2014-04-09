@@ -329,64 +329,123 @@ td.edit a {
 	}
 }
 
-#class-management > div.classes {
-	.clearfix();
-	.user-select(none);
+#class-management {
 	
-	> div {
-		margin: 0 32px 32px 0;
-		float: left;
-		border-radius: 4px;
-		width: 100px;
-		height: 100px;
-		cursor: pointer;
-		.transition(all .2s);
-		border-radius: 50%;
-		color: #fff;
-		opacity: .85;
-		.variate-color(background);
+	div.classes {
+		.clearfix();
+		.user-select(none);
+		margin-top: 30px;
+		
+		> div {
+			margin: 0 32px 32px 0;
+			float: left;
+			border-radius: 4px;
+			width: 100px;
+			height: 100px;
+			cursor: pointer;
+			.transition(all .2s);
+			border-radius: 50%;
+			color: #fff;
+			opacity: .85;
+			.variate-color(background);
+					
+			&:hover {
+				.scale(1.2, 1.2);
+				opacity: 1;
+			}
+			
+			> div.info {
+				text-align: center;
+				padding-top: 32px;
 				
-		&:hover {
-			.scale(1.2, 1.2);
-			opacity: 1;
+				> div.name {
+					font-size: 14px;
+					font-weight: lighter;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					padding: 0 8px;
+				}
+				
+				> div.teacher {
+					font-size: 12px;
+					opacity: .8;
+				}
+			}
+		
 		}
 		
-		> div.info {
-			text-align: center;
-			padding-top: 32px;
+		> div.addClass {
+			background: #777;
+			font-weight: lighter;
+			font-size: 60px;
+			padding: 36px;
+			line-height: 26px;
+			opacity: .3;
 			
-			> div.name {
-				font-size: 14px;
-				font-weight: lighter;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				padding: 0 8px;
+			&::after {
+				content: "+";
 			}
-			
-			> div.teacher {
-				font-size: 12px;
-				opacity: .8;
+				
+			&:hover {
+				opacity: .5;
+				.scale(1, 1);
+				.rotate(90deg);
 			}
 		}
-	
 	}
 	
-	> div.addClass {
-		background: #777;
-		font-weight: lighter;
-		font-size: 60px;
-		padding: 36px;
-		line-height: 26px;
-		opacity: .3;
+	div.sidebar {
+		background: #fff;
+		right: 0;
+		top: 40px;
+		bottom: 0;
 		
-		&::after {
-			content: "+";
+		h3 {
+			margin: 6px 0 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
-			
-		&:hover {
-			opacity: .5;
-			.scale(1, 1);
-			.rotate(90deg);
+		
+		div.filter {
+			padding: 12px;
+			border-bottom: 5px solid @color5;
 		}
+		
+		div.users {
+			overflow: scroll;
+			overflow-x: hidden;
+			position: absolute;
+			top: 63px;
+			right: 0;
+			left: 0;
+			bottom: 0;
+		
+			ul {
+				list-style: none;
+				padding: 0;
+				
+				> li {
+					border-bottom: 1px solid #eee;
+					padding: 12px 24px;
+					.user-select(none);	
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					
+					span.name {
+						font-size: 16px;
+						margin-right: 10px;
+						font-weight: lighter;
+					}
+					
+					span.class {
+						font-size: 12px;
+						color: #555;
+					}
+				}
+			}	
+		}	
+		
 	}
 }
