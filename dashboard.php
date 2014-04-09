@@ -18,12 +18,17 @@
 		
 		$data = UserManager::get_userdata($_SESSION["user"]);
 		
-		header("Location: ./dashboard.php?saved");
+		if(Dashboard::update_user_questions($data["id"]))
+			header("Location: ./dashboard.php?saved");
+		else
+			header("Location: ./dashboard.php?failed");
 		exit;
 	}
 		
 
 	$students = array();
+	
+	global $mysqli;
 	
 	$res = $mysqli->query("
 		SELECT users.id as id, prename, lastname, female
@@ -71,10 +76,6 @@
 			"w" => 3
 		)
 	);*/
-	
-	$question_answers = array(
-		0 => "Halli Hallo"
-	);
 	
 ?>
 
@@ -192,7 +193,9 @@
 		<div id="dashboard" class="container">
 			<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
-			<?php endif; ?>
+            <?php else: if(isset($_GET["failed"])): ?>
+                <div class="alert alert-error">Speichern fehlgeschlagen</div>
+            <?php endif; endif; ?>
 			<div class="intro">
 				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
 				<p class="intro">Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.</p>
@@ -252,10 +255,26 @@
 			<div class="questions box">
 				<h2>Fragen</h2>
 				<table>
-				<?php foreach($questions as $key => $question): ?>
+				<?php foreach($questions as $key => $question): 
+					$text = "";
+					
+					$stmt = $mysqli->prepare("
+						SELECT text 
+						FROM user_questions
+						WHERE user = ? AND question = ?");
+						
+					$stmt->bind_param("ii", intval($data["id"]), $key);
+					$stmt->execute();
+					
+					
+					$stmt->bind_result($text);
+					$stmt->fetch();
+					
+					$stmt->close();					
+				?>
 					<tr>
 						<td class="title"><?php echo $question["title"] ?></td>
-						<td><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $question_answers[$key] ?></textarea></td>
+						<td><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $text ?></textarea></td>
 					</tr>
 				<?php endforeach; ?>
 				</table>
@@ -269,14 +288,20 @@
 					<tr>
 						<td class="title"><?php echo $survey["title"] ?></td>
 						<td>
-						<?php if($survey["m"] === true): ?>
+						<?php if($survey["m"] === true):
+						 
+							$answer = true;
+							if(isset($survey_answers[$key]))
+								$answer = $survey_answers[$key]["m"];
+									
+						?>
 							<span class="icon-male" />  
 							<select name="survey_m_<?php echo $key ?>" form="data_form">
-								<option value=""<?php echo ($survey_answers[$key]["m"] == null) ? "" : " selected" ?>>-</option>
+								<option value=""<?php echo ($answer) ? "" : " selected" ?>>-</option>
 								<?php foreach($students as $student) {
 									if($student["gender"] == "m") {
 										echo "<option";
-										if($survey_answers[$key]["m"] == $student["id"])
+										if($answer == $student["id"])
 											echo " selected";
 										echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
 									}
@@ -286,14 +311,18 @@
 						<?php endif; ?>
 						</td>
 						<td>
-						<?php if($survey["w"] === true): ?>
+						<?php if($survey["w"] === true): 
+							$answer = true;
+							if(isset($survey_answers[$key]))
+								$answer = $survey_answers[$key]["w"];
+						?>
 							<span class="icon-female" /> 
 							<select name="survey_w_<?php echo $key ?>" form="data_form">
-								<option value="" <?php echo ($survey_answers[$key]["w"] == null) ? "" : " selected" ?>>-</option>
+								<option value="" <?php echo ($answer) ? "" : " selected" ?>>-</option>
 								<?php foreach($students as $student) {
 									if($student["gender"] == "w") {
 										echo "<option";
-										if($survey_answers[$key]["w"] == $student["id"])
+										if($answer == $student["id"])
 											echo " selected";
 										echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
 									}
