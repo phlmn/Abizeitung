@@ -11,65 +11,61 @@
 	
 ?>
 
-<?php if(isset($_GET["class"])): ?>
-<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-        <?php
-			global $mysqli;
-			
-			$stmt = $mysqli->prepare("
-				SELECT name 
-				FROM classes
-				WHERE id = ?
-				LIMIT 1");
-				
-			$stmt->bind_param("i", intval($_GET["class"]));
-			$stmt->execute();
-			
-			$stmt->bind_result($class["name"]);
-			
-			$stmt->fetch();
-		?>
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			<h4 class="modal-title">Kurs <?php echo $class["name"] ?></h4>
-		</div>
-		<div class="modal-body">
-        	<div class="classes">
-        <?php
-			$stmt->close();
+<?php 
+if(isset($_GET["class"])) {
+	global $mysqli;
+	
+	$stmt = $mysqli->prepare("
+		SELECT name 
+		FROM classes
+		WHERE id = ?
+		LIMIT 1");
 		
-			$stmt = $mysqli->prepare("
-				SELECT users.id, prename, lastname, nickname
-				FROM users
-				LEFT JOIN users_classes ON users.id = user
-				WHERE users.class = ? OR users_classes.class = ?
-				ORDER BY lastname ASC;
-			");
-			
-			$stmt->bind_param("ii", intval($_GET["class"]), intval($_GET["class"]));
-			$stmt->execute();
-			
-			$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["nickname"]);
-			
-			while($stmt->fetch()) :
-			?>
-            <div class="info"><?php echo $user["lastname"] ?></div>
-            <?php
-			endwhile;
-			
-			$stmt->close();
-		?>
-        	</div>
-		</div>
-		<div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		</div>
-	</div>
-</div>
-<?php exit; ?>
-<?php endif; ?>
+	$stmt->bind_param("i", intval($_GET["class"]));
+	$stmt->execute();
+	
+	$stmt->bind_result($class["name"]);
+	
+	$stmt->fetch();
+	
+	$json = array("name" => $class["name"]);
 
+	$stmt->close();
+
+	$stmt = $mysqli->prepare("
+		SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+		FROM users
+		LEFT JOIN users_classes ON users.id = users_classes.user
+		LEFT JOIN classes AS tutorium ON users.class = tutorium.id
+		LEFT JOIN classes ON users_classes.id = classes.id
+		LEFT JOIN teacher ON tutorium.tutor = teacher.id
+		LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+		WHERE users_classes.class = ?
+		ORDER BY users.lastname
+	");
+	
+	$stmt->bind_param("i", intval($_GET["class"]));
+	$stmt->execute();
+	
+	$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["class"], $user["tutor"]);
+	
+	$json["users"] = array();
+	while($stmt->fetch()) {
+		array_push($json["users"], array(
+			"id" => $user["id"],
+			"prename" => $user["prename"],
+			"lastname" => $user["lastname"],
+			"class" => $user["class"],
+			"tutor" => $user["tutor"]
+		));
+	}
+	
+	$stmt->close();
+	
+	echo json_encode($json);
+	exit;
+}
+?>
 
 <!DOCTYPE html>
 <html>
@@ -77,9 +73,26 @@
 		<title>Abizeitung - Kursverwaltung</title>
 		<?php head(); ?>
 		<script type="text/javascript">
+			
 			function showClass(id) {
-				$('#classModal').modal();
-				$('#classModal').load("classes.php?class=" + id);
+				$.getJSON("classes.php?class=" + id, function(data) {
+					$(".sidebar .head .title").text(data["name"]);
+					$(".sidebar .head").css("border-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
+					
+					
+					$(".sidebar .users ul li").each(function(index, e) {
+						$(e).fadeOut(100, function() {
+							$(e).remove();	
+						});
+					});
+					
+					data["users"].forEach(function(e) {
+						var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="class">' + e["class"] + ' - ' + e["tutor"] + '</span></li>');
+						$(li).hide();
+						$(".sidebar .users ul").append(li);
+						$(li).delay(100).fadeIn(100);
+					});
+				});
 			}
 		</script>
 	</head>
@@ -106,7 +119,7 @@
 					<div class="classes">					
 						<div class="addClass"></div>
 						<?php while($stmt->fetch()): ?>
-						<div onclick="showClass(<?php echo $class["id"] ?>)">
+						<div data-classid="<? echo $class["id"] ?>" onclick="showClass(<?php echo $class["id"] ?>)">
 							<div class="info">
 								<div class="name"><?php echo $class["name"] ?></div>
 								<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
@@ -117,9 +130,9 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="sidebar affix col-sm-4">
-						<div class="filter row">
+						<div class="head row">
 							<div class="col-sm-6">
-								<h3>Alle Nutzer</h3>
+								<h3 class="title">Alle Nutzer</h3>
 							</div>
 							<div class="col-sm-6">
 								<input class="form-control" type="search" placeholder="Suchen..." />
@@ -153,9 +166,7 @@
 			</div>
 			<?php $stmt->close(); ?>
 
-		</div>	
-
-		<div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+		</div>
 	</body>
 </html>
 
