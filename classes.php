@@ -77,7 +77,7 @@ if(isset($_GET["class"])) {
 			function showClass(id) {
 				$.getJSON("classes.php?class=" + id, function(data) {
 					$(".sidebar .head .title").text(data["name"]);
-					$(".sidebar .head").css("border-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
+					$(".sidebar .head").css("background-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
 					
 					
 					$(".sidebar .users ul li").each(function(index, e) {

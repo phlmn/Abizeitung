@@ -5,7 +5,7 @@
 body {
 	padding-top: 70px;
 	padding-bottom: 70px;
-	background: #f0efea;
+	background: @colorBg;
 }
 
 a:focus {
@@ -408,16 +408,22 @@ td.edit a {
 		}
 		
 		div.head {
+			margin-top: 10px;
 			padding: 12px;
-			border-bottom: 6px solid @color5;
-			.transition(border-color .2s);
+			background-color: darken(@colorBg, 30%);
+			.transition(background-color .2s);
+			color: #fff;
+			
+			.form-control {
+				border: none;
+			}
 		}
 		
 		div.users {
 			overflow: scroll;
 			overflow-x: hidden;
 			position: absolute;
-			top: 64px;
+			top: 68px;
 			right: 0;
 			left: 0;
 			bottom: 0;
