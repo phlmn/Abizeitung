@@ -9,6 +9,8 @@
 
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
+	global $mysqli;
+	
 	if(isset($_GET["update"])) {
 		$userdata["id"] = $data["id"];
 		$userdata["nickname"] = $_POST["nickname"];
@@ -18,57 +20,98 @@
 		
 		$data = UserManager::get_userdata($_SESSION["user"]);
 		
-		if(Dashboard::update_user_questions($data["id"]))
+		$stmt = $mysqli->prepare("
+			SELECT id
+			FROM questions");
+		
+		$stmt->execute();
+		$stmt->bind_result($q["id"]);
+		$stmt->store_result();
+		
+		$fails = 0;
+		
+		while($stmt->fetch()) {
+			if(isset($_POST["question_" . $q["id"]])) {
+				if(!Dashboard::update_user_questions($data["id"], $q["id"], $_POST["question_" . $q["id"]]))
+					$fails++;
+			}
+		}
+		
+		$stmt->free_result();
+		$stmt->close();
+		
+		if(!$fails)
 			header("Location: ./dashboard.php?saved");
 		else
-			header("Location: ./dashboard.php?failed");
+			header("Location: ./dashboard.php?failed=" . $fails);
 		exit;
 	}
-		
 
 	$students = array();
 	
-	global $mysqli;
-	
-	$res = $mysqli->query("
+	$stmt = $mysqli->prepare("
 		SELECT users.id as id, prename, lastname, female
 		FROM users 
 		LEFT JOIN users_classes ON users.id = users_classes.user
 		LEFT JOIN classes ON users_classes.id = classes.id
-		ORDER BY users.prename
-	");
+		ORDER BY users.prename");
+	
+	$stmt->execute();
+	$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["female"]);
 						
-	while($row = $res->fetch_assoc()) {				
+	while($stmt->fetch()) {				
 		array_push($students, array("id" => $row["id"], "prename" => $row["prename"], "lastname" => $row["lastname"], "gender" => $row["female"] ? "w" : "m"));
 	}
 	
+	$stmt->close();
 	
-	
-	$res = $mysqli->query("SELECT * FROM questions");
-
 	$questions = array();
 	
-	while($row = $res->fetch_assoc()) {				
+	$stmt = $mysqli->prepare("
+		SELECT id, title
+		FROM questions");
+		
+	$stmt->execute();
+	$stmt->bind_result($row["id"], $row["title"]);
+	
+	while($stmt->fetch()) {				
 		$questions[intval($row['id'])] = array("title" => $row["title"]);
 	}
 	
-	
-	$res = $mysqli->query("SELECT * FROM surveys");
+	$stmt->close();
 	
 	$surveys = array();
 	
-	while($row = $res->fetch_assoc()) {				
+	$stmt = $mysqli->prepare("
+		SELECT id, title, m, w 
+		FROM surveys");
+		
+	$stmt->execute();
+	$stmt->bind_result($row["id"], $row["title"], $row["m"], $row["w"]);
+	
+	while($stmt->fetch()) {				
 		$surveys[intval($row['id'])] = array("title" => $row["title"], "m" => ($row["m"] == '1'), "w" => ($row["w"] == '1'));
 	}
 	
-	$res = $mysqli->query("SELECT * FROM user_surveys WHERE user = 1" );
+	$stmt->close();
 	
 	$survey_answers = array();
 	
-	while($row = $res->fetch_assoc()) {				
+	$stmt = $mysqli->prepare("
+		SELECT survey, m, w
+		FROM user_surveys
+		WHERE user = ?
+	");
+	
+	$stmt->bind_param("i", $userdata["id"]);
+	$stmt->execute();
+	$stmt->bind_result($row["survey"], $row["m"], $row["w"]);
+	
+	while($stmt->fetch()) {				
 		$survey_answers[intval($row['survey'])] = array("m" => $row["m"], "w" => $row["w"]);
 	}
 	
+	$stmt->close();
 	
 	/*$survey_answers = array(
 		0 => array(
@@ -194,7 +237,14 @@
 			<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
             <?php else: if(isset($_GET["failed"])): ?>
-                <div class="alert alert-error">Speichern fehlgeschlagen</div>
+                <div class="alert alert-error">
+                	Speichern fehlgeschlagen.<br />
+                    <?php if($_GET["failed"] == 1): ?>
+						1 Anfrage konnte nicht gespeichert werden.
+                    <?php else: if($_GET["failed"] > 1): ?>
+                    	<?php echo $_GET["failed"] ?> Anfragen konnten nicht gespeichert werden.
+                    <?php endif; endif; ?>
+                </div>
             <?php endif; endif; ?>
 			<div class="intro">
 				<h1>Hallo <?php echo $data["prename"] ?>!</h1>

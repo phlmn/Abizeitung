@@ -42,69 +42,70 @@
 	}
 	
 	class Dashboard {
-		function update_user_questions($user) {
+		function update_user_questions($user, $question, $text) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
-				SELECT id
-				FROM questions");
+				SELECT id, text
+				FROM user_questions
+				WHERE user = ? AND question = ?
+				LIMIT 1");
 			
+			$stmt->bind_param("ii", $user, $question);
 			$stmt->execute();
-			$stmt->bind_result($q["id"]);
 			$stmt->store_result();
+			$stmt->bind_result($user_questions["id"], $user_questions["text"]);
 			
-			while($stmt->fetch()) {
-				if(isset($_POST["question_" . $q["id"]])) {
+			$stmt->fetch();
+			
+			if($stmt->num_rows > 0) {
+				if(empty($text)) {
 					$stmt2 = $mysqli->prepare("
-						SELECT id
-						FROM user_questions
-						WHERE question = ? AND user = ?
+						DELETE FROM user_questions
+						WHERE id = ?
 						LIMIT 1");
 					
-					$stmt2->bind_param("ii", $q["id"], $userdata["id"]);
+					$stmt2->bind_param("i", $user_questions["id"]);
+					
 					$stmt2->execute();
-					$stmt2->store_result();
-
-					$stmt2->bind_result($uq["id"]);
-					
-					if($stmt2->num_rows > 0) {
-						$stmt3 = $mysqli->prepare("
-							UPDATE user_questions
-							SET text = ?
-							WHERE id = ?
-							LIMIT 1
-						");
-						
-						$stmt3->bind_param("si", $_POST["question_" . $q["id"]], $uq["id"]);
-						$stmt3->execute();
-						
-						echo $mysqli->error;
-						
-						$stmt3->close();
-					}
-					else {
-						$stmt3 = $mysqli->prepare("
-							INSERT INTO user_questions (
-								user, text, question
-							) VALUES (
-								?, ?, ?
-							)");
-													
-						$stmt3->bind_param("isi", $user, $_POST["question_" . $q["id"]], $q["id"]);
-						$stmt3->execute();
-						
-						$stmt3->close();
-					}
-					
-					$stmt2->free_result();
 					$stmt2->close();
+				}
+				else {
+					$stmt2 = $mysqli->prepare("
+						UPDATE user_questions
+						SET text = ?
+						WHERE id = ?
+						LIMIT 1");
+						
+					$stmt2->bind_param("si", $text, $user_questions["id"]);
 					
+					$stmt2->execute();
+					$stmt2->close();
+				}
+			}
+			else {
+				if(!empty($text)) {
+					$stmt2 = $mysqli->prepare("
+						INSERT INTO user_questions (
+							user, text, question
+						) VALUES (
+							?, ?, ?
+						)");
+												
+					$stmt2->bind_param("isi", $user, $text, $question);
+					$stmt2->execute();
+					
+					$stmt2->close();
 				}
 			}
 			
 			$stmt->free_result();
 			$stmt->close();
-			return true;
+			
+			if(!$mysqli->error)
+				return true;
+			else
+				return false;
 		}
 	}
 	
