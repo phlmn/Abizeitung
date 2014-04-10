@@ -15,6 +15,8 @@
 if(isset($_GET["class"])) {
 	global $mysqli;
 	
+	$classId = intval($_GET["class"]);
+	
 	$stmt = $mysqli->prepare("
 		SELECT name 
 		FROM classes
@@ -28,23 +30,37 @@ if(isset($_GET["class"])) {
 	
 	$stmt->fetch();
 	
+	if($classId == -1) $class["name"] = "Alle Nutzer";
 	$json = array("name" => $class["name"]);
 
 	$stmt->close();
-
-	$stmt = $mysqli->prepare("
-		SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
-		FROM users
-		LEFT JOIN users_classes ON users.id = users_classes.user
-		LEFT JOIN classes AS tutorium ON users.class = tutorium.id
-		LEFT JOIN classes ON users_classes.id = classes.id
-		LEFT JOIN teacher ON tutorium.tutor = teacher.id
-		LEFT JOIN users AS tutor ON teacher.uid = tutor.id
-		WHERE users_classes.class = ?
-		ORDER BY users.lastname
-	");
 	
-	$stmt->bind_param("i", intval($_GET["class"]));
+	if($classId == -1) {
+		$stmt = $mysqli->prepare("
+			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+			FROM users
+			LEFT JOIN classes AS tutorium ON users.class = tutorium.id
+			LEFT JOIN teacher ON tutorium.tutor = teacher.id
+			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+			ORDER BY users.lastname
+		");	
+	}
+	else {
+		$stmt = $mysqli->prepare("
+			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+			FROM users
+			LEFT JOIN users_classes ON users.id = users_classes.user
+			LEFT JOIN classes AS tutorium ON users.class = tutorium.id
+			LEFT JOIN classes ON users_classes.id = classes.id
+			LEFT JOIN teacher ON tutorium.tutor = teacher.id
+			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+			WHERE users_classes.class = ?
+			ORDER BY users.lastname
+		");
+	}
+	
+	
+	$stmt->bind_param("i", $classId);
 	$stmt->execute();
 	
 	$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["class"], $user["tutor"]);
@@ -73,40 +89,59 @@ if(isset($_GET["class"])) {
 		<title>Abizeitung - Kursverwaltung</title>
 		<?php head(); ?>
 		<script type="text/javascript">
+		
+			var selectedClass = -1;
 			
 			function showClass(id) {
+				if(selectedClass == id)
+					id = -1;
+				selectedClass = id;
+				
 				$.getJSON("classes.php?class=" + id, function(data) {
 					$(".sidebar .head .title").text(data["name"]);
-					$(".sidebar .head").css("background-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
-					
+					if(id != -1) $(".sidebar .head").css("background-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
+					else $(".sidebar .head").css("background-color", "");
 					
 					$(".sidebar .users ul li").each(function(index, e) {
-						$(e).fadeOut(100, function() {
-							$(e).remove();	
-						});
+						$(e).css("opacity", 0);
 					});
 					
-					data["users"].forEach(function(e) {
-						var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="class">' + e["class"] + ' - ' + e["tutor"] + '</span></li>');
-						$(li).hide();
-						$(".sidebar .users ul").append(li);
-						$(li).delay(100).fadeIn(100);
-						$(li).draggable({
-							revert: true,
-							helper: "clone",
-							appendTo: "#class-management",
-							start: function(e, ui) {
-								var count = $("#class-management div.sidebar div.users ul > li.selected").length;
-								if(count > 1)
-									ui.helper.html(count + " Nutzer");	
-							}
+					setTimeout(function() {
+						$(".sidebar .users ul li").each(function(index, e) {
+							$(e).remove();
 						});
-						$(li).click(function() {
-							$(this).toggleClass("selected");	
+						
+						data["users"].forEach(function(e) {
+							var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="class">' + e["class"] + ' - ' + e["tutor"] + '</span></li>');
+							
+							$(li).hide(0).css("opacity", 0);
+							$(".sidebar .users ul").append(li);
+							$(li).draggable({
+								revert: true,
+								helper: "clone",
+								appendTo: "#class-management",
+								start: function(e, ui) {
+									var count = $("#class-management div.sidebar div.users ul > li.selected").length;
+									if(count > 1)
+										ui.helper.html(count + " Nutzer");	
+								}
+							});
+							$(li).click(function() {
+								$(this).toggleClass("selected");	
+							});	
 						});
-					});
+						
+						$(".sidebar .users ul li").each(function(index, e) {
+							$(e).show(0).css("opacity", 1);
+						});
+						
+					}, 100);
 				});
 			}
+			
+			$(document).ready(function() {
+				showClass(-1);
+			});
 		</script>
 	</head>
 	
@@ -153,25 +188,6 @@ if(isset($_GET["class"])) {
 						</div>
 						<div class="users">
 							<ul>
-							<?php
-								global $mysqli;
-								$res = $mysqli->query("
-									SELECT users.id AS id, users.prename, users.lastname, classes.name, tutor.lastname AS tutor 
-									FROM users
-									LEFT JOIN users_classes ON users.id = users_classes.user
-									LEFT JOIN classes ON users_classes.id = classes.id OR users.class = classes.id
-									LEFT JOIN teacher ON classes.tutor = teacher.id
-									LEFT JOIN users tutor ON teacher.uid = tutor.id
-									ORDER BY users.lastname
-								");						
-								
-							?>
-							<?php while($row = $res->fetch_assoc()): ?>
-								<li>
-									<span class="name"><?php echo $row["prename"] ?> <?php echo $row["lastname"] ?></span>
-									<span class="class"><?php echo $row["name"] ?> - <?php echo $row["tutor"] ?></span>
-								</li>
-							<?php endwhile; ?>
 							</ul>
 						</div>
 					</div>
