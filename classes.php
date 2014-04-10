@@ -91,7 +91,19 @@ if(isset($_GET["class"])) {
 						$(li).hide();
 						$(".sidebar .users ul").append(li);
 						$(li).delay(100).fadeIn(100);
-						$(li).draggable({revert: true, helper: "clone", appendTo: "#class-management"});
+						$(li).draggable({
+							revert: true,
+							helper: "clone",
+							appendTo: "#class-management",
+							start: function(e, ui) {
+								var count = $("#class-management div.sidebar div.users ul > li.selected").length;
+								if(count > 1)
+									ui.helper.html(count + " Nutzer");	
+							}
+						});
+						$(li).click(function() {
+							$(this).toggleClass("selected");	
+						});
 					});
 				});
 			}
@@ -120,7 +132,7 @@ if(isset($_GET["class"])) {
 					<div class="classes">					
 						<div class="addClass"></div>
 						<?php while($stmt->fetch()): ?>
-						<div data-classid="<? echo $class["id"] ?>" onclick="showClass(<?php echo $class["id"] ?>)">
+						<div data-classid="<?php echo $class["id"] ?>" onclick="showClass(<?php echo $class["id"] ?>)">
 							<div class="info">
 								<div class="name"><?php echo $class["name"] ?></div>
 								<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
