@@ -90,6 +90,12 @@ if(isset($_GET["class"])) {
 		<?php head(); ?>
 		<script type="text/javascript">
 		
+			$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+				return function( elem ) {
+					return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+				};
+			});
+		
 			var selectedClass = -1;
 			
 			function showClass(id) {
@@ -99,6 +105,7 @@ if(isset($_GET["class"])) {
 				
 				$.getJSON("classes.php?class=" + id, function(data) {
 					$(".sidebar .head .title").text(data["name"]);
+					$(".sidebar .head input.filter").val("");
 					if(id != -1) $(".sidebar .head").css("background-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
 					else $(".sidebar .head").css("background-color", "");
 					
@@ -137,6 +144,11 @@ if(isset($_GET["class"])) {
 						
 					}, 100);
 				});
+			}
+			
+			function filter() {
+				$(".sidebar .users ul li").hide();
+				$(".sidebar .users ul li:contains(" + $(".sidebar .head input.filter").val() + ")").show();
 			}
 			
 			$(document).ready(function() {
@@ -183,7 +195,7 @@ if(isset($_GET["class"])) {
 								<h3 class="title">Alle Nutzer</h3>
 							</div>
 							<div class="col-sm-6">
-								<input class="form-control" type="search" placeholder="Suchen..." />
+								<input class="form-control filter" onkeyup="filter()" type="search" placeholder="Suchen..." />
 							</div>
 						</div>
 						<div class="users">
