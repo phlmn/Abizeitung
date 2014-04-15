@@ -17,10 +17,10 @@
 				INSERT INTO questions (
 					title
 				) VALUES (
-					'?'
+					?
 				)");
 				
-			$stmt->bind_param("s", $_POST["text"]);
+			$stmt->bind_param("s", $mysqli->real_escape_string($_POST["text"]));
 			
 			$stmt->execute();
 			
@@ -34,20 +34,20 @@
 				LIMIT 1;
 			");
 			
-			$stmt->bind_param("si", $_POST["text"], $_GET["question"]);
+			$stmt->bind_param("si", $mysqli->real_escape_string($_POST["text"]), intval($_GET["question"]));
 			
 			$stmt->execute();
 			
 			$stmt->close();
 		}
-		else if($_GET["action"] == "delete") {
+		else if($_GET["action"] == "delete" && isset($_GET["question"])) {
 			$stmt = $mysqli->prepare("
 				DELETE FROM questions
 				WHERE id = ?
 				LIMIT 1
 			");
 			
-			$stmt->bind_param($_GET["question"]);
+			$stmt->bind_param("i", intval($_GET["question"]));
 			
 			$stmt->execute();
 			
@@ -62,29 +62,49 @@
 	else if(isset($_GET["question"])) {
 		global $mysqli;
 		
-		$question = $_GET["question"];
+		$question = intval($_GET["question"]);
+		$title = "";
 		
-		$stmt = $mysqli->prepare("
-			SELECT title
-			FROM questions
-			WHERE id = ?
-		");
+		if($question) {
 		
-		$stmt->bind_param("i", $_GET["question"]);
-		
-		$stmt->execute();
-		$stmt->fetch();
-		
-		$stmt->bind_result($title);
-		
+			$stmt = $mysqli->prepare("
+				SELECT title
+				FROM questions
+				WHERE id = ?
+			");
+			
+			$stmt->bind_param("i", $question); 
+			
+			$stmt->execute();
+			
+			$stmt->bind_result($title);
+			$stmt->fetch();
+			
+			$stmt->close();
+		}
 		?>
-        <form method="post" action="questions.php?question=<?php echo $question; ?>&action=<?php echo ($question) ? "new" : "update"; ?>">
-            <textarea name="question" onClick="this.select()"><?php echo ($question) ?  $title : "Frage eingeben ..."; ?></textarea>
-            <input type="submit" value="Speichern">
-        </form>
+        <div class="modal-dialog">
+        	<div class="modal-content">
+            	<form method="post" action="questions.php?question=<?php echo $question; ?>&action=<?php echo ($question) ? "update" : "new"; ?>">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4>Frage</h4>
+                    </div>
+                    <div class="modal-body">
+                        <textarea name="text"><?php echo ($question) ?  $title : "Frage eingeben ..."; ?></textarea>
+                    </div>
+                    <div class="modal-footer">
+                    <?php if($question) : ?>
+                    	<button type="button" class="btn btn-default delete" onClick="javascript:void(window.location='questions.php?question=<?php echo $question; ?>&action=delete')" data-dismiss="modal">Löschen</button>
+                    <?php endif; ?>
+                    	<button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                    	<button type="submit" class="btn btn-default">Speichern</button>
+                    </div>
+                </form>
+        	</div>
+        </div>
         <?php
 		
-		$stmt->close();
 		
 		db_close();
 		
@@ -102,8 +122,7 @@
 		<script type="text/javascript">
 			function showQuestion(id) {
 				$('#questionsModal').modal();
-				if(id > 0)
-					$('#questionsModal').load("questions.php?question=" + id);		
+				$('#questionsModal').load("questions.php?question=" + id);		
 			}
 		</script>
 	</head>
