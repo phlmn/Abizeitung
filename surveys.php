@@ -93,7 +93,7 @@
                         <h4>Frage</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea name="text"><?php echo ($survey) ?  $title : "Frage eingeben ..."; ?></textarea>
+                        <textarea name="text" placeholder="Frage eingeben..."><?php if($survey) echo $title; ?></textarea>
                     </div>
                     <div class="modal-body">
                     	<h4>Personengruppe</h4>

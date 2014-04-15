@@ -91,7 +91,7 @@
                         <h4>Frage</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea name="text"><?php echo ($question) ?  $title : "Frage eingeben ..."; ?></textarea>
+                        <textarea name="text" placeholder="Frage eingeben..."><?php if($question) echo $title; ?></textarea>
                     </div>
                     <div class="modal-footer">
                     <?php if($question) : ?>
