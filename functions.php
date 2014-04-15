@@ -42,7 +42,7 @@
 	}
 	
 	class Dashboard {
-		function update_user_questions($user, $question, $text) {
+		function update_user_questions($user, $question, $answer) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -59,7 +59,7 @@
 			$stmt->fetch();
 			
 			if($stmt->num_rows > 0) {
-				if(empty($text)) {
+				if(empty($answer)) {
 					$stmt2 = $mysqli->prepare("
 						DELETE FROM user_questions
 						WHERE id = ?
@@ -77,14 +77,14 @@
 						WHERE id = ?
 						LIMIT 1");
 						
-					$stmt2->bind_param("si", $text, $user_questions["id"]);
+					$stmt2->bind_param("si", $answer, $user_questions["id"]);
 					
 					$stmt2->execute();
 					$stmt2->close();
 				}
 			}
 			else {
-				if(!empty($text)) {
+				if(!empty($answer)) {
 					$stmt2 = $mysqli->prepare("
 						INSERT INTO user_questions (
 							user, text, question
@@ -92,7 +92,7 @@
 							?, ?, ?
 						)");
 												
-					$stmt2->bind_param("isi", $user, $text, $question);
+					$stmt2->bind_param("isi", $user, $answer, $question);
 					$stmt2->execute();
 					
 					$stmt2->close();
@@ -102,7 +102,56 @@
 			$stmt->free_result();
 			$stmt->close();
 			
-			if(!$mysqli->error)
+			if($mysqli->error)
+				return true;
+			else
+				return false;
+		}
+		
+		function update_user_surveys($user, $survey, $answer) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				SELECT id
+				FROM user_surveys
+				WHERE user = ? AND survey = ?
+				LIMIT 1");
+				
+			$stmt->bind_param("ii", $user, $survey);
+			$stmt->execute();
+			$stmt->store_result();
+			$stmt->bind_result($user_survey["id"]);
+			
+			$stmt->fetch();
+			
+			if($stmt->num_rows > 0) {
+				$stmt2 = $mysqli->prepare("
+					UPDATE user_surveys
+					SET m = ?, w = ?
+					WHERE id = ?
+					LIMIT 1");
+				
+				$stmt2->bind_param("iii", $answer["male"], $answer["female"], $user_survey["id"]);
+				$stmt2->execute();
+				$stmt2->close();
+			}
+			else {
+				$stmt2 = $mysqli->prepare("
+					INSERT INTO user_surveys (
+						user, survey, m, w
+					) VALUES (
+						?, ?, ?, ?
+					)");
+					
+				$stmt2->bind_param("iiii", $user, $survey, $answer["male"], $answer["female"]);
+				$stmt2->execute();
+				$stmt2->close();
+			}
+			
+			$stmt->free_result();
+			$stmt->close();
+			
+			if($mysqli->error)
 				return true;
 			else
 				return false;

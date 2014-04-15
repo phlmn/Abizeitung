@@ -32,9 +32,36 @@
 		
 		while($stmt->fetch()) {
 			if(isset($_POST["question_" . $q["id"]])) {
-				if(!Dashboard::update_user_questions($data["id"], $q["id"], $_POST["question_" . $q["id"]]))
+				if(Dashboard::update_user_questions($data["id"], $q["id"], $mysqli->real_escape_string($_POST["question_" . $q["id"]])))
 					$fails++;
 			}
+		}
+		
+		$stmt->free_result();
+		$stmt->close();
+		
+		$stmt = $mysqli->prepare("
+			SELECT id
+			FROM surveys");
+			
+		$stmt->execute();
+		$stmt->bind_result($s["id"]);
+		$stmt->store_result();
+		
+		while($stmt->fetch()) {
+			$answer = array(
+				"female" => 0,
+				"male" => 0
+			);
+				
+			if(isset($_POST["survey_w_" . $s["id"]]))
+				$answer["female"] = intval($_POST["survey_w_" . $s["id"]]);
+				
+			if(isset($_POST["survey_m_" . $s["id"]]))
+				$answer["male"]   = intval($_POST["survey_m_" . $s["id"]]);
+			
+			if(Dashboard::update_user_surveys($data["id"], $s["id"], $answer))
+				$fails++;
 		}
 		
 		$stmt->free_result();
@@ -103,11 +130,11 @@
 		WHERE user = ?
 	");
 	
-	$stmt->bind_param("i", $userdata["id"]);
+	$stmt->bind_param("i", $data["id"]);
 	$stmt->execute();
 	$stmt->bind_result($row["survey"], $row["m"], $row["w"]);
 	
-	while($stmt->fetch()) {				
+	while($stmt->fetch()) {		
 		$survey_answers[intval($row['survey'])] = array("m" => $row["m"], "w" => $row["w"]);
 	}
 	
@@ -339,11 +366,9 @@
 						<td class="title"><?php echo $survey["title"] ?></td>
 						<td>
 						<?php if($survey["m"] === true):
-						 
-							$answer = true;
+							$answer = 0;
 							if(isset($survey_answers[$key]))
-								$answer = $survey_answers[$key]["m"];
-									
+								$answer = $survey_answers[$key]["m"];		
 						?>
 							<span class="icon-male" />  
 							<select name="survey_m_<?php echo $key ?>" form="data_form">
@@ -362,7 +387,7 @@
 						</td>
 						<td>
 						<?php if($survey["w"] === true): 
-							$answer = true;
+							$answer = 0;
 							if(isset($survey_answers[$key]))
 								$answer = $survey_answers[$key]["w"];
 						?>
