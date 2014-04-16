@@ -264,7 +264,7 @@
 			<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
             <?php else: if(isset($_GET["failed"])): ?>
-                <div class="alert alert-error">
+                <div class="alert alert-danger">
                 	Speichern fehlgeschlagen.<br />
                     <?php if($_GET["failed"] == 1): ?>
 						1 Anfrage konnte nicht gespeichert werden.
@@ -305,11 +305,11 @@
 					
 					<tr>
 						<td class="title">Tutorium</td>
-						<td><?php echo $data["class"]["name"] ?></td>
+						<td><?php if(isset($data["class"]["name"])) echo $data["class"]["name"] ?></td>
 					</tr>
 					<tr>
 						<td class="title">Tutor</td>
-						<td><?php echo $data["class"]["tutor"]["lastname"] ?></td>
+						<td><?php if(isset($data["class"]["tutor"]["lastname"])) echo $data["class"]["tutor"]["lastname"] ?></td>
 					</tr>
 				</table>
 				

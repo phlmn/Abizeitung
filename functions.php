@@ -232,24 +232,90 @@
 				return -1;
 			}
 			
-			$res = $mysqli->query("SELECT * FROM users WHERE users.email = '".$mysqli->real_escape_string($data["email"])."' LIMIT 1");
+			$stmt = $mysqli->prepare("
+				SELECT id
+				FROM users
+				WHERE email = ?
+			");
 			
-			if($mysqli->affected_rows > 0) {
+			$stmt->bind_param("s", null_on_empty($data["email"]));
+			$stmt->execute();
+			
+			$stmt->bind_result($res);
+			$stmt->fetch();
+			$stmt->close();
+			
+			if($res) {
 				return -2;
 			}
 			
-			$mysqli->query("
-				INSERT INTO users (prename, lastname, birthday, nickname, female, email, password, admin) 
-				VALUES (".null_on_empty($data["prename"]).", ".null_on_empty($data["lastname"]).", ".null_on_empty($data["birthday"]).", ".null_on_empty($data["nickname"]).", ".($data["female"] ? "true" : "false").", ".null_on_empty($data["email"]).", '".md5($data["password"])."', ".($data["admin"] ? "true" : "false").")");
+			$stmt = $mysqli->prepare("
+				INSERT INTO users (
+					prename, lastname, class, birthday, nickname, female, email, password, admin
+				) VALUES (
+					?, ?, ?, ?, ?, ?, ?, ?, ?
+				)
+			");
 			
-			if($mysqli->affected_rows > 0) {
+			$female = $data["female"] ? true : false;
+			$admin =  $data["admin"]  ? true : false;
+			
+			$stmt->bind_param(
+				"sssssissi",
+				null_on_empty($data["prename"]),
+				null_on_empty($data["lastname"]),
+				intval($_POST["class"]),
+				null_on_empty($data["birthday"]),
+				null_on_empty($data["nickname"]),
+				$female,
+				null_on_empty($data["email"]),
+				md5($data["password"]),
+				$admin
+			);
+			
+			$stmt->execute();
+			
+			$res = $stmt->affected_rows;
+			$stmt->close();
+			
+			if($res == 0) {
 				return 1;
 			}
 			
 			if(intval($data["tutor"])) {
-				$mysqli->query("INSERT INTO teacher ( uid ) VALUES ( '".intval(($data["tutor"]))."')");
+				$stmt = $mysqli->prepare("
+					SELECT id
+					FROM users
+					WHERE email = ?
+					LIMIT 1
+				");
 				
-				if($mysqli->affected_rows > 0) {
+				$stmt->bind_param("s", null_on_empty($data["email"]));
+				$stmt->execute();
+				$stmt->bind_result($id);
+				$stmt->fetch();
+				
+				$stmt->close();
+				
+				if(!$id) {
+					return 1;
+				}
+				
+				$stmt = $mysqli->prepare("
+					INSERT INTO teacher (
+						uid
+					) VALUES (
+						?
+					)
+				");
+				
+				$stmt->bind_param("i", intval($id));
+				$stmt->execute();
+				
+				$res = $stmt->affected_rows;
+				$stmt->close();
+				
+				if($res == 0) {
 					return 2;
 				}
 			}
@@ -328,15 +394,40 @@
 			
 			// TODO: Validate data
 			
-			$res = $mysqli->query("SELECT * FROM users WHERE users.id ='".intval($data["id"])."'");
+			$stmt = $mysqli->prepare("
+				SELECT lastname
+				FROM users
+				WHERE id = ?
+			");
 			
-			if($mysqli->affected_rows == 0) {
+			$stmt->bind_param("i", intval($data["id"]));
+			$stmt->execute();
+			
+			$res = $stmt->num_rows;
+			$stmt->close();
+			
+			if($res == 0) {
 				return -2;
 			}
 			
-			$mysqli->query("UPDATE users SET birthday = ".null_on_empty($data["birthday"]).", nickname = ".null_on_empty($data["nickname"])." WHERE id = '".intval($data["id"])."'");
+			$stmt = $mysqli->prepare("
+				UPDATE users
+				SET
+					birthday = ?,
+					nickname = ?
+				WHERE id = ?
+			");
 			
-			return 0;
+			$stmt->bind_param("ssi", null_on_empty($data["birthday"]), null_on_empty($data["nickname"]), intval($data["id"]));
+			$stmt->execute();
+			
+			$res = $stmt->num_rows;
+			$stmt->close();
+			
+			if($res > 0)
+				return -1;
+			else
+				return 0;
 		}
 			
 	}
@@ -366,7 +457,7 @@
 			return "NULL";	
 		}
 		else {
-			return "'".$mysqli->real_escape_string($var)."'";
+			return $mysqli->real_escape_string($var);
 		}
 	}
 	

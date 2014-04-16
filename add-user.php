@@ -10,15 +10,15 @@
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
 	if(isset($_GET["create"])) {
-	
-		$userdata["prename"] = $_POST["prename"];
-		$userdata["lastname"] = $_POST["lastname"];
-		$userdata["birthday"] = $_POST["birthday"];
-		$userdata["nickname"] = $_POST["nickname"];
-		$userdata["email"] = $_POST["email"];
-		$userdata["password"] = $_POST["password"];
-		$userdata["tutor"] = isset($_POST["tutor"]);
-		$userdata["admin"] = isset($_POST["admin"]);
+		$userdata["prename"] 	= $_POST["prename"];
+		$userdata["lastname"] 	= $_POST["lastname"];
+		$userdata["class"] 		= $_POST["class"];
+		$userdata["birthday"] 	= $_POST["birthday"];
+		$userdata["nickname"] 	= $_POST["nickname"];
+		$userdata["email"] 		= $_POST["email"];
+		$userdata["password"] 	= $_POST["password"];
+		$userdata["tutor"] 		= isset($_POST["tutor"]);
+		$userdata["admin"] 		= isset($_POST["admin"]);
 		if($_POST["gender"] == "f") {
 			$userdata["female"] = true;
 		}
@@ -26,9 +26,15 @@
 			$userdata["female"] = false;
 		}
 		
-		UserManager::add_user($userdata);
+		$param = UserManager::add_user($userdata);
 		
-		header("Location: ./add-user.php");
+		if($param == 0) {
+			header("Location: ./add-user.php?saved");
+		}
+		else {
+			header("Location: ./add-user.php?error=" . $param);
+		}
+		
 		exit;
 	}
 	
@@ -45,6 +51,29 @@
 	<body>
 		<?php require("nav-bar.php") ?>
 		<div id="user-management" class="container">
+        	<?php if(isset($_GET["saved"])): ?>
+				<div class="alert alert-success">Änderungen gespeichert.</div>
+            <?php else: if(isset($_GET["error"])): ?>
+                <div class="alert alert-danger">
+                	Speichern fehlgeschlagen.<br />
+                <?php
+					switch($_GET["error"]) {
+						case "-1":
+							echo "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben.";
+							break;
+						case "-2":
+							echo "Die Emailadresse existiert bereits.";
+							break;
+						case "1":
+							echo "Der Benutzer konnte nicht hinzugefügt werden.";
+							break;
+						case "2":
+							echo "Der Benutzer konnte nicht als Tutor hinzugefügt werden.";
+							break;
+					}
+				?>
+                </div>
+            <?php endif; endif; ?>
 			<h1>Nutzerverwaltung</h1>
 			<form id="data_form" name="data" method="post" action="add-user.php?create"></form>
 			<div class="add-user">
@@ -72,12 +101,12 @@
 						<td class="title">Tutorium</td>
 						<td>
                         	<select name="class" form="data_form">
-                            	<option>-</option>
+                            	<option value="0">-</option>
                                 <?php 
-									$res = $mysqli->query("SELECT name FROM classes");
+									$res = $mysqli->query("SELECT id, name FROM classes");
 									
 									foreach($res as $row) {
-										echo "<option>".$row["name"]."</option>";
+										echo '<option value="' . $row["id"] . '">'.$row["name"]."</option>";
 									}
 								?>
                             </select>
