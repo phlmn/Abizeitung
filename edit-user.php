@@ -9,11 +9,29 @@
 	check_admin();
 	
 	if(isset($_GET["delete"])) {
-		$mysqli->query("SELECT * FROM users WHERE id = '".$_GET["user"]."'");
+		$stmt->prepare("
+			SELECT id
+			FROM users
+			WHERE id = ?
+		");
+		
+		$stmt->bind_param("i", intval($_GET["user"]));
+		$stmt->execute();
+		
+		$res = $stmt->affected_rows;
+		$stmt->close();
+		
+		if($res > 0) {
+			$stmt = $mysqli->prepare("
+				DELETE FROM users
+				WHERE id = ?
+				LIMIT 1
+			");
 			
-		if($mysqli->affected_rows > 0)
-			$mysqli->query("DELETE FROM users WHERE id = '".$_GET["user"]."'");
-			
+			$stmt->bind_param("i", intval($_GET["user"]));
+			$stmt->execute();
+		}
+		
 		header("Location: ./users.php");
 		exit;	
 	}
@@ -27,18 +45,29 @@
 			$userdata["id"] 		= $_GET["user"];
 			$userdata["prename"] 	= $_POST["prename"];
 			$userdata["lastname"] 	= $_POST["lastname"];
-			$userdata["female"] 	= $_POST["gender"];
 			$userdata["class"]["id"]= $_POST["class"];
 			$userdata["birthday"] 	= $_POST["birthday"];
 			$userdata["nickname"] 	= $_POST["nickname"];
 			$userdata["email"] 		= $_POST["email"];
 			$userdata["password"] 	= $_POST["password"];
 			$userdata["admin"] 		= isset($_POST["admin"]);
+			if($_POST["gender"] == "f") {
+				$userdata["female"] = true;
+			}
+			else {
+				$userdata["female"] = false;
+			}
 			
-			UserManager::edit_user($userdata);
+			$param = UserManager::edit_user($userdata);
 			
-			header("Location: ./edit-user.php?user=".$_GET["user"]);
-			exit();
+			if($param == 0) {
+				header("Location: ./edit-user.php?user=" . $_GET["user"] . "&saved");
+			}
+			else {
+				header("Location: ./edit-user.php?user=" . $_GET["user"] . "&error=" . $param);
+			}
+			
+			exit;
 		}
 	}
 ?>
@@ -54,6 +83,23 @@
 	<body>
 		<?php require("nav-bar.php") ?>
 		<div id="user-management" class="container">
+        	<?php if(isset($_GET["saved"])): ?>
+				<div class="alert alert-success">Änderungen gespeichert.</div>
+            <?php else: if(isset($_GET["error"])): ?>
+                <div class="alert alert-danger">
+                	Speichern fehlgeschlagen.<br />
+                <?php
+					switch($_GET["error"]) {
+						case "-1":
+							echo "Die Daten konnten nicht geändert werden";
+							break;
+						case "-2":
+							echo "Das Passwort konnte nicht geändert werden.";
+							break;
+					}
+				?>
+                </div>
+            <?php endif; endif; ?>
 			<h1>Nutzerverwaltung</h1>
 			<form id="data_form" name="data" action="edit-user.php?user=<?php echo $_GET["user"] ?>&edit" method="post"></form>
 			<div class="add-user">
@@ -71,9 +117,8 @@
 						<td class="title">Geschlecht</td>
 						<td>
                         	<select name="gender" form="data_form">
-                            	<option>-</option>
-                                <option <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option>
-                                <option <?php if($edit["female"] == 1) echo "selected" ?>>Weiblich</option>
+                                <option value="m" <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option>
+                                <option value="f" <?php if($edit["female"] == 1) echo "selected" ?>>Weiblich</option>
                             </select>
                         </td>
 					</tr>
@@ -84,14 +129,27 @@
                         	<select name="class" form="data_form">
                         		<option>-</option>
                                 <?php 
-									$res = $mysqli->query("SELECT * FROM classes");
+								
+									$stmt = $mysqli->prepare("
+										SELECT id, name
+										FROM classes
+									");
 									
-									while($row = $res->fetch_assoc()) {
-										if($edit["class"]["id"] == $row["id"])
-											echo "<option selected value='".$row["id"]."'>".$row["name"]."</option>";
+									$stmt->execute();
+									$stmt->bind_result($class["id"], $class["name"]);
+									
+									$select = 0;
+									if(isset($edit["class"]["id"]))
+										$select = $edit["class"]["id"];
+									
+									while($stmt->fetch()) {
+										if($select == $class["id"])
+											echo '<option value="' . $class["id"] . '" selected>' . $class["name"] . "</option>";
 										else
-											echo "<option value='".$row["id"]."'>".$row["name"]."</option>";
+											echo '<option value="' . $class["id"] . '">' . $class["name"] . "</option>";
 									}
+									
+									$stmt->close();
 								?>
                             </select>
                         </td>

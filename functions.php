@@ -241,11 +241,11 @@
 			$stmt->bind_param("s", null_on_empty($data["email"]));
 			$stmt->execute();
 			
-			$stmt->bind_result($res);
 			$stmt->fetch();
+			$res = $stmt->affected_rows;
 			$stmt->close();
 			
-			if($res) {
+			if($res > 0) {
 				return -2;
 			}
 			
@@ -269,7 +269,7 @@
 				null_on_empty($data["nickname"]),
 				$female,
 				null_on_empty($data["email"]),
-				md5($data["password"]),
+				encrypt_pw($data["password"]),
 				$admin
 			);
 			
@@ -338,6 +338,7 @@
 				admin = ?,
 				email = ?
 				WHERE id = ?
+				LIMIT 1
 			");	
 			
 			$stmt->bind_param("ssissiisi",
@@ -353,24 +354,22 @@
 			);
 			
 			$stmt->execute();
-			$stmt->store_result();
 			
-			if($stmt->affected_rows == 0) {
-				$stmt->free_result();
-				$stmt->close();
-				return -2;
-			}
-			
-			$stmt->free_result();
+			$res = $stmt->affected_rows;
 			$stmt->close();
+			
+			if($res == 0) {
+				return -1;
+			}
 			
 			if(isset($data["password"]) && !empty($data["password"])) {
 				$stmt = $mysqli->prepare("
 					UPDATE users SET 
 					password = ?
 					WHERE id = ?
+					LIMIT 1
 				");	
-				$stmt->bind_param("si", encrypt_pw($data["password"]), $id);
+				$stmt->bind_param("si", encrypt_pw($data["password"]), $data["id"]);
 				
 				$stmt->execute();
 				$stmt->store_result();
@@ -398,6 +397,7 @@
 				SELECT lastname
 				FROM users
 				WHERE id = ?
+				LIMIT 1
 			");
 			
 			$stmt->bind_param("i", intval($data["id"]));

@@ -103,11 +103,19 @@
                         	<select name="class" form="data_form">
                             	<option value="0">-</option>
                                 <?php 
-									$res = $mysqli->query("SELECT id, name FROM classes");
+									$stmt = $mysqli->prepare("
+										SELECT id, name
+										FROM classes
+									");
 									
-									foreach($res as $row) {
-										echo '<option value="' . $row["id"] . '">'.$row["name"]."</option>";
+									$stmt->execute();
+									$stmt->bind_result($class["id"], $class["name"]);
+									
+									while($stmt->fetch()) {
+										echo '<option value="' . $class["id"] . '">' . $class["name"] . "</option>";
 									}
+									
+									$stmt->close();
 								?>
                             </select>
                         </td>
