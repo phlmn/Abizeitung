@@ -155,107 +155,7 @@
 	<head>
 		<title>Abizeitung - Dashboard</title>
 		<?php head(); ?>
-		
-		<script type="text/javascript">
-			function openImageSelector() {
-				$("#photo-upload").click();
-			}
-			
-			function uploadImage() {
-				var formData = new FormData($('#image_form')[0]);
-			    $.ajax({
-			        url: 'upload.php?user=<?php echo $data["id"] ?>&category=1',
-			        type: 'POST',
-			        xhr: function() {
-			            var myXhr = $.ajaxSettings.xhr();
-			            if(myXhr.upload){
-			                myXhr.upload.addEventListener('progress',function(e) {
-			                	if(e.lengthComputable) {
-			                	
-			                	}	
-			                }, false);
-			            }
-			            return myXhr;
-			        },
-			        beforeSend: function() {
-			        	$("span#photo-upload-state").html("<br>Bild wird<br/>hochgeladen ...");
-			        },
-			        success: function(data) {
-						error1 = parseInt(data[data.length-1]);
-						error0 = "";
-						
-						if(data.indexOf("Length") != -1) {
-							error0 = error1;
-							error1 = 3;
-						}
-						
-						$("div.photo").css("background-image", "none");
-						
-						switch(error1) {
-							case 0:
-								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />' +
-									'Fehler beim Hochladen:<br />' +
-									'Fehler bei Identifizierung<br />' +
-									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-								);
-								break;
-							case 1:
-								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />' +
-									'Fehler beim Hochladen:<br />' +
-									'Die Datei wurde nicht korrekt übertragen<br />' +
-									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-								);
-								break;
-							case 2:
-								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />' +
-									'Fehler beim Hochladen:<br />' +
-									'Ungültiges Dateiformat<br />' +
-									'Erlaubte Formate: .jpg, .png<br />' +
-									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-								);
-								break;
-							case 3:
-								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />' +
-									'Fehler beim Hochladen:<br />' +
-									'Die Datei ist zu groß<br />' +
-									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-								);
-								break;
-							case 4:
-								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />' +
-									'Datenbankfehler:<br />' +
-									'Datei konnte nicht hinzugefügt werden<br />' +
-									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-								);
-								break;
-							case 5:
-								$("span#photo-upload-state").html(
-									'<span class="icon-cancel-circled"></span><br />' +
-									'Fehler beim Hochladen:<br />' +
-									'Datei konnte nicht hochgeladen werden<br />' +
-									'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-								);
-								break;
-							default:
-								$("span#photo-upload-state").html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');			        	
-								$("div.photo").css("background-image", "url('" + data + "')");
-						}
-			        },
-			        error: function(a,b) {
-			        	alert(b);
-			        },
-			        data: formData,
-			        cache: false,
-			        contentType: false,
-			        processData: false
-			    });
-			}
-		</script>
+        <script src="js/script.js" type="text/javascript"></script>
 	</head>
 	
 	<body>
@@ -313,13 +213,13 @@
 					</tr>
 				</table>
 				
-				<div class="photo">
-					<form action="upload.php" id="image_form" enctype="multipart/form-data" ></form>
+				<div id="photo-enrollment" class="photo">
+					<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data" ></form>
                     <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-					<input id="photo-upload" name="photo" type="file" form="image_form" accept="image/x-png,image/jpeg" onchange="uploadImage()" />
+					<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(1, '#image-form-enrollment', '#photo-upload-state_enrollment', '#photo-enrollment')" />
 					<div class="upload">
-						<a href="javascript: openImageSelector()">
-                        	<span id="photo-upload-state">
+						<a href="javascript: openImageSelector('#photo-upload-enrollment')">
+                        	<span id="photo-upload-state-enrollment">
 								<span class="icon-upload"></span>
 								<br>Einschulungsfoto
 								<br>hochladen...
@@ -327,6 +227,22 @@
 						</a>
 					</div>
 				</div>
+                <div id="photo-current" class="photo photo-alternate">
+                	<form action="upload.php" id="image-form-current" enctype="multipart/form-data" ></form>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
+					<input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(2, '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
+                	<div class="upload">
+                    	<a href="javascript: openImageSelector('#photo-upload-current')">
+                        	<span id="photo-upload-state-current">
+                            	<span id="photo-upload-state-current">
+								<span class="icon-upload"></span>
+								<br>Aktuelles Foto
+								<br>hochladen...
+                            </span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
 			</div>
 			
 			<div class="questions box">

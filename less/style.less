@@ -250,18 +250,19 @@ body.login {
 			background: #222;
 			position: absolute;
 			right: 0;
-			top: 0;
-			width: 450px;
-			height: 350px;
+			top: 50%;
+			width: 315px;
+			height: 245px;
+			margin: -122px 10px 0 0;
 			background-size: contain;
 			background-repeat: no-repeat;
 			background-position: center;
 			
 			.upload {
 				text-align: center;
-				top: 115px;
+				top: 65px;
 				position: absolute;
-				font-size: 30px;
+				font-size: 22px;
 				width: 100%;
 				
 				a {
@@ -270,6 +271,14 @@ body.login {
 					text-shadow: 0 0 5px rgba(0, 0, 0, .5);
 				}
 			}
+			
+			.photo-upload {
+				display: none;
+			}
+		}
+		
+		.photo-alternate {
+			right: 320px;
 		}
 	}
 	
@@ -308,10 +317,6 @@ body.login {
 	div.buttons {
 		margin-top: 60px;
 	}
-}
-
-#photo-upload {
-	display: none;
 }
 
 /* ===== Usermanagement ===== */
