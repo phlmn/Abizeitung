@@ -51,6 +51,7 @@
 			$userdata["email"] 		= $_POST["email"];
 			$userdata["password"] 	= $_POST["password"];
 			$userdata["admin"] 		= isset($_POST["admin"]);
+			$userdata["teacher"]	= isset($_POST["teacher"]);
 			if($_POST["gender"] == "f") {
 				$userdata["female"] = true;
 			}
@@ -169,6 +170,10 @@
 					<tr>
 						<td class="title">Passwort</td>
 						<td><input name="password" type="password" form="data_form" placeholder="Unverändert" /></td>
+					</tr>
+                    <tr>
+						<td class="title">Lehrer</td>
+						<td><input name="teacher" type="checkbox" form="data_form" <?php if($edit["isteacher"] == true) echo "checked" ?> /></td>
 					</tr>
 					<tr>
 						<td class="title">Administrator</td>

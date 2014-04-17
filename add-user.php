@@ -17,7 +17,7 @@
 		$userdata["nickname"] 	= $_POST["nickname"];
 		$userdata["email"] 		= $_POST["email"];
 		$userdata["password"] 	= $_POST["password"];
-		$userdata["tutor"] 		= isset($_POST["tutor"]);
+		$userdata["teacher"] 	= isset($_POST["teacher"]);
 		$userdata["admin"] 		= isset($_POST["admin"]);
 		if($_POST["gender"] == "f") {
 			$userdata["female"] = true;
@@ -68,7 +68,7 @@
 							echo "Der Benutzer konnte nicht hinzugefügt werden.";
 							break;
 						case "2":
-							echo "Der Benutzer konnte nicht als Tutor hinzugefügt werden.";
+							echo "Der Benutzer konnte nicht als Lehrer hinzugefügt werden.";
 							break;
 					}
 				?>
@@ -137,8 +137,8 @@
 						<td><input name="password" type="password" form="data_form" /></td>
 					</tr>
                     <tr>
-						<td class="title">Tutor</td>
-						<td><input name="tutor" type="checkbox" form="data_form" /></td>
+						<td class="title">Lehrer</td>
+						<td><input name="teacher" type="checkbox" form="data_form" /></td>
 					</tr>
 					<tr>
 						<td class="title">Administrator</td>

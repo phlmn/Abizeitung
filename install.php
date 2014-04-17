@@ -49,13 +49,6 @@
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
 			$res = $mysqli->query("
-				CREATE TABLE `teacher` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `uid` int(11) NOT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-				
-			$res = $mysqli->query("
 				CREATE TABLE `user_questions` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `user` int(11) NOT NULL,
@@ -86,6 +79,21 @@
 				  `admin` tinyint(4) DEFAULT '0',
 				  `password` varchar(45) NOT NULL,
 				  `email` varchar(45) NOT NULL,
+				  `updatetime` int(11) NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				
+			$res = $mysqli->query("
+				CREATE TABLE `teacher` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `uid` int(11) NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				
+			$res = $mysqli->query("
+				CREATE TABLE `students` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `uid` int(11) NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
@@ -96,11 +104,6 @@
 				  `class` int(11) NOT NULL,
 				  PRIMARY KEY (`id`)
 				  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-				  
-			$res = $mysqli->query("
-				INSERT INTO `users` (`prename`, `lastname`, `admin`, `password`, `email`) VALUES
-				('".$_POST['admin-prename']."', '".$_POST['admin-name']."', '1', '".md5($_POST['admin-pw'])."', '".$_POST['admin-mail']."')
-				;");
 				
 			$res = $mysqli->query("
 				CREATE TABLE `categories` (
@@ -117,6 +120,55 @@
 				  `file` varchar(255)
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+			
+			$stmt = $mysqli->prepare("
+				INSERT INTO `users` (
+					`prename`, `lastname`, `admin`, `password`, `email`, `updatetime`
+				) VALUES (
+					?, ?, ?, ?, ?, ?
+				)
+			");
+			
+			$stmt->bind_param(
+				"ssissi",
+				null_on_empty($_POST["admin-prename"]),
+				null_on_empty($_POST["admin-name"]),
+				intval(1),
+				encrypt_pw($_POST["admin-pw"]),
+				null_on_empty($_POST["admin-mail"]),
+				intval(time())
+			);
+				
+			$stmt->execute();
+			$stmt->close();
+			
+			$stmt = $mysqli->prepare("
+				SELECT id
+				FROM users
+				WHERE email = ?
+				LIMIT 1
+			");
+			
+			$stmt->bind_param("s", $mysqli->real_escape_string($_POST["admin-mail"]));
+			$stmt->execute();
+			
+			$stmt->bind_result($id);
+			$stmt->fetch();
+			
+			$stmt->close();
+			
+			$stmt = $mysqli->prepare("
+				INSERT INTO students (
+					uid
+				) VALUES (
+					?
+				)
+			");
+			
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			
+			$stmt->close();
 		}
 	}
 

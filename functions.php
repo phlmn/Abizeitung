@@ -251,9 +251,9 @@
 			
 			$stmt = $mysqli->prepare("
 				INSERT INTO users (
-					prename, lastname, class, birthday, nickname, female, email, password, admin
+					prename, lastname, class, birthday, nickname, female, email, password, admin, updatetime
 				) VALUES (
-					?, ?, ?, ?, ?, ?, ?, ?, ?
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 				)
 			");
 			
@@ -261,7 +261,7 @@
 			$admin =  $data["admin"]  ? true : false;
 			
 			$stmt->bind_param(
-				"sssssissi",
+				"sssssissii",
 				null_on_empty($data["prename"]),
 				null_on_empty($data["lastname"]),
 				intval($_POST["class"]),
@@ -270,7 +270,8 @@
 				$female,
 				null_on_empty($data["email"]),
 				encrypt_pw($data["password"]),
-				$admin
+				$admin,
+				time()
 			);
 			
 			$stmt->execute();
@@ -282,25 +283,27 @@
 				return 1;
 			}
 			
-			if(intval($data["tutor"])) {
-				$stmt = $mysqli->prepare("
-					SELECT id
-					FROM users
-					WHERE email = ?
-					LIMIT 1
-				");
+			
+			$stmt = $mysqli->prepare("
+				SELECT id
+				FROM users
+				WHERE email = ?
+				LIMIT 1
+			");
+			
+			
+			$stmt->bind_param("s", null_on_empty($data["email"]));
+			$stmt->execute();
+			$stmt->bind_result($id);
+			$stmt->fetch();
+			
+			$stmt->close();
+			
+			if(!$id) {
+				return 1;
+			}
 				
-				$stmt->bind_param("s", null_on_empty($data["email"]));
-				$stmt->execute();
-				$stmt->bind_result($id);
-				$stmt->fetch();
-				
-				$stmt->close();
-				
-				if(!$id) {
-					return 1;
-				}
-				
+			if($data["teacher"]) {
 				$stmt = $mysqli->prepare("
 					INSERT INTO teacher (
 						uid
@@ -308,16 +311,25 @@
 						?
 					)
 				");
+			} 
+			else {
+				$stmt = $mysqli->prepare("
+					INSERT INTO students (
+						uid
+					) VALUES (
+						?
+					)
+				");
+			}
 				
-				$stmt->bind_param("i", intval($id));
-				$stmt->execute();
-				
-				$res = $stmt->affected_rows;
-				$stmt->close();
-				
-				if($res == 0) {
-					return 2;
-				}
+			$stmt->bind_param("i", intval($id));
+			$stmt->execute();
+			
+			$res = $stmt->affected_rows;
+			$stmt->close();
+			
+			if($res == 0) {
+				return 2;
 			}
 			
 			return 0;
@@ -336,12 +348,13 @@
 				nickname = ?,
 				female = ?,
 				admin = ?,
-				email = ?
+				email = ?,
+				updatetime = ?
 				WHERE id = ?
 				LIMIT 1
-			");	
+			");
 			
-			$stmt->bind_param("ssissiisi",
+			$stmt->bind_param("ssissiisii",
 				$data["prename"],
 				$data["lastname"],
 				$data["class"]["id"],
@@ -350,6 +363,7 @@
 				intval($data["female"]),
 				intval($data["admin"]),
 				$data["email"],
+				time(),
 				$data["id"]
 			);
 			
@@ -362,26 +376,133 @@
 				return -1;
 			}
 			
-			if(isset($data["password"]) && !empty($data["password"])) {
+			if($data["teacher"]) {
 				$stmt = $mysqli->prepare("
-					UPDATE users SET 
-					password = ?
-					WHERE id = ?
-					LIMIT 1
-				");	
-				$stmt->bind_param("si", encrypt_pw($data["password"]), $data["id"]);
+					SELECT id
+					FROM students
+					WHERE uid = ?
+				");
 				
+				$stmt->bind_param("i", intval($data["id"]));
 				$stmt->execute();
-				$stmt->store_result();
 				
-				if($stmt->affected_rows == 0) {
-					$stmt->free_result();
+				$res = $stmt->affected_rows;
+				$stmt->close();
+				
+				if($res) {
+					$stmt = $mysqli->prepare("
+						DELETE FROM students
+						WHERE uid = ?
+					");
+					
+					$stmt->bind_param("i", intval($data["id"]));
+					$stmt->execute();
+					
 					$stmt->close();
-					return -2;
 				}
 				
-				$stmt->free_result();
-				$stmt->close();	
+				$stmt = $mysqli->prepare("
+					SELECT id
+					FROM teacher
+					WHERE uid = ?
+				");
+				
+				$stmt->bind_param("i", intval($data["id"]));
+				$stmt->execute();
+				
+				$res = $stmt->affected_rows;
+				$stmt->close();
+				
+				if($res <= 0) {
+					$stmt = $mysqli->prepare("
+						INSERT INTO teacher (
+							uid
+						) VALUES (
+							?
+						)
+					");
+					
+					$stmt->bind_param("i", intval($data["id"]));
+					$stmt->execute();
+					
+					$stmt->close();
+				}
+			}
+			else {
+				$stmt = $mysqli->prepare("
+					SELECT id
+					FROM teacher
+					WHERE uid = ?
+				");
+				
+				$stmt->bind_param("i", intval($data["id"]));
+				$stmt->execute();
+				
+				$res = $stmt->affected_rows;
+				$stmt->close();
+				
+				if($res) {
+					$stmt = $mysqli->prepare("
+						DELETE FROM teacher
+						WHERE uid = ?
+					");
+					
+					$stmt->bind_param("i", intval($data["id"]));
+					$stmt->execute();
+					
+					$stmt->close();
+				}
+				
+				$stmt = $mysqli->prepare("
+					SELECT id
+					FROM students
+					WHERE uid = ?
+				");
+				
+				$stmt->bind_param("i", intval($data["id"]));
+				$stmt->execute();
+				
+				$res = $stmt->affected_rows;
+				$stmt->close();
+				
+				if($res <= 0) {
+					$stmt = $mysqli->prepare("
+						INSERT INTO students (
+							uid
+						) VALUES (
+							?
+						)
+					");
+					
+					$stmt->bind_param("i", intval($data["id"]));
+					$stmt->execute();
+					
+					$stmt->close();
+				}
+			}
+			
+			if(isset($data["password"])) {
+				if(!empty($data["password"])) {
+					$stmt = $mysqli->prepare("
+						UPDATE users SET 
+						password = ?
+						WHERE id = ?
+						LIMIT 1
+					");	
+					$stmt->bind_param("si", encrypt_pw($data["password"]), $data["id"]);
+					
+					$stmt->execute();
+					$stmt->store_result();
+					
+					if($stmt->affected_rows == 0) {
+						$stmt->free_result();
+						$stmt->close();
+						return -2;
+					}
+					
+					$stmt->free_result();
+					$stmt->close();	
+				}
 			}
 			
 			return 0;		
