@@ -41,11 +41,10 @@
 					<?php
 						global $mysqli;
 						$res = $mysqli->query("
-							SELECT users.id AS id, users.prename, users.lastname, users.nickname, users.birthday, users.female, classes.name, tutor.lastname AS tutor 
+							SELECT users.id AS id, users.prename, users.lastname, users.nickname, users.birthday, users.female, tutorial.name, tutor.lastname AS tutor 
 							FROM users
-							LEFT JOIN users_classes ON users.id = users_classes.user
-							LEFT JOIN classes ON users_classes.id = classes.id OR users.class = classes.id
-							LEFT JOIN teacher ON classes.tutor = teacher.id
+							LEFT JOIN tutorial ON users.class = tutorial.id
+							LEFT JOIN teacher ON tutorial.tutor = teacher.id
 							LEFT JOIN users tutor ON teacher.uid = tutor.id
 							ORDER BY users.lastname
 						");						
