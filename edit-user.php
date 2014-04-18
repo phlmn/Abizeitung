@@ -23,6 +23,26 @@
 		
 		if($res > 0) {
 			$stmt = $mysqli->prepare("
+				DELETE FROM teacher
+				WHERE uid = ?
+			");
+			
+			$stmt->bind_param("i", intval($_GET["user"]));
+			$stmt->execute();
+			
+			$stmt->close();
+			
+			$stmt = $mysqli->prepare("
+				DELETE FROM students
+				WHERE uid = ?
+			");
+			
+			$stmt->bind_param("i", intval($_GET["user"]));
+			$stmt->execute();
+			
+			$stmt->close();
+			
+			$stmt = $mysqli->prepare("
 				DELETE FROM users
 				WHERE id = ?
 				LIMIT 1
@@ -133,7 +153,7 @@
 								
 									$stmt = $mysqli->prepare("
 										SELECT id, name
-										FROM classes
+										FROM tutorial
 									");
 									
 									$stmt->execute();

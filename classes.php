@@ -23,7 +23,7 @@ if(isset($_GET["class"])) {
 		WHERE id = ?
 		LIMIT 1");
 		
-	$stmt->bind_param("i", intval($_GET["class"]));
+	$stmt->bind_param("i", $classId);
 	$stmt->execute();
 	
 	$stmt->bind_result($class["name"]);

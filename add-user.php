@@ -105,7 +105,7 @@
                                 <?php 
 									$stmt = $mysqli->prepare("
 										SELECT id, name
-										FROM classes
+										FROM tutorial
 									");
 									
 									$stmt->execute();

@@ -23,7 +23,13 @@
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 				
-				
+			$res = $mysqli->query("
+				CREATE TABLE `tutorial` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `name` varchar(45) DEFAULT NULL,
+				  `tutor` int(11) DEFAULT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");	
 				
 			$res = $mysqli->query("
 				CREATE TABLE `questions` (

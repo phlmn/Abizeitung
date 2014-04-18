@@ -196,10 +196,10 @@
 				if(!$data["isteacher"]) {
 				
 					$stmt2 = $mysqli->prepare("
-						SELECT classes.name, teacher.uid
-						FROM classes
-						LEFT JOIN teacher ON classes.tutor = teacher.id
-						WHERE classes.id = ?
+						SELECT tutorial.name, teacher.uid
+						FROM tutorial
+						LEFT JOIN teacher ON tutorial.tutor = teacher.id
+						WHERE tutorial.id = ?
 					");
 					$stmt2->bind_param("i", $classid);	
 					$stmt2->execute();
@@ -488,20 +488,36 @@
 						password = ?
 						WHERE id = ?
 						LIMIT 1
-					");	
+					");
+					
 					$stmt->bind_param("si", encrypt_pw($data["password"]), $data["id"]);
 					
 					$stmt->execute();
-					$stmt->store_result();
+					$res = $stmt->affected_rows;
 					
-					if($stmt->affected_rows == 0) {
-						$stmt->free_result();
+					$stmt->close();
+					
+					echo $mysqli->error;
+					
+					if($res == 0) {
+						$stmt = $mysqli->prepare("
+							SELECT password
+							FROM users
+							WHERE id = ?
+							LIMIT 1
+						");
+						
+						$stmt->bind_param("i", $data["id"]);
+						$stmt->execute();
+						$stmt->bind_result($password);
+						
+						$stmt->fetch();
 						$stmt->close();
-						return -2;
+						
+						if($password != encrypt_pw($data["password"])) {
+							return -2;
+						}
 					}
-					
-					$stmt->free_result();
-					$stmt->close();	
 				}
 			}
 			
@@ -575,7 +591,7 @@
 		global $mysqli;
 		
 		if(empty($var)) {
-			return "NULL";	
+			return NULL;	
 		}
 		else {
 			return $mysqli->real_escape_string($var);
