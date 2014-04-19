@@ -174,68 +174,74 @@
 			<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
 			<div class="common box">
 				<h2>Allgemeines</h2>
-				<table>
-					<tr>
-						<td class="title">Vorname</td>
-						<td><?php echo $data["prename"] ?></td>
-					</tr>
-					<tr>
-						<td class="title">Nachname</td>
-						<td><?php echo $data["lastname"] ?></td>
-					</tr>
-					<tr>
-						<td class="title">Spitzname</td>
-						<td><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">Geburtsdatum</td>
-						<td><input name="birthday" type="text" form="data_form" value="<?php echo $data["birthday"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">Geschlecht</td>
-						<td><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></td>
-					</tr>
+				<div class="row">
+					<div class="col-sm-4 data">
+						<div class="row">
+							<div class="col-xs-5 title">Vorname</div>
+							<div class="col-xs-7"><?php echo $data["prename"] ?></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 title">Nachname</div>
+							<div class="col-xs-7"><?php echo $data["lastname"] ?></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 title">Spitzname</div>
+							<div class="col-xs-7"><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 title">Geburtsdatum</div>
+							<div class="col-xs-7"><input name="birthday" type="text" form="data_form" value="<?php echo $data["birthday"] ?>" /></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 title">Geschlecht</div>
+							<div class="col-xs-7"><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 title">Tutorium</div>
+							<div class="col-xs-7"><?php if(isset($data["class"]["name"])) echo $data["class"]["name"] ?></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5 title">Tutor</div>
+							<div class="col-xs-7"><?php if(isset($data["class"]["tutor"]["lastname"])) echo $data["class"]["tutor"]["lastname"] ?></div>
+						</div>
+					</div>
 					
-					<tr>
-						<td class="title">Tutorium</td>
-						<td><?php if(isset($data["class"]["name"])) echo $data["class"]["name"] ?></td>
-					</tr>
-					<tr>
-						<td class="title">Tutor</td>
-						<td><?php if(isset($data["class"]["tutor"]["lastname"])) echo $data["class"]["tutor"]["lastname"] ?></td>
-					</tr>
-				</table>
-				
-				<div id="photo-enrollment" class="photo">
-					<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data" ></form>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-					<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(1, '#image-form-enrollment', '#photo-upload-state_enrollment', '#photo-enrollment')" />
-					<div class="upload">
-						<a href="javascript: openImageSelector('#photo-upload-enrollment')">
-                        	<span id="photo-upload-state-enrollment">
-								<span class="icon-upload"></span>
-								<br>Einschulungsfoto
-								<br>hochladen...
-                            </span>
-						</a>
+					<div class="col-sm-4">
+						<div id="photo-enrollment" class="photo">
+							<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data" ></form>
+		                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
+							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(1, '#image-form-enrollment', '#photo-upload-state_enrollment', '#photo-enrollment')" />
+							<div class="upload">
+								<a href="javascript: openImageSelector('#photo-upload-enrollment')">
+		                        	<span id="photo-upload-state-enrollment">
+										<span class="icon-upload"></span>
+										<br>Einschulungsfoto
+										<br>hochladen...
+		                            </span>
+								</a>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-4">
+		                <div id="photo-current" class="photo">
+		                	<form action="upload.php" id="image-form-current" enctype="multipart/form-data" ></form>
+		                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
+							<input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(2, '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
+		                	<div class="upload">
+		                    	<a href="javascript: openImageSelector('#photo-upload-current')">
+		                        	<span id="photo-upload-state-current">
+		                            	<span id="photo-upload-state-current">
+										<span class="icon-upload"></span>
+										<br>Aktuelles Foto
+										<br>hochladen...
+		                            </span>
+		                            </span>
+		                        </a>
+		                    </div>
+		                </div>
 					</div>
 				</div>
-                <div id="photo-current" class="photo photo-alternate">
-                	<form action="upload.php" id="image-form-current" enctype="multipart/form-data" ></form>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-					<input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(2, '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
-                	<div class="upload">
-                    	<a href="javascript: openImageSelector('#photo-upload-current')">
-                        	<span id="photo-upload-state-current">
-                            	<span id="photo-upload-state-current">
-								<span class="icon-upload"></span>
-								<br>Aktuelles Foto
-								<br>hochladen...
-                            </span>
-                            </span>
-                        </a>
-                    </div>
-                </div>
 			</div>
 			
 			<div class="questions box">
