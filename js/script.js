@@ -32,7 +32,6 @@ function uploadImage(category, idForm, idState, idPhoto) {
 			}
 			
 			$(idPhoto).css("background-image", "none");
-			$(idPhoto).css("background-color", "#000");
 			
 			switch(error1) {
 				case 0:
@@ -85,8 +84,7 @@ function uploadImage(category, idForm, idState, idPhoto) {
 					);
 					break;
 				default:
-					$(idState).html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');
-					$(idPhoto).css("background-color", "#FFF");			        	
+					$(idState).html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');        	
 					$(idPhoto).css("background-image", "url('" + data + "')");
 			}
 		},

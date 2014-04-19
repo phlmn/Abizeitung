@@ -210,7 +210,7 @@
 						<div id="photo-enrollment" class="photo">
 							<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data" ></form>
 		                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(1, '#image-form-enrollment', '#photo-upload-state_enrollment', '#photo-enrollment')" />
+							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(1, '#image-form-enrollment', '#photo-upload-state-enrollment', '#photo-enrollment')" />
 							<div class="upload">
 								<a href="javascript: openImageSelector('#photo-upload-enrollment')">
 		                        	<span id="photo-upload-state-enrollment">
