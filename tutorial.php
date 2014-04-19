@@ -113,75 +113,76 @@
 		<?php require("nav-bar.php") ?>
 		<div id="questions-management" class="container">
         	<h1>Tutorien Zuordnung</h1>
-            <h2>Tutorien</h2>
-            <form id="tutorial_form" name="tutorial" method="post" action="tutorial.php?action=tutor" ></form>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Tutorium</th>
-                        <th>Tutor</th>
-                    </tr>
-                </thead>
-                <tbody>
-            <?php
-                global $mysqli;
-                
-                $stmt = $mysqli->prepare("
-                    SELECT tutorial.id, tutorial.name, tutorial.tutor
-                    FROM tutorial
-                    LEFT JOIN teacher ON tutorial.tutor = teacher.id
-                    LEFT JOIN users ON teacher.uid = users.id
-					ORDER BY tutorial.id ASC
-                ");
-                
-                $stmt->execute();
-                $stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["tutor"]);
-				$stmt->store_result();
-                
-                while($stmt->fetch()):
-			?>
-            		<tr>
-                    	<td><?php echo $tutorial["name"] ?></td>
-                    	<td>
-                        	<select name="tutorial_<?php echo  $tutorial["id"] ?>" form="tutorial_form">
-                            	<option value="0">-</option>
-            <?php
-				
-					$stmt2 = $mysqli->prepare("
-						SELECT teacher.id, users.lastname
-						FROM teacher
-						LEFT JOIN users ON teacher.uid = users.id
-					");
+        	<div class="box">
+	            <h2>Tutorien</h2>
+	            <form id="tutorial_form" name="tutorial" method="post" action="tutorial.php?action=tutor" ></form>
+	            <table class="table table-striped">
+	                <thead>
+	                    <tr>
+	                        <th>Tutorium</th>
+	                        <th>Tutor</th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	            <?php
+	                global $mysqli;
+	                
+	                $stmt = $mysqli->prepare("
+	                    SELECT tutorial.id, tutorial.name, tutorial.tutor
+	                    FROM tutorial
+	                    LEFT JOIN teacher ON tutorial.tutor = teacher.id
+	                    LEFT JOIN users ON teacher.uid = users.id
+						ORDER BY tutorial.id ASC
+	                ");
+	                
+	                $stmt->execute();
+	                $stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["tutor"]);
+					$stmt->store_result();
+	                
+	                while($stmt->fetch()):
+				?>
+	            		<tr>
+	                    	<td><?php echo $tutorial["name"] ?></td>
+	                    	<td>
+	                        	<select name="tutorial_<?php echo  $tutorial["id"] ?>" form="tutorial_form">
+	                            	<option value="0">-</option>
+	            <?php
 					
-					$stmt2->execute();
-					$stmt2->bind_result($teacher["id"], $teacher["lastname"]);
-					$stmt2->store_result();
+						$stmt2 = $mysqli->prepare("
+							SELECT teacher.id, users.lastname
+							FROM teacher
+							LEFT JOIN users ON teacher.uid = users.id
+						");
+						
+						$stmt2->execute();
+						$stmt2->bind_result($teacher["id"], $teacher["lastname"]);
+						$stmt2->store_result();
+						
+						while($stmt2->fetch()):
+	            ?>
+	                            	<option value="<?php echo $teacher["id"]; ?>" <?php if($tutorial["tutor"] == $teacher["id"]): ?> selected<?php endif; ?>><?php echo $teacher["lastname"] ?></option>
+	            <?php 	endwhile; 
+						
+						$stmt2->free_result();
+						$stmt2->close();
+				?>
+	                            </select>
+	                        </td>
+	                    </tr>
+	            <?php 
+					endwhile; 
 					
-					while($stmt2->fetch()):
-            ?>
-                            	<option value="<?php echo $teacher["id"]; ?>" <?php if($tutorial["tutor"] == $teacher["id"]): ?> selected<?php endif; ?>><?php echo $teacher["lastname"] ?></option>
-            <?php 	endwhile; 
-					
-					$stmt2->free_result();
-					$stmt2->close();
-			?>
-                            </select>
-                        </td>
-                    </tr>
-            <?php 
-				endwhile; 
-				
-				$stmt->free_result();
-				$stmt->close();
-			?>
-                </tbody>
-            </table>
-            
-            <div class="buttons">
-            	<button type="submit" form="tutorial_form">Speichern</button>
-				<a class="button" href="javascript:void(addTutorial())"><span class="icon-plus-circled"></span> Tutorium hinzufügen</a>
-			</div>
-            
+					$stmt->free_result();
+					$stmt->close();
+				?>
+	                </tbody>
+	            </table>
+	            
+	            <div class="buttons">
+	            	<button type="submit" form="tutorial_form">Speichern</button>
+					<a class="button" href="javascript:void(addTutorial())"><span class="icon-plus-circled"></span> Tutorium hinzufügen</a>
+				</div>
+        	</div>
             <div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-hidden="true">
             </div>
             

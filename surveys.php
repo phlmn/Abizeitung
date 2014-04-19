@@ -144,43 +144,45 @@
 		<?php require("nav-bar.php") ?>
 		<div id="surveys-management" class="container">
         	<h1>Umfragenverwaltung</h1>
-            <h2>Umfragen</h2>
-            <table class="table table-striped">
-            	<thead>
-                	<tr>
-                    	<th>Frage</th>
-                        <th class="edit"><span class="icon-male"></span></th>
-                        <th class="edit"><span class="icon-female"></span></th>
-                        <th class="edit"></th>
-                    </tr>
-                </thead>
-                <tbody>
-        	<?php
-				global $mysqli;
-				
-				$stmt = $mysqli->prepare("
-					SELECT id, title, m, w
-					FROM surveys
-				");
-				
-				$stmt->execute();
-				$stmt->bind_result($surveys["id"], $surveys["title"], $surveys["m"], $surveys["w"]);
-				
-				while($stmt->fetch()):
-			?>
-            		<tr>
-                    	<td><?php echo $surveys["title"] ?></td>
-                        <td class="edit"><?php if($surveys["m"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
-                        <td class="edit"><?php if($surveys["w"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
-                        <td class="edit"><a href="javascript:void(showSurvey(<?php echo $surveys["id"]; ?>))"><span class="icon-pencil-squared"></span></a></td>
-                    </tr>
-            <?php endwhile; ?>
-            	</tbody>
-            </table>
-            
-            <div class="buttons">
-				<a class="button" href="javascript:void(showSurvey(0))"><span class="icon-plus-circled"></span> Umfrage hinzufügen</a>
-			</div>
+        	<div class="box">
+	            <h2>Umfragen</h2>
+	            <table class="table table-striped">
+	            	<thead>
+	                	<tr>
+	                    	<th>Frage</th>
+	                        <th class="edit"><span class="icon-male"></span></th>
+	                        <th class="edit"><span class="icon-female"></span></th>
+	                        <th class="edit"></th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	        	<?php
+					global $mysqli;
+					
+					$stmt = $mysqli->prepare("
+						SELECT id, title, m, w
+						FROM surveys
+					");
+					
+					$stmt->execute();
+					$stmt->bind_result($surveys["id"], $surveys["title"], $surveys["m"], $surveys["w"]);
+					
+					while($stmt->fetch()):
+				?>
+	            		<tr>
+	                    	<td><?php echo $surveys["title"] ?></td>
+	                        <td class="edit"><?php if($surveys["m"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
+	                        <td class="edit"><?php if($surveys["w"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
+	                        <td class="edit"><a href="javascript:void(showSurvey(<?php echo $surveys["id"]; ?>))"><span class="icon-pencil-squared"></span></a></td>
+	                    </tr>
+	            <?php endwhile; ?>
+	            	</tbody>
+	            </table>
+	            
+	            <div class="buttons">
+					<a class="button" href="javascript:void(showSurvey(0))"><span class="icon-plus-circled"></span> Umfrage hinzufügen</a>
+				</div>
+        	</div>
             
             <div class="modal fade" id="surveysModal" tabindex="-1" role="dialog" aria-hidden="true">
             </div>

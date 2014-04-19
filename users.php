@@ -31,7 +31,7 @@
 		<div id="user-management" class="container">
 			<h1>Nutzerverwaltung</h1>
 			<form id="data_form" name="data" action="save.php?group?<?php echo $group; ?>"></form>
-			<div class="users">
+			<div class="users box">
 				<h2>Nutzer</h2>
                 <ul class="nav nav-tabs">
                 	<li<?php if($group == "students"): ?> class="active"<?php endif; ?>><a href="users.php?group=students">Schüler</a></li>

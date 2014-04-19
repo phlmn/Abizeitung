@@ -131,44 +131,43 @@
 		<?php require("nav-bar.php") ?>
 		<div id="questions-management" class="container">
         	<h1>Fragenverwaltung</h1>
-            <h2>Fragen</h2>
-            <table class="table table-striped">
-            	<thead>
-                	<tr>
-                    	<th>Frage</th>
-                        <th class="edit"></th>
-                    </tr>
-                </thead>
-                <tbody>
-        	<?php
-				global $mysqli;
-				
-				$stmt = $mysqli->prepare("
-					SELECT id, title
-					FROM questions
-				");
-				
-				$stmt->execute();
-				$stmt->bind_result($questions["id"], $questions["title"]);
-				
-				while($stmt->fetch()):
-			?>
-            		<tr>
-                    	<td><?php echo $questions["title"] ?></td>
-                        <td class="edit"><a href="javascript:void(showQuestion(<?php echo $questions["id"] ?>))"><span class="icon-pencil-squared"></span></a></td>
-                    </tr>
-            <?php endwhile; ?>
-            	</tbody>
-            </table>
-            
-            <div class="buttons">
-				<a class="button" href="javascript:void(showQuestion(0))"><span class="icon-plus-circled"></span> Frage hinzufügen</a>
-			</div>
-            
+        	<div class="box">
+	            <h2>Fragen</h2>
+	            <table class="table table-striped">
+	            	<thead>
+	                	<tr>
+	                    	<th>Frage</th>
+	                        <th class="edit"></th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	        	<?php
+					global $mysqli;
+					
+					$stmt = $mysqli->prepare("
+						SELECT id, title
+						FROM questions
+					");
+					
+					$stmt->execute();
+					$stmt->bind_result($questions["id"], $questions["title"]);
+					
+					while($stmt->fetch()):
+				?>
+	            		<tr>
+	                    	<td><?php echo $questions["title"] ?></td>
+	                        <td class="edit"><a href="javascript:void(showQuestion(<?php echo $questions["id"] ?>))"><span class="icon-pencil-squared"></span></a></td>
+	                    </tr>
+	            <?php endwhile; ?>
+	            	</tbody>
+	            </table>
+	            
+	            <div class="buttons">
+					<a class="button" href="javascript:void(showQuestion(0))"><span class="icon-plus-circled"></span> Frage hinzufügen</a>
+				</div>
+        	</div>
             <div class="modal fade" id="questionsModal" tabindex="-1" role="dialog" aria-hidden="true">
-            </div>
-            
-            
+            </div> 
         </div>
 	</body>
 </html>
