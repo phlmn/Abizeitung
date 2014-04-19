@@ -3,10 +3,10 @@ function openImageSelector(id) {
 	$(id).click();
 }
 
-function uploadImage(category, idForm, idState, idPhoto) {
+function uploadImage(user, category, idForm, idState, idPhoto) {
 	var formData = new FormData($(idForm)[0]);
 	$.ajax({
-		url: 'upload.php?user=<?php echo $data["id"] ?>&category=' + category,
+		url: 'upload.php?user=' + user + '&category=' + category,
 		type: 'POST',
 		xhr: function() {
 			var myXhr = $.ajaxSettings.xhr();
@@ -31,7 +31,7 @@ function uploadImage(category, idForm, idState, idPhoto) {
 				error1 = 3;
 			}
 			
-			$(idPhoto).css("background-image", "none");
+			change_bg_img(idPhoto, "none");
 			
 			switch(error1) {
 				case 0:
@@ -84,8 +84,8 @@ function uploadImage(category, idForm, idState, idPhoto) {
 					);
 					break;
 				default:
-					$(idState).html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');        	
-					$(idPhoto).css("background-image", "url('" + data + "')");
+					$(idState).html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');
+					change_bg_img(idPhoto, data);
 			}
 		},
 		error: function(a,b) {
@@ -96,4 +96,8 @@ function uploadImage(category, idForm, idState, idPhoto) {
 		contentType: false,
 		processData: false
 	});
+}
+
+function change_bg_img(id, url) {
+	$(id).css("background-image", "url('" + url + "')");
 }

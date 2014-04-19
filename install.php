@@ -123,7 +123,7 @@
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `uid` int(11) NOT NULL,
 				  `category` int(11) NOT NULL,
-				  `file` varchar(255)
+				  `file` varchar(255),
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 			

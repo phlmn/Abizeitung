@@ -149,6 +149,49 @@
 		<title>Abizeitung - Dashboard</title>
 		<?php head(); ?>
         <script src="js/script.js" type="text/javascript"></script>
+        <script type="text/javascript">
+			<?php 
+				$stmt = $mysqli->prepare("
+					SELECT file
+					FROM images
+					WHERE 
+						uid = ? AND
+						category = ?
+					ORDER BY id DESC
+					LIMIT 1
+				");
+				
+				$stmt->bind_param("ii", $data["id"], intval(1));
+				$stmt->execute();
+				
+				$stmt->bind_result($enrollment);
+				$stmt->fetch();
+				
+				$stmt->close();
+				
+				$stmt = $mysqli->prepare("
+					SELECT file
+					FROM images
+					WHERE 
+						uid = ? AND
+						category = ?
+					ORDER BY id DESC
+					LIMIT 1
+				");
+				
+				$stmt->bind_param("ii", $data["id"], intval(2));
+				$stmt->execute();
+				
+				$stmt->bind_result($current);
+				$stmt->fetch();
+				
+				$stmt->close();
+			?>
+			$(document).ready(function(){
+				change_bg_img('#photo-enrollment', '<?php echo $enrollment; ?>');
+				change_bg_img('#photo-current', '<?php echo $current; ?>');
+			});
+		</script>
 	</head>
 	
 	<body>
@@ -210,7 +253,7 @@
 						<div id="photo-enrollment" class="photo">
 							<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data" ></form>
 		                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(1, '#image-form-enrollment', '#photo-upload-state-enrollment', '#photo-enrollment')" />
+							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 1, '#image-form-enrollment', '#photo-upload-state-enrollment', '#photo-enrollment')" />
 							<div class="upload">
 								<a href="javascript: openImageSelector('#photo-upload-enrollment')">
 		                        	<span id="photo-upload-state-enrollment">
@@ -227,7 +270,7 @@
 		                <div id="photo-current" class="photo">
 		                	<form action="upload.php" id="image-form-current" enctype="multipart/form-data" ></form>
 		                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-							<input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(2, '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
+							<input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 2, '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
 		                	<div class="upload">
 		                    	<a href="javascript: openImageSelector('#photo-upload-current')">
 		                        	<span id="photo-upload-state-current">
