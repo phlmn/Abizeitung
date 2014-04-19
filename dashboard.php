@@ -140,13 +140,6 @@
 	
 	$stmt->close();
 	
-	/*$survey_answers = array(
-		0 => array(
-			"m" => 1,
-			"w" => 3
-		)
-	);*/
-	
 ?>
 
 
@@ -247,7 +240,7 @@
 			
 			<div class="questions box">
 				<h2>Fragen</h2>
-				<table>
+				<div class="question-list row">
 				<?php foreach($questions as $key => $question): 
 					$text = "";
 					
@@ -265,13 +258,12 @@
 					
 					$stmt->close();					
 				?>
-					<tr>
-						<td class="title"><?php echo $question["title"] ?></td>
-						<td><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $text ?></textarea></td>
-					</tr>
+					<div class="col-sm-6 question">
+						<div class="title"><?php echo $question["title"] ?></div>
+						<div class=""><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $text ?></textarea></div>
+					</div>
 				<?php endforeach; ?>
-				</table>
-			
+				</div>
 			</div>
 			
 			<div class="surveys box">
