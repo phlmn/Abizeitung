@@ -131,7 +131,7 @@
 		<?php require("nav-bar.php") ?>
 		<div id="questions-management" class="container">
         	<h1>Fragenverwaltung</h1>
-        	<div class="box">
+        	<div class="box questions">
 	            <h2>Fragen</h2>
 	            <table class="table table-striped">
 	            	<thead>

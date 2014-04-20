@@ -144,7 +144,7 @@
 		<?php require("nav-bar.php") ?>
 		<div id="surveys-management" class="container">
         	<h1>Umfragenverwaltung</h1>
-        	<div class="box">
+        	<div class="box surveys">
 	            <h2>Umfragen</h2>
 	            <table class="table table-striped">
 	            	<thead>
