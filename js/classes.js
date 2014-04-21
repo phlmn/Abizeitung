@@ -11,7 +11,7 @@ var key = 0;
 
 
 function showClass(id) {
-	if(key == 17) {
+	if(key == 18) {
 		editClass(id);
 		return;
 	}
