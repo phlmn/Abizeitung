@@ -148,7 +148,7 @@
 	<head>
 		<title>Abizeitung - Dashboard</title>
 		<?php head(); ?>
-        <script src="js/script.js" type="text/javascript"></script>
+        <script src="js/dashboard.js" type="text/javascript"></script>
         <script type="text/javascript">
 			<?php 
 				$stmt = $mysqli->prepare("
