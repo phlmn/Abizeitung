@@ -9,7 +9,7 @@
 
 	$data = UserManager::get_userdata($_SESSION["user"]);	
 
-if(isset($_GET["editClass"])) {
+	if(isset($_GET["editClass"])) {
 		global $mysqli;
 ?>
 		<div class="modal-dialog">
