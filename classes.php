@@ -12,6 +12,142 @@
 ?>
 
 <?php 
+
+if(isset($_GET["editClass"])) {
+		global $mysqli;
+?>
+		<div class="modal-dialog">
+        	<div class="modal-content">
+            	<form id="modal-form" method="post" action="classes.php?action=<?php echo ($_GET["editClass"]) ? "update&class=" . intval($_GET["editClass"]) : "new" ?>"></form>
+                    <div class="modal-header">
+                        <button type="button" class="close" form="modal-form" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4>Kurs</h4>
+                    </div>
+                    <div class="modal-body">
+                        <?php
+							$select["tutor"] = 0;
+							$select["name"] = "";
+							
+							if($_GET["editClass"]) {
+								$stmt = $mysqli->prepare("
+									SELECT name, tutor
+									FROM classes
+									WHERE id = ?
+									LIMIT 1
+								");
+								
+								$stmt->bind_param("i", intval($_GET["editClass"]));
+								$stmt->execute();
+								
+								$stmt->bind_result($select["name"], $select["tutor"]);
+								$stmt->fetch();
+								
+								$stmt->close();
+							}
+						?>
+                        <input type="text" name="classname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Kursname eingeben..."/>
+                        <select name="tutor" form="modal-form">
+                        	<option value="0">-</option>
+                            <?php
+								$stmt = $mysqli->prepare("
+									SELECT teacher.id, users.lastname
+									FROM teacher
+									INNER JOIN users ON teacher.uid = users.id
+								");
+								
+								$stmt->execute();
+								$stmt->bind_result($tutor["id"], $tutor["name"]);
+								
+								while($stmt->fetch()) :
+							?>
+                            <option value="<?php echo $tutor["id"] ?>"<?php if($tutor["id"] == $select["tutor"]): ?> selected<?php endif; ?>><?php echo $tutor["name"] ?></option>
+                            <?php 
+								endwhile;
+								
+								$stmt->close();
+							?>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                    <?php if($_GET["editClass"]) : ?>
+                    	<button type="button" class="btn btn-default delete" onClick="javascript:void(window.location='classes.php?action=delete&class=<?php echo $_GET["editClass"]; ?>')" data-dismiss="modal">Löschen</button>
+                    <?php endif; ?>
+                    	<button type="button" class="btn btn-default" form="modal-form" data-dismiss="modal">Schließen</button>
+                    	<button type="submit" class="btn btn-default" form="modal-form">Speichern</button>
+                    </div>
+                </form>
+        	</div>
+        </div>
+<?php
+
+	die;
+}
+
+if(isset($_GET["action"])) {
+	if($_GET["action"] == "new") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			INSERT INTO classes (
+				name, tutor
+			) VALUES (
+				?, ?
+			)
+		");
+		
+		$stmt->bind_param("si", null_on_empty($_POST["classname"]), intval($_POST["tutor"]));
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		
+		header("Location: ./classes.php?saved");
+		
+		die;
+	}
+	else if($_GET["action"] == "update") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			UPDATE classes
+			SET
+				name = ?,
+				tutor = ?
+			WHERE id = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), intval($_POST["tutor"]), intval($_GET["class"]));
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		
+		header("Location: ./classes.php?saved");
+		
+		die;
+	}
+	else if($_GET["action"] == "delete") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			DELETE FROM classes
+			WHERE id = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("i", intval($_GET["class"]));
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		
+		header("Location: ./classes.php?saved");
+		
+		die;
+	}
+}
+
 if(isset($_GET["class"])) {
 	global $mysqli;
 	
@@ -97,8 +233,16 @@ if(isset($_GET["class"])) {
 			});
 		
 			var selectedClass = -1;
+			var key = 0;
+			
+			
 			
 			function showClass(id) {
+				if(key == 17) {
+					editClass(id);
+					return;
+				}
+				
 				if(selectedClass == id)
 					id = -1;
 				selectedClass = id;
@@ -151,9 +295,23 @@ if(isset($_GET["class"])) {
 				$(".sidebar .users ul li:contains(" + $(".sidebar .head input.filter").val() + ")").show();
 			}
 			
+			function editClass(id) {
+				$('#classesModal').modal();
+				$('#classesModal').load("classes.php?editClass=" + id);		
+			}
+			
 			$(document).ready(function() {
 				showClass(-1);
 			});
+			
+			document.onkeydown = function(event) {
+				event = event || window.event;
+				key = event.keyCode;
+			}
+			
+			document.onkeyup = function() {
+				key = 0
+			};
 		</script>
 	</head>
 	
@@ -177,7 +335,7 @@ if(isset($_GET["class"])) {
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="classes">					
-						<div class="addClass"></div>
+						<div class="addClass" onClick="javascript:void(editClass(0))"></div>
 						<?php while($stmt->fetch()): ?>
 						<div data-classid="<?php echo $class["id"] ?>" onclick="showClass(<?php echo $class["id"] ?>)">
 							<div class="info">
@@ -206,6 +364,9 @@ if(isset($_GET["class"])) {
 				</div>
 			</div>
 			<?php $stmt->close(); ?>
+            
+            <div class="modal fade" id="classesModal" tabindex="-1" role="dialog" aria-hidden="true">
+            </div> 
 
 		</div>
 	</body>

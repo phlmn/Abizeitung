@@ -329,7 +329,7 @@
 						?>
 							<span class="icon-male" />  
 							<select name="survey_m_<?php echo $key ?>" form="data_form">
-								<option value=""<?php echo ($answer) ? "" : " selected" ?>>-</option>
+								<option value="0"<?php echo ($answer) ? "" : " selected" ?>>-</option>
 								<?php foreach($students as $student) {
 									if($student["gender"] == "m") {
 										echo "<option";
