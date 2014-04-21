@@ -8,10 +8,6 @@
 	check_admin(); 
 
 	$data = UserManager::get_userdata($_SESSION["user"]);	
-	
-?>
-
-<?php 
 
 if(isset($_GET["editClass"])) {
 		global $mysqli;
