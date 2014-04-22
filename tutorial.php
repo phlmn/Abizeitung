@@ -240,7 +240,8 @@ if(isset($_GET["tutorial"])) {
 					SELECT tutorial.id, tutorial.name, teacher.id, users.id, users.lastname
 					FROM tutorial
 					LEFT JOIN teacher ON tutorial.tutor = teacher.id
-					LEFT JOIN users ON teacher.uid = users.id;
+					LEFT JOIN users ON teacher.uid = users.id
+					ORDER BY tutorial.name ASC;
 				");	
 				
 				$stmt->execute();

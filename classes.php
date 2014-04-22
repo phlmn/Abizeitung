@@ -242,7 +242,8 @@ if(isset($_GET["class"])) {
 					SELECT classes.id, classes.name, teacher.id, users.id, users.lastname
 					FROM classes
 					LEFT JOIN teacher ON classes.tutor = teacher.id
-					LEFT JOIN users ON teacher.uid = users.id;
+					LEFT JOIN users ON teacher.uid = users.id
+					ORDER BY classes.name ASC;
 				");	
 				
 				$stmt->execute();
