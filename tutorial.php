@@ -7,186 +7,282 @@
 	check_login();
 	check_admin(); 
 
-	$data = UserManager::get_userdata($_SESSION["user"]);
-	
-	if(isset($_GET["action"])) {
-		if($_GET["action"] == "new") {
-	?>
-        <div class="modal-dialog">
+	$data = UserManager::get_userdata($_SESSION["user"]);	
+
+	if(isset($_GET["edittutorial"])) {
+		global $mysqli;
+?>
+		<div class="modal-dialog">
         	<div class="modal-content">
-            	<form id="new_tutorial_form" method="post" action="tutorial.php?action=insert"></form>
-                <div class="modal-header">
-                	<button type="button" class="close" form="new_tutorial_form" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4>Neues Tutorium</h4>
-                </div>
-                <div class="modal-body">
-                    <input type="text" name="name" form="new_tutorial_form" placeholder="Name eingeben..." />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" form="new_tutorial_form" data-dismiss="modal">Schließen</button>
-                    <button type="submit" class="btn btn-default" form="new_tutorial_form">Speichern</button>
-                </div>
+            	<form id="modal-form" method="post" action="tutorial.php?action=<?php echo ($_GET["edittutorial"]) ? "update&tutorial=" . intval($_GET["edittutorial"]) : "new" ?>"></form>
+                    <div class="modal-header">
+                        <button type="button" class="close" form="modal-form" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4>Tutorium</h4>
+                    </div>
+                    <div class="modal-body">
+                        <?php
+							$select["tutor"] = 0;
+							$select["name"] = "";
+							
+							if($_GET["edittutorial"]) {
+								$stmt = $mysqli->prepare("
+									SELECT name, tutor
+									FROM tutorial
+									WHERE id = ?
+									LIMIT 1
+								");
+								
+								$stmt->bind_param("i", intval($_GET["edittutorial"]));
+								$stmt->execute();
+								
+								$stmt->bind_result($select["name"], $select["tutor"]);
+								$stmt->fetch();
+								
+								$stmt->close();
+							}
+						?>
+                        <input type="text" name="tutorialname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Tutoriumname eingeben..."/>
+                        <select name="tutor" form="modal-form">
+                        	<option value="0">-</option>
+                            <?php
+								$stmt = $mysqli->prepare("
+									SELECT teacher.id, users.lastname
+									FROM teacher
+									INNER JOIN users ON teacher.uid = users.id
+								");
+								
+								$stmt->execute();
+								$stmt->bind_result($tutor["id"], $tutor["name"]);
+								
+								while($stmt->fetch()) :
+							?>
+                            <option value="<?php echo $tutor["id"] ?>"<?php if($tutor["id"] == $select["tutor"]): ?> selected<?php endif; ?>><?php echo $tutor["name"] ?></option>
+                            <?php 
+								endwhile;
+								
+								$stmt->close();
+							?>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                    <?php if($_GET["edittutorial"]) : ?>
+                    	<button type="button" class="btn btn-default delete" onClick="javascript:void(window.location='tutorial.php?action=delete&tutorial=<?php echo $_GET["edittutorial"]; ?>')" data-dismiss="modal">Löschen</button>
+                    <?php endif; ?>
+                    	<button type="button" class="btn btn-default" form="modal-form" data-dismiss="modal">Schließen</button>
+                    	<button type="submit" class="btn btn-default" form="modal-form">Speichern</button>
+                    </div>
+                </form>
         	</div>
         </div>
-	<?php
-		
-			db_close();
-			
-			die;
-		
-		}
-		else if($_GET["action"] == "insert") {
-			global $mysqli;
-			
-			$stmt = $mysqli->prepare("
-				INSERT INTO tutorial (
-					name
-				) VALUES (
-					?
-				)
-			");
-			
-			$stmt->bind_param("s", null_on_empty($_POST["name"]));
-			$stmt->execute();
-			$stmt->close();
-			
-			db_close();
-			
-			header("Location: ./tutorial.php?saved");
-			
-			die;
-		}
-		else if($_GET["action"] == "tutor") {
-			global $mysqli;
-			
-			$stmt = $mysqli->prepare("
-				SELECT id
-				FROM tutorial
-			");
-			
-			$stmt->execute();
-			$stmt->bind_result($id);
-			$stmt->store_result();
-			
-			while($stmt->fetch()) {
-				if(isset($_POST["tutorial_" . $id])) {
-					$stmt2 = $mysqli->prepare("
-						UPDATE tutorial
-						SET tutor = ?
-						WHERE id = ?
-					");
-					
-					$stmt2->bind_param("ii", intval($_POST["tutorial_" . $id]), $id);
-					$stmt2->execute();
-					$stmt2->close();
-				}
-			}
-			
-			$stmt->free_result();
-			$stmt->close();
-			
-			db_close();
-			
-			header("Location: ./tutorial.php?saved");
-			
-			die;
-		}
-		
-	}
-?>
+<?php
 
+	die;
+}
+
+if(isset($_GET["action"])) {
+	if($_GET["action"] == "new") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			INSERT INTO tutorial (
+				name, tutor
+			) VALUES (
+				?, ?
+			)
+		");
+		
+		$stmt->bind_param("si", null_on_empty($_POST["tutorialname"]), intval($_POST["tutor"]));
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		
+		header("Location: ./tutorial.php?saved");
+		
+		die;
+	}
+	else if($_GET["action"] == "update") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			UPDATE tutorial
+			SET
+				name = ?,
+				tutor = ?
+			WHERE id = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("sii", null_on_empty($_POST["tutorialname"]), intval($_POST["tutor"]), intval($_GET["tutorial"]));
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		
+		header("Location: ./tutorial.php?saved");
+		
+		die;
+	}
+	else if($_GET["action"] == "delete") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			DELETE FROM tutorial
+			WHERE id = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("i", intval($_GET["tutorial"]));
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		
+		header("Location: ./tutorial.php?saved");
+		
+		die;
+	}
+}
+
+if(isset($_GET["tutorial"])) {
+	global $mysqli;
+	
+	$tutorialId = intval($_GET["tutorial"]);
+	
+	$stmt = $mysqli->prepare("
+		SELECT name 
+		FROM tutorial
+		WHERE id = ?
+		LIMIT 1");
+		
+	$stmt->bind_param("i", $tutorialId);
+	$stmt->execute();
+	
+	$stmt->bind_result($tutorial["name"]);
+	
+	$stmt->fetch();
+	
+	if($tutorialId == -1) $tutorial["name"] = "Alle Nutzer";
+	$json = array("name" => $tutorial["name"]);
+
+	$stmt->close();
+	
+	if($tutorialId == -1) {
+		$stmt = $mysqli->prepare("
+			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+			FROM users
+			LEFT JOIN tutorial AS tutorium ON users.class = tutorium.id
+			LEFT JOIN teacher ON tutorium.tutor = teacher.id
+			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+			ORDER BY users.lastname
+		");	
+	}
+	else {
+		$stmt = $mysqli->prepare("
+			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+			FROM users
+			LEFT JOIN tutorial AS tutorium ON users.class = tutorium.id
+			LEFT JOIN teacher ON tutorium.tutor = teacher.id
+			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+			WHERE users.class = ?
+			ORDER BY users.lastname
+		");
+		
+		$stmt->bind_param("i", $tutorialId);
+	}
+	
+	$stmt->execute();
+	
+	$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["tutorial"], $user["tutor"]);
+	
+	$json["users"] = array();
+	while($stmt->fetch()) {
+		array_push($json["users"], array(
+			"id" => $user["id"],
+			"prename" => $user["prename"],
+			"lastname" => $user["lastname"],
+			"tutorial" => $user["tutorial"],
+			"tutor" => $user["tutor"]
+		));
+	}
+	
+	$stmt->close();
+	
+	echo json_encode($json);
+	exit;
+}
+?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Abizeitung - Tutorien</title>
+		<title>Abizeitung - Tutoriumsverwaltung</title>
 		<?php head(); ?>
-        <script type="text/javascript">
-			function addTutorial() {
-				$('#tutorialModal').modal();
-				$('#tutorialModal').load("tutorial.php?action=new");		
-			}
+        <script type="text/javascript" src="js/groups.js"></script>
+		<script type="text/javascript">
+		
+			setArgs("tutorial", "tutorial", "tutorial", "tutorial-management", "data-tutorialid", "tutorialModal");
+			
+			$(document).ready(function() {
+				showGroup(-1);
+			});
 		</script>
 	</head>
-    
-    <body>
+	
+	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="questions-management" class="container">
-        	<h1>Tutorien Zuordnung</h1>
-        	<div class="box">
-	            <h2>Tutorien</h2>
-	            <form id="tutorial_form" name="tutorial" method="post" action="tutorial.php?action=tutor" ></form>
-	            <table class="table table-striped">
-	                <thead>
-	                    <tr>
-	                        <th>Tutorium</th>
-	                        <th>Tutor</th>
-	                    </tr>
-	                </thead>
-	                <tbody>
-	            <?php
-	                global $mysqli;
-	                
-	                $stmt = $mysqli->prepare("
-	                    SELECT tutorial.id, tutorial.name, tutorial.tutor
-	                    FROM tutorial
-	                    LEFT JOIN teacher ON tutorial.tutor = teacher.id
-	                    LEFT JOIN users ON teacher.uid = users.id
-						ORDER BY tutorial.id ASC
-	                ");
-	                
-	                $stmt->execute();
-	                $stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["tutor"]);
-					$stmt->store_result();
-	                
-	                while($stmt->fetch()):
-				?>
-	            		<tr>
-	                    	<td><?php echo $tutorial["name"] ?></td>
-	                    	<td>
-	                        	<select name="tutorial_<?php echo  $tutorial["id"] ?>" form="tutorial_form">
-	                            	<option value="0">-</option>
-	            <?php
-					
-						$stmt2 = $mysqli->prepare("
-							SELECT teacher.id, users.lastname
-							FROM teacher
-							LEFT JOIN users ON teacher.uid = users.id
-						");
-						
-						$stmt2->execute();
-						$stmt2->bind_result($teacher["id"], $teacher["lastname"]);
-						$stmt2->store_result();
-						
-						while($stmt2->fetch()):
-	            ?>
-	                            	<option value="<?php echo $teacher["id"]; ?>" <?php if($tutorial["tutor"] == $teacher["id"]): ?> selected<?php endif; ?>><?php echo $teacher["lastname"] ?></option>
-	            <?php 	endwhile; 
-						
-						$stmt2->free_result();
-						$stmt2->close();
-				?>
-	                            </select>
-	                        </td>
-	                    </tr>
-	            <?php 
-					endwhile; 
-					
-					$stmt->free_result();
-					$stmt->close();
-				?>
-	                </tbody>
-	            </table>
-	            
-	            <div class="buttons">
-	            	<button type="submit" form="tutorial_form">Speichern</button>
-					<a class="button" href="javascript:void(addTutorial())"><span class="icon-plus-circled"></span> Tutorium hinzufügen</a>
+		<div id="tutorial-management" class="container-fluid">
+			<h1>Tutorienverwaltung</h1>
+			<form id="data_form" name="data" action="save.php"></form>
+			<?php
+				global $mysqli;
+				$stmt = $mysqli->prepare("
+					SELECT tutorial.id, tutorial.name, teacher.id, users.id, users.lastname
+					FROM tutorial
+					LEFT JOIN teacher ON tutorial.tutor = teacher.id
+					LEFT JOIN users ON teacher.uid = users.id;
+				");	
+				
+				$stmt->execute();
+				$stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["teacher"]["id"], $tutorial["teacher"]["userid"], $tutorial["teacher"]["lastname"]);
+			?>
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="groups">
+						<div class="addGroup" onClick="javascript:void(editGroup(0))"></div>
+						<?php while($stmt->fetch()): ?>
+						<div data-classid="<?php echo $tutorial["id"] ?>" onclick="showGroup(<?php echo $tutorial["id"] ?>)">
+							<div class="info">
+								<div class="name"><?php echo $tutorial["name"] ?></div>
+								<div class="teacher"><?php echo $tutorial["teacher"]["lastname"] ?></div>
+							</div>
+						</div>
+						<?php endwhile; ?>
+					</div>
 				</div>
-        	</div>
-            <div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-hidden="true">
-            </div>
+				<div class="col-sm-4">
+					<div class="sidebar affix col-sm-4">
+						<div class="head row">
+							<div class="col-sm-6">
+								<h3 class="title">Alle Nutzer</h3>
+							</div>
+							<div class="col-sm-6">
+								<input class="form-control filter" onkeyup="filter()" type="search" placeholder="Suchen..." />
+							</div>
+						</div>
+						<div class="users">
+							<ul>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php $stmt->close(); ?>
             
-        </div>
+            <div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-hidden="true">
+            </div> 
+
+		</div>
 	</body>
 </html>
 
