@@ -41,7 +41,7 @@
 								$stmt->close();
 							}
 						?>
-                        <input type="text" name="tutorialname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Tutoriumname eingeben..."/>
+                        <input type="text" name="tutorialname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Tutoriumsname"/>
                         <select name="tutor" form="modal-form">
                         	<option value="0">-</option>
                             <?php
