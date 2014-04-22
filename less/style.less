@@ -129,6 +129,28 @@ div.box {
 	}
 }
 
+
+select {
+	height: 32px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	padding: 0 32px 0 10px;
+	border-radius: 0;
+	cursor: pointer;
+	text-indent: 0.01px;
+	text-overflow: " ";
+	border: 1px solid #ddd;	
+	background: url("arrow-down.png") no-repeat right;
+	background-size: 32px 32px;
+	background-color: #fff;
+	
+	&:focus {
+		outline: none;	
+		border-color: #777;
+	}
+}
+
 /* ===== Login ===== */
 
 
@@ -329,13 +351,35 @@ div.box {
 	
 	div.surveys {
 		
-		td {
-			width: 200px;
-			height: 40px;
+		.survey-list {
+			margin-top: 24px;
 			
-			&.title {
-				width: 300px;
-			}
+			> div {
+				margin-bottom: 12px;
+				
+				div.title {
+					padding-top: 5px;
+				}
+				
+				div {
+					margin-bottom: 12px; 
+				}	
+				
+				.icon-male, .icon-female {
+					position: relative;
+					padding-left: 30px;
+					
+					&:before {
+						position: absolute;
+						top: 9px;
+						left: 0;
+					}
+					
+					select {
+						width: 100%;
+					}	
+				}
+			}	
 		}
 	}
 	

@@ -318,55 +318,57 @@
 			
 			<div class="surveys box">
 				<h2>Umfragen</h2>
-				<table>
+				<div class="survey-list">
 				<?php foreach($surveys as $key => $survey): ?>
-					<tr>
-						<td class="title"><?php echo $survey["title"] ?></td>
-						<td>
+					<div class="row">
+						<div class="col-xs-12 col-sm-4 title"><?php echo $survey["title"] ?></div>
+						<div class="col-xs-12 col-sm-4">
 						<?php if($survey["m"] === true):
 							$answer = 0;
 							if(isset($survey_answers[$key]))
 								$answer = $survey_answers[$key]["m"];		
 						?>
-							<span class="icon-male" />  
-							<select name="survey_m_<?php echo $key ?>" form="data_form">
-								<option value="0"<?php echo ($answer) ? "" : " selected" ?>>-</option>
-								<?php foreach($students as $student) {
-									if($student["gender"] == "m") {
-										echo "<option";
-										if($answer == $student["id"])
-											echo " selected";
-										echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
+							<div class="icon-male">
+								<select name="survey_m_<?php echo $key ?>" form="data_form">
+									<option value="0"<?php echo ($answer) ? "" : " selected" ?>>-</option>
+									<?php foreach($students as $student) {
+										if($student["gender"] == "m") {
+											echo "<option";
+											if($answer == $student["id"])
+												echo " selected";
+											echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
+										}
 									}
-								}
-								?>
-							</select>
+									?>
+								</select>
+							</div>  
 						<?php endif; ?>
-						</td>
-						<td>
+						</div>
+						<div class="col-xs-12 col-sm-4">
 						<?php if($survey["w"] === true): 
 							$answer = 0;
 							if(isset($survey_answers[$key]))
 								$answer = $survey_answers[$key]["w"];
 						?>
-							<span class="icon-female" /> 
-							<select name="survey_w_<?php echo $key ?>" form="data_form">
-								<option value="" <?php echo ($answer) ? "" : " selected" ?>>-</option>
-								<?php foreach($students as $student) {
-									if($student["gender"] == "w") {
-										echo "<option";
-										if($answer == $student["id"])
-											echo " selected";
-										echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
+							<div class="icon-female">
+								<select name="survey_w_<?php echo $key ?>" form="data_form">
+									<option value="" <?php echo ($answer) ? "" : " selected" ?>>-</option>
+									<?php foreach($students as $student) {
+										if($student["gender"] == "w") {
+											echo "<option";
+											if($answer == $student["id"])
+												echo " selected";
+											echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
+										}
 									}
-								}
-								?>
-							</select>
-						</td>
+									?>
+								</select>
+							</div>
+						</div>
 						<?php endif; ?>
-					</tr>
+					</div>
 				<?php endforeach; ?>
-				</table>
+				</div>
 			</div>
 			
 			<div class="buttons">
