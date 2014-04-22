@@ -189,10 +189,10 @@ if(isset($_GET["class"])) {
 			WHERE users_classes.class = ?
 			ORDER BY users.lastname
 		");
+		
+		$stmt->bind_param("i", $classId);
 	}
 	
-	
-	$stmt->bind_param("i", $classId);
 	$stmt->execute();
 	
 	$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["class"], $user["tutor"]);
