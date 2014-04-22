@@ -9,12 +9,12 @@
 
 	$data = UserManager::get_userdata($_SESSION["user"]);	
 
-	if(isset($_GET["editClass"])) {
+	if(isset($_GET["editclass"])) {
 		global $mysqli;
 ?>
 		<div class="modal-dialog">
         	<div class="modal-content">
-            	<form id="modal-form" method="post" action="classes.php?action=<?php echo ($_GET["editClass"]) ? "update&class=" . intval($_GET["editClass"]) : "new" ?>"></form>
+            	<form id="modal-form" method="post" action="classes.php?action=<?php echo ($_GET["editclass"]) ? "update&class=" . intval($_GET["editclass"]) : "new" ?>"></form>
                     <div class="modal-header">
                         <button type="button" class="close" form="modal-form" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4>Kurs</h4>
@@ -24,7 +24,7 @@
 							$select["tutor"] = 0;
 							$select["name"] = "";
 							
-							if($_GET["editClass"]) {
+							if($_GET["editclass"]) {
 								$stmt = $mysqli->prepare("
 									SELECT name, tutor
 									FROM classes
@@ -32,7 +32,7 @@
 									LIMIT 1
 								");
 								
-								$stmt->bind_param("i", intval($_GET["editClass"]));
+								$stmt->bind_param("i", intval($_GET["editclass"]));
 								$stmt->execute();
 								
 								$stmt->bind_result($select["name"], $select["tutor"]);
@@ -65,8 +65,8 @@
                         </select>
                     </div>
                     <div class="modal-footer">
-                    <?php if($_GET["editClass"]) : ?>
-                    	<button type="button" class="btn btn-default delete" onClick="javascript:void(window.location='classes.php?action=delete&class=<?php echo $_GET["editClass"]; ?>')" data-dismiss="modal">Löschen</button>
+                    <?php if($_GET["editclass"]) : ?>
+                    	<button type="button" class="btn btn-default delete" onClick="javascript:void(window.location='classes.php?action=delete&class=<?php echo $_GET["editclass"]; ?>')" data-dismiss="modal">Löschen</button>
                     <?php endif; ?>
                     	<button type="button" class="btn btn-default" form="modal-form" data-dismiss="modal">Schließen</button>
                     	<button type="submit" class="btn btn-default" form="modal-form">Speichern</button>
@@ -220,10 +220,13 @@ if(isset($_GET["class"])) {
 	<head>
 		<title>Abizeitung - Kursverwaltung</title>
 		<?php head(); ?>
-        <script type="text/javascript" src="js/classes.js"></script>
+        <script type="text/javascript" src="js/groups.js"></script>
 		<script type="text/javascript">
+			
+			setArgs("classes", "class", "class", "class-management", "data-classid", "classesModal");
+			
 			$(document).ready(function() {
-				showClass(-1);
+				showGroup(-1);
 			});
 		</script>
 	</head>
@@ -247,10 +250,10 @@ if(isset($_GET["class"])) {
 			?>
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="classes">					
-						<div class="addClass" onClick="javascript:void(editClass(0))"></div>
+					<div class="groups">					
+						<div class="addGroup" onClick="javascript:void(editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
-						<div data-classid="<?php echo $class["id"] ?>" onclick="showClass(<?php echo $class["id"] ?>)">
+						<div data-classid="<?php echo $class["id"] ?>" onclick="showGroup(<?php echo $class["id"] ?>)">
 							<div class="info">
 								<div class="name"><?php echo $class["name"] ?></div>
 								<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>

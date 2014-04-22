@@ -1,29 +1,39 @@
 
+var selectedGroup = -1;
+var key = 0;
+
+var args = new Array();
+
+function setArgs(pagename, arg, classname, management, dataId, modal) {
+	args["pagename"] = pagename; 		// classes
+	args["argument"] = arg; 			// class
+	
+	args["class"] = classname;			// class
+	args["management"] = management; 	// class-management
+	args["dataId"] = dataId; 			// data-classid
+	args["modal"] = modal; 				// classesModal
+}
+
 $.expr[":"].contains = $.expr.createPseudo(function(arg) {
 	return function( elem ) {
 		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
 	};
 });
 
-var selectedClass = -1;
-var key = 0;
-
-
-
-function showClass(id) {
+function showGroup(id) {
 	if(key == 18) {
-		editClass(id);
+		editGroup(id);
 		return;
 	}
 	
-	if(selectedClass == id)
+	if(selectedGroup == id)
 		id = -1;
-	selectedClass = id;
+	selectedGroup = id;
 	
-	$.getJSON("classes.php?class=" + id, function(data) {
+	$.getJSON(args["pagename"] + ".php?" + args["argument"] + "=" + id, function(data) {
 		$(".sidebar .head .title").text(data["name"]);
 		$(".sidebar .head input.filter").val("");
-		if(id != -1) $(".sidebar .head").css("background-color", $(".classes > div[data-classid='" + id + "']").css("background-color"));
+		if(id != -1) $(".sidebar .head").css("background-color", $("." + args["class"] + " > div[" + args["dataId"] + "='" + id + "']").css("background-color"));
 		else $(".sidebar .head").css("background-color", "");
 		
 		$(".sidebar .users ul li").each(function(index, e) {
@@ -36,16 +46,16 @@ function showClass(id) {
 			});
 			
 			data["users"].forEach(function(e) {
-				var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="class">' + e["class"] + ' - ' + e["tutor"] + '</span></li>');
+				var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="' + args["class"] + '">' + e[args["class"]] + ' - ' + e["tutor"] + '</span></li>');
 				
 				$(li).hide(0).css("opacity", 0);
 				$(".sidebar .users ul").append(li);
 				$(li).draggable({
 					revert: true,
 					helper: "clone",
-					appendTo: "#class-management",
+					appendTo: "#" + args["management"],
 					start: function(e, ui) {
-						var count = $("#class-management div.sidebar div.users ul > li.selected").length;
+						var count = $("#" + args["management"] + " div.sidebar div.users ul > li.selected").length;
 						if(count > 1)
 							ui.helper.html(count + " Nutzer");	
 					}
@@ -68,9 +78,9 @@ function filter() {
 	$(".sidebar .users ul li:contains(" + $(".sidebar .head input.filter").val() + ")").show();
 }
 
-function editClass(id) {
-	$('#classesModal').modal();
-	$('#classesModal').load("classes.php?editClass=" + id);		
+function editGroup(id) {
+	$('#' + args["modal"]).modal();
+	$('#' + args["modal"]).load(args["pagename"] + ".php?edit" + args["argument"] + "=" + id);		
 }
 
 document.onkeydown = function(event) {
