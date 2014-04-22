@@ -252,7 +252,7 @@ if(isset($_GET["tutorial"])) {
 					<div class="groups">
 						<div class="addGroup" onClick="javascript:void(editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
-						<div data-classid="<?php echo $tutorial["id"] ?>" onclick="showGroup(<?php echo $tutorial["id"] ?>)">
+						<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="showGroup(<?php echo $tutorial["id"] ?>)">
 							<div class="info">
 								<div class="name"><?php echo $tutorial["name"] ?></div>
 								<div class="teacher"><?php echo $tutorial["teacher"]["lastname"] ?></div>

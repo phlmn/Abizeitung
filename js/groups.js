@@ -33,7 +33,7 @@ function showGroup(id) {
 	$.getJSON(args["pagename"] + ".php?" + args["argument"] + "=" + id, function(data) {
 		$(".sidebar .head .title").text(data["name"]);
 		$(".sidebar .head input.filter").val("");
-		if(id != -1) $(".sidebar .head").css("background-color", $("." + args["class"] + " > div[" + args["dataId"] + "='" + id + "']").css("background-color"));
+		if(id != -1) $(".sidebar .head").css("background-color", $(".groups > div[" + args["dataId"] + "='" + id + "']").css("background-color"));
 		else $(".sidebar .head").css("background-color", "");
 		
 		$(".sidebar .users ul li").each(function(index, e) {
