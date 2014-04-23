@@ -5,144 +5,329 @@
 	
 	if(isset($_GET["action"])) {
 		if($_GET["action"] == "install") {
-		
-			file_put_contents("config.php", "<?php
-	define('DB_HOST', '".mysql_real_escape_string($_POST['db-host'])."');
-	define('DB_USER', '".mysql_real_escape_string($_POST['db-user'])."');
-	define('DB_NAME', '".mysql_real_escape_string($_POST['db-name'])."');
-	define('DB_PASSWORD', '".mysql_real_escape_string($_POST['db-password'])."');
-?>");
 			
-			db_connect();
-	
-			$res = $mysqli->query("
-				CREATE TABLE `classes` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `name` varchar(45) DEFAULT NULL,
-				  `tutor` int(11) DEFAULT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+			if(isset($_GET["db"])) {
+				$db_host 		= mysql_real_escape_string($_GET['db-host']);
+				$db_user 		= mysql_real_escape_string($_GET['db-user']);
+				$db_name 		= mysql_real_escape_string($_GET['db-name']);
+				$db_password 	= mysql_real_escape_string($_GET['db-password']);
 				
-			$res = $mysqli->query("
-				CREATE TABLE `tutorial` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `name` varchar(45) DEFAULT NULL,
-				  `tutor` int(11) DEFAULT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");	
+				$admin_prename 	= null_on_empty($_GET['admin-prename']);
+				$admin_name		= null_on_empty($_GET['admin-name']);
+				$admin_mail		= null_on_empty($_GET['admin-mail']);
+				$admin_pw = $_GET['admin-pw'];
+			}
+			else {
+			
+				$db_host 		= mysql_real_escape_string($_POST['db-host']);
+				$db_user 		= mysql_real_escape_string($_POST['db-user']);
+				$db_name 		= mysql_real_escape_string($_POST['db-name']);
+				$db_password 	= mysql_real_escape_string($_POST['db-password']);
 				
-			$res = $mysqli->query("
-				CREATE TABLE `questions` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `title` varchar(255) DEFAULT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				$admin_prename 	= null_on_empty($_POST['admin-prename']);
+				$admin_name		= null_on_empty($_POST['admin-name']);
+				$admin_mail		= null_on_empty($_POST['admin-mail']);
+				$admin_pw = $_POST['admin-pw'];
 				
-			$res = $mysqli->query("
-				CREATE TABLE `subjects` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `name` varchar(45) DEFAULT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				file_put_contents(
+					"config.php", 
+					"<?php
+						define('DB_HOST', '" . $db_host ."');
+						define('DB_USER', '" . $db_user . "');
+						define('DB_NAME', '" . $db_name . "');
+						define('DB_PASSWORD', '" . $db_password . "');
+					?>"
+				);
 				
-			$res = $mysqli->query("
-				CREATE TABLE `surveys` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `title` varchar(255) DEFAULT NULL,
-				  `m` tinyint(4) DEFAULT NULL,
-				  `w` tinyint(4) DEFAULT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+			}
+			
+			if(db_connect() == -1) {
+				if(mysql_connect($db_host, $db_user, $db_password))
+					if(mysql_query("CREATE DATABASE IF NOT EXISTS `" . $db_name . "` DEFAULT CHARACTER SET utf8 ;")) {
+						
+						$db_host 		= "&db-host=" 		. $db_host;
+						$db_user 		= "&db-user=" 		. $db_user;
+						$db_name 		= "&db-name=" 		. $db_name;
+						$db_password 	= "&db-password=" 	. $db_password;
+						
+						$admin_prename 	= "&admin-prename=" . $admin_prename;
+						$admin_name 	= "&admin-name="	. $admin_name;
+						$admin_mail 	= "&admin-mail="	. $admin_mail;
+						$admin_pw = "&admin-pw=". $admin_pw;
+						
+						db_close();
+						
+						header("Location: ./install.php?action=install&db" . $db_host . $db_user . $db_name . $db_password . $admin_prename . $admin_name . $admin_mail . $admin_pw);
+						
+						die;
+					}
+					
+				db_close();
+					
+				header("Location: ./install.php?error=database");
 				
-			$res = $mysqli->query("
-				CREATE TABLE `user_questions` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `user` int(11) NOT NULL,
-				  `text` text,
-				  `question` int(11) NOT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				die;
+			}
+			
+			$res = $mysqli->multi_query("
+				-- TABLE CATEGORIES --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `user_surveys` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `user` int(11) NOT NULL,
-				  `survey` int(11) NOT NULL,
-				  `m` int(11) DEFAULT NULL,
-				  `w` int(11) DEFAULT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `categories` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `name` 		VARCHAR(45) NOT NULL,
+					  PRIMARY KEY (`id`)
+					) ENGINE = InnoDB;
+					
+				-- TABLE USERS --
+					
+					CREATE TABLE IF NOT EXISTS `users` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `prename` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `lastname` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `birthday` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `female` 		TINYINT(1) 	NULL 		DEFAULT NULL,
+					  `admin` 		TINYINT(1) 	NULL 		DEFAULT FALSE,
+					  `password` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `email` 		VARCHAR(45) NULL 		DEFAULT NULL,
+					  `updatetime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
+					  `activated` 	TINYINT(1) 	NOT NULL 	DEFAULT TRUE,
+					  PRIMARY KEY (`id`)
+					) ENGINE = InnoDB;
+					
+				-- TABLE TEACHERS --
+
+					CREATE TABLE IF NOT EXISTS `teachers` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `uid` 		INT(11) 	NOT NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_teacher_users_idx` (`uid` ASC),
+					  CONSTRAINT `fk_teacher_users`
+						FOREIGN KEY (`uid`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE CLASSES --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `users` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `prename` varchar(45) DEFAULT NULL,
-				  `lastname` varchar(45) DEFAULT NULL,
-				  `class` int(11) DEFAULT NULL,
-				  `birthday` varchar(45) DEFAULT NULL,
-				  `nickname` varchar(45) DEFAULT NULL,
-				  `female` tinyint(4) DEFAULT NULL,
-				  `admin` tinyint(4) DEFAULT '0',
-				  `password` varchar(45) NOT NULL,
-				  `email` varchar(45) NOT NULL,
-				  `updatetime` int(11) NOT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `classes` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `name` 		VARCHAR(45) NULL 		DEFAULT NULL,
+					  `teacher` 	INT(11) 	NULL 		DEFAULT NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_classes_teacher1_idx` (`teacher` ASC),
+					  CONSTRAINT `fk_classes_teacher1`
+						FOREIGN KEY (`teacher`)
+						REFERENCES `teachers` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE IMAGES --
+
+					CREATE TABLE IF NOT EXISTS `images` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `uid` 		INT(11) 	NOT NULL,
+					  `file` 		VARCHAR(255) NOT NULL,
+					  `category` 	INT(11) 	NULL 		DEFAULT NULL,
+					  `uploadtime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_images_categories1_idx` (`category` ASC),
+					  INDEX `fk_images_users1_idx` (`uid` ASC),
+					  CONSTRAINT `fk_images_categories1`
+						FOREIGN KEY (`category`)
+						REFERENCES `categories` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_images_users1`
+						FOREIGN KEY (`uid`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE QUESTION --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `teacher` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `uid` int(11) NOT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `questions` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `title` 		VARCHAR(255) NOT NULL,
+					  PRIMARY KEY (`id`)
+					) ENGINE = InnoDB;
+					
+				-- TABLE TUTORIALS --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `students` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `uid` int(11) NOT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `tutorials` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `name` 		VARCHAR(45) NULL 		DEFAULT NULL,
+					  `tutor` 		INT(11) 	NULL 		DEFAULT NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_tutorial_teacher1_idx` (`tutor` ASC),
+					  CONSTRAINT `fk_tutorial_teacher1`
+						FOREIGN KEY (`tutor`)
+						REFERENCES `teachers` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE STUDENTS --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `users_classes` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `user` int(11) NOT NULL,
-				  `class` int(11) NOT NULL,
-				  PRIMARY KEY (`id`)
-				  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `students` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `uid` 		INT(11) 	NOT NULL,
+					  `tutorial` 	INT(11) 	NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_students_users1_idx` (`uid` ASC),
+					  INDEX `fk_students_tutorial1_idx` (`tutorial` ASC),
+					  CONSTRAINT `fk_students_users1`
+						FOREIGN KEY (`uid`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_students_tutorial1`
+						FOREIGN KEY (`tutorial`)
+						REFERENCES `tutorials` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE SURVEYS --
+
+					CREATE TABLE IF NOT EXISTS `surveys` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `title` 		VARCHAR(255) NOT NULL,
+					  `m` 			TINYINT(1) 	NULL 		DEFAULT TRUE,
+					  `w` 			TINYINT(1) 	NULL 		DEFAULT TRUE,
+					  PRIMARY KEY (`id`)
+					) ENGINE = InnoDB;
+					
+				-- TABLE USERS_QUESTIONS --
+
+					CREATE TABLE IF NOT EXISTS `users_questions` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `user` 		INT(11) 	NOT NULL,
+					  `text` 		TEXT 		NULL 		DEFAULT NULL,
+					  `questions` 	INT(11) 	NOT NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_user_questions_questions1_idx` (`questions` ASC),
+					  INDEX `fk_user_questions_users1_idx` (`user` ASC),
+					  CONSTRAINT `fk_user_questions_questions1`
+						FOREIGN KEY (`questions`)
+						REFERENCES `questions` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_user_questions_users1`
+						FOREIGN KEY (`user`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE USERS_SURVEYS --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `categories` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `name` varchar(45) NOT NULL,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `users_surveys` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `user` 		INT(11) 	NOT NULL,
+					  `survey` 		INT(11) 	NOT NULL,
+					  `m` 			INT(11) 	NULL 		DEFAULT NULL,
+					  `w` 			INT(11) 	NULL 		DEFAULT NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_user_surveys_surveys1_idx` (`survey` ASC),
+					  INDEX `fk_user_surveys_users1_idx` (`user` ASC),
+					  INDEX `fk_user_surveys_users2_idx` (`m` ASC),
+					  INDEX `fk_user_surveys_users3_idx` (`w` ASC),
+					  CONSTRAINT `fk_user_surveys_surveys1`
+						FOREIGN KEY (`survey`)
+						REFERENCES `surveys` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_user_surveys_users1`
+						FOREIGN KEY (`user`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_user_surveys_users2`
+						FOREIGN KEY (`m`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_user_surveys_users3`
+						FOREIGN KEY (`w`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE STUDENTS_CLASSES --
 				
-			$res = $mysqli->query("
-				CREATE TABLE `images` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `uid` int(11) NOT NULL,
-				  `category` int(11) NOT NULL,
-				  `file` varchar(255),
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+					CREATE TABLE IF NOT EXISTS `students_classes` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `student` 	INT(11) 	NOT NULL,
+					  `class` 		INT(11) 	NOT NULL,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_students_classes_classes1_idx` (`class` ASC),
+					  INDEX `fk_students_classes_students1_idx` (`student` ASC),
+					  CONSTRAINT `fk_students_classes_classes1`
+						FOREIGN KEY (`class`)
+						REFERENCES `classes` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_students_classes_students1`
+						FOREIGN KEY (`student`)
+						REFERENCES `students` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+					
+				-- TABLE NICKNAMES --
+				
+					CREATE TABLE IF NOT EXISTS `nicknames` (
+					  `id` 			INT 		NOT NULL 	AUTO_INCREMENT,
+					  `nickname` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `from` 		INT(11) 	NOT NULL,
+					  `to` 			INT(11) 	NOT NULL,
+					  `accepted` 	TINYINT(1) 	NOT NULL 	DEFAULT TRUE,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_nicknames_users1_idx` (`from` ASC),
+					  INDEX `fk_nicknames_users2_idx` (`to` ASC),
+					  CONSTRAINT `fk_nicknames_users1`
+						FOREIGN KEY (`from`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION,
+					  CONSTRAINT `fk_nicknames_users2`
+						FOREIGN KEY (`to`)
+						REFERENCES `users` (`id`)
+						ON DELETE NO ACTION
+						ON UPDATE NO ACTION
+					) ENGINE = InnoDB;
+			");
+			
+			while($mysqli->next_result());
 			
 			$stmt = $mysqli->prepare("
 				INSERT INTO `users` (
-					`prename`, `lastname`, `admin`, `password`, `email`, `updatetime`
+					prename, lastname, admin, password, email
 				) VALUES (
-					?, ?, ?, ?, ?, ?
+					?, ?, ?, ?, ?
 				)
 			");
 			
 			$stmt->bind_param(
-				"ssissi",
-				null_on_empty($_POST["admin-prename"]),
-				null_on_empty($_POST["admin-name"]),
+				"ssiss",
+				$admin_prename,
+				$admin_name,
 				intval(1),
-				encrypt_pw($_POST["admin-pw"]),
-				null_on_empty($_POST["admin-mail"]),
-				intval(time())
+				encrypt_pw($admin_pw),
+				$admin_mail
 			);
 				
 			$stmt->execute();
@@ -155,7 +340,7 @@
 				LIMIT 1
 			");
 			
-			$stmt->bind_param("s", $mysqli->real_escape_string($_POST["admin-mail"]));
+			$stmt->bind_param("s", $admin_mail);
 			$stmt->execute();
 			
 			$stmt->bind_result($id);
@@ -175,6 +360,10 @@
 			$stmt->execute();
 			
 			$stmt->close();
+			
+			db_close();
+			
+			header("Location: ./install.php?saved");
 		}
 	}
 

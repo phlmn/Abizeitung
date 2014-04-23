@@ -9,6 +9,9 @@
 		include("config.php");
 		$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 		
+		if($mysqli->connect_errno)
+			return -1;
+		
 		$mysqli->set_charset("utf8");
 	}
 	
@@ -587,14 +590,11 @@
 	
 	
 	function null_on_empty($var) {
-		
-		global $mysqli;
-		
 		if(empty($var)) {
 			return NULL;	
 		}
 		else {
-			return $mysqli->real_escape_string($var);
+			return mysql_real_escape_string($var);
 		}
 	}
 	
