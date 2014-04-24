@@ -373,27 +373,55 @@
 <html>
 	<head>
 		<title>Abizeitung - Installation</title>
-		<link rel="stylesheet" href="style.css">
-		<link rel="stylesheet" href="icons/css/fontello.css">
-	    <!--[if IE 7]>
-	    <link rel="stylesheet" href="icons/css/fontello-ie7.css">
-	    <![endif]-->
-		<meta charset="utf-8">
-		<script src="jquery.js" type="text/javascript"></script>
+		<?php head() ?>
 	</head>
 	
 	<body>
-		<form action="install.php?action=install" method="post">
-			<input name="db-host" type="text" placeholder="DB Host" />
-			<input name="db-user" type="text" placeholder="DB Nutzer" />
-			<input name="db-password" type="password" placeholder="DB Passwort" />
-			<input name="db-name" type="text" placeholder="DB Name" />
-			<input name="admin-prename" type="text" placeholder="Admin Vorname" />
-			<input name="admin-name" type="text" placeholder="Admin Nachname" />
-			<input name="admin-mail" type="text" placeholder="Admin E-Mail" />
-			<input name="admin-pw" type="password" placeholder="Admin Passwort" />
-			<input type="submit" value="Installieren" />
-		</form>
+    	<div id="installer" class="container">
+        	<?php if(isset($_GET["saved"])): ?>
+            <div class="alert alert-success">
+            	Datenbank ist erstellt.
+                <ul>
+                    <li>Tabellen sind angelegt.</li>
+                    <li>Admin ist erstellt.</li>
+                </ul>
+            </div>
+            <?php  else: if(isset($_GET["error"])): ?>
+                <div class="alert alert-danger">
+                	Datenbank konnte nicht erstellt werden.
+                    <ul>
+                    <?php
+					switch($_GET["error"]) {
+						case "database":
+							echo "<li>Error: database</li>";
+							echo "<li>Überprüfen sie den <strong>Host</strong>, den <strong>Nutzer</strong> und das <strong>Passwort</strong></li>";
+							break;
+					}
+				?>
+                	</ul>
+                </div>
+            <?php endif; endif; ?>
+            <h1>Datenbanken installieren</h1>
+            <div class="common box">
+                <form action="install.php?action=install" method="post">
+                	<div id="db">
+                    	<h4>Datenbank</h4>
+                        <input name="db-host" type="text" placeholder="DB Host" />
+                        <input name="db-user" type="text" placeholder="DB Nutzer" />
+                        <input name="db-password" type="password" placeholder="DB Passwort" />
+                        <input name="db-name" type="text" placeholder="DB Name" />
+                    </div>
+                    <div id="admin">
+                    	<h4>Admin</h4>
+                        <input name="admin-prename" type="text" placeholder="Admin Vorname" />
+                        <input name="admin-name" type="text" placeholder="Admin Nachname" />
+                        <input name="admin-mail" type="text" placeholder="Admin E-Mail" />
+                        <input name="admin-pw" type="password" placeholder="Admin Passwort" />
+                    </div>
+                    <input type="submit" value="Installieren" />
+                </form>
+            </div>
+        </div>
 	</body>
 	
 </html>
