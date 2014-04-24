@@ -74,7 +74,7 @@
 				
 					CREATE TABLE IF NOT EXISTS `categories` (
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
-					  `name` 		VARCHAR(45) NOT NULL,
+					  `name` 		VARCHAR(45) NULL		DEFAULT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE = InnoDB;
 					
@@ -82,15 +82,15 @@
 					
 					CREATE TABLE IF NOT EXISTS `users` (
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
-					  `prename` 	VARCHAR(45) NOT NULL,
-					  `lastname` 	VARCHAR(45) NOT NULL,
+					  `prename` 	VARCHAR(45) NULL		DEFAULT NULL,
+					  `lastname` 	VARCHAR(45) NULL		DEFAULT NULL,
 					  `birthday` 	VARCHAR(45) NULL 		DEFAULT NULL,
-					  `female` 		TINYINT(1) 	NULL 		DEFAULT NULL,
-					  `admin` 		TINYINT(1) 	NULL 		DEFAULT FALSE,
+					  `female` 		BOOLEAN 	NULL 		DEFAULT NULL,
+					  `admin` 		BOOLEAN 	NULL 		DEFAULT FALSE,
 					  `password` 	VARCHAR(45) NULL 		DEFAULT NULL,
 					  `email` 		VARCHAR(45) NULL 		DEFAULT NULL,
 					  `updatetime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
-					  `activated` 	TINYINT(1) 	NOT NULL 	DEFAULT TRUE,
+					  `activated` 	BOOLEAN		NOT NULL 	DEFAULT TRUE,
 					  PRIMARY KEY (`id`)
 					) ENGINE = InnoDB;
 					
@@ -105,8 +105,8 @@
 					  CONSTRAINT `fk_teacher_users`
 						FOREIGN KEY (`uid`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE CASCADE
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE CLASSES --
@@ -121,15 +121,15 @@
 					  CONSTRAINT `fk_classes_teacher1`
 						FOREIGN KEY (`teacher`)
 						REFERENCES `teachers` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE IMAGES --
 
 					CREATE TABLE IF NOT EXISTS `images` (
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
-					  `uid` 		INT(11) 	NOT NULL,
+					  `uid` 		INT(11) 	NULL		DEFAULT NULL,
 					  `file` 		VARCHAR(255) NOT NULL,
 					  `category` 	INT(11) 	NULL 		DEFAULT NULL,
 					  `uploadtime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
@@ -140,20 +140,20 @@
 					  CONSTRAINT `fk_images_categories1`
 						FOREIGN KEY (`category`)
 						REFERENCES `categories` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE SET NULL
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_images_users1`
 						FOREIGN KEY (`uid`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE QUESTION --
 				
 					CREATE TABLE IF NOT EXISTS `questions` (
-					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
-					  `title` 		VARCHAR(255) NOT NULL,
+					  `id` 			INT(11) 		NOT NULL 	AUTO_INCREMENT,
+					  `title` 		VARCHAR(255) 	NOT NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE = InnoDB;
 					
@@ -169,8 +169,8 @@
 					  CONSTRAINT `fk_tutorial_teacher1`
 						FOREIGN KEY (`tutor`)
 						REFERENCES `teachers` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE STUDENTS --
@@ -186,13 +186,13 @@
 					  CONSTRAINT `fk_students_users1`
 						FOREIGN KEY (`uid`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE CASCADE
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_students_tutorial1`
 						FOREIGN KEY (`tutorial`)
 						REFERENCES `tutorials` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE SURVEYS --
@@ -200,8 +200,8 @@
 					CREATE TABLE IF NOT EXISTS `surveys` (
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
 					  `title` 		VARCHAR(255) NOT NULL,
-					  `m` 			TINYINT(1) 	NULL 		DEFAULT TRUE,
-					  `w` 			TINYINT(1) 	NULL 		DEFAULT TRUE,
+					  `m` 			BOOLEAN 	NULL 		DEFAULT TRUE,
+					  `w` 			BOOLEAN 	NULL 		DEFAULT TRUE,
 					  PRIMARY KEY (`id`)
 					) ENGINE = InnoDB;
 					
@@ -214,18 +214,18 @@
 					  `question` 	INT(11) 	NOT NULL,
 					  PRIMARY KEY (`id`),
 					  
-					  INDEX `fk_user_questions_questions1_idx` (`questions` ASC),
+					  INDEX `fk_user_questions_questions1_idx` (`question` ASC),
 					  INDEX `fk_user_questions_users1_idx` (`user` ASC),
 					  CONSTRAINT `fk_user_questions_questions1`
-						FOREIGN KEY (`questions`)
+						FOREIGN KEY (`question`)
 						REFERENCES `questions` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE CASCADE
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_user_questions_users1`
 						FOREIGN KEY (`user`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE CASCADE
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE USERS_SURVEYS --
@@ -245,23 +245,23 @@
 					  CONSTRAINT `fk_user_surveys_surveys1`
 						FOREIGN KEY (`survey`)
 						REFERENCES `surveys` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE CASCADE
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_user_surveys_users1`
 						FOREIGN KEY (`user`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE CASCADE
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_user_surveys_users2`
 						FOREIGN KEY (`m`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE SET NULL
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_user_surveys_users3`
 						FOREIGN KEY (`w`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE STUDENTS_CLASSES --
@@ -277,13 +277,13 @@
 					  CONSTRAINT `fk_students_classes_classes1`
 						FOREIGN KEY (`class`)
 						REFERENCES `classes` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE CASCADE
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_students_classes_students1`
 						FOREIGN KEY (`student`)
 						REFERENCES `students` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE CASCADE
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE NICKNAMES --
@@ -293,7 +293,7 @@
 					  `nickname` 	VARCHAR(45) NULL 		DEFAULT NULL,
 					  `from` 		INT(11) 	NOT NULL,
 					  `to` 			INT(11) 	NOT NULL,
-					  `accepted` 	TINYINT(1) 	NOT NULL 	DEFAULT TRUE,
+					  `accepted` 	BOOLEAN 	NOT NULL 	DEFAULT TRUE,
 					  PRIMARY KEY (`id`),
 					  
 					  INDEX `fk_nicknames_users1_idx` (`from` ASC),
@@ -301,13 +301,13 @@
 					  CONSTRAINT `fk_nicknames_users1`
 						FOREIGN KEY (`from`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION,
+						ON DELETE CASCADE
+						ON UPDATE CASCADE,
 					  CONSTRAINT `fk_nicknames_users2`
 						FOREIGN KEY (`to`)
 						REFERENCES `users` (`id`)
-						ON DELETE NO ACTION
-						ON UPDATE NO ACTION
+						ON DELETE CASCADE
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 			");
 			
