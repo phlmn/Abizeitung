@@ -122,19 +122,17 @@
 				
 			$stmt->bind_param("ii", $user, $survey);
 			$stmt->execute();
-			$stmt->store_result();
 			$stmt->bind_result($user_survey["id"]);
+			$stmt->store_result();
 			
-			$stmt->fetch();
-			
-			if($stmt->num_rows > 0) {
+			if($stmt->fetch()) {
 				$stmt2 = $mysqli->prepare("
 					UPDATE users_surveys
 					SET m = ?, w = ?
 					WHERE id = ?
 					LIMIT 1");
 				
-				$stmt2->bind_param("iii", $answer["male"], $answer["female"], $user_survey["id"]);
+				$stmt2->bind_param("iii", null_on_empty($answer["male"]), null_on_empty($answer["female"]), $user_survey["id"]);
 				$stmt2->execute();
 				$stmt2->close();
 			}
@@ -146,7 +144,7 @@
 						?, ?, ?, ?
 					)");
 					
-				$stmt2->bind_param("iiii", $user, $survey, $answer["male"], $answer["female"]);
+				$stmt2->bind_param("iiii", $user, $survey, null_on_empty($answer["male"]), null_on_empty($answer["female"]));
 				$stmt2->execute();
 				$stmt2->close();
 			}

@@ -49,15 +49,15 @@
 		
 		while($stmt->fetch()) {
 			$answer = array(
-				"female" => 0,
-				"male" => 0
+				"female" => NULL,
+				"male" => NULL
 			);
 				
-			if(isset($_POST["survey_w_" . $s["id"]]))
+			if(isset($_POST["survey_w_" . $s["id"]]) && !empty($_POST["survey_w_" . $s["id"]]))
 				$answer["female"] = intval($_POST["survey_w_" . $s["id"]]);
 				
 			if(isset($_POST["survey_m_" . $s["id"]]))
-				$answer["male"]   = intval($_POST["survey_m_" . $s["id"]]);
+				$answer["male"]   = intval($_POST["survey_m_" . $s["id"]] && !empty($_POST["survey_m_" . $s["id"]]));
 			
 			if(Dashboard::update_user_surveys($data["id"], $s["id"], $answer))
 				$fails++;
@@ -76,18 +76,16 @@
 	$students = array();
 	
 	$stmt = $mysqli->prepare("
-		SELECT users.id as id, prename, lastname, female
+		SELECT students.id, users.id, prename, lastname, female
 		FROM students 
 		LEFT JOIN users ON students.uid = users.id
-		LEFT JOIN students_classes ON users.id = students_classes.student
-		LEFT JOIN classes ON students_classes.id = classes.id
 		ORDER BY users.prename");
 	
 	$stmt->execute();
-	$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["female"]);
+	$stmt->bind_result($row["sid"], $row["uid"], $row["prename"], $row["lastname"], $row["female"]);
 						
 	while($stmt->fetch()) {				
-		array_push($students, array("id" => $row["id"], "prename" => $row["prename"], "lastname" => $row["lastname"], "gender" => $row["female"] ? "w" : "m"));
+		array_push($students, array("sid" => $row["sid"], "uid" => $row["uid"], "prename" => $row["prename"], "lastname" => $row["lastname"], "gender" => $row["female"] ? "w" : "m"));
 	}
 	
 	$stmt->close();
@@ -326,13 +324,13 @@
 						?>
 							<div class="icon-male">
 								<select name="survey_m_<?php echo $key ?>" form="data_form">
-									<option value="0"<?php echo ($answer) ? "" : " selected" ?>>-</option>
+									<option value=""<?php echo ($answer) ? "" : " selected" ?>>-</option>
 									<?php foreach($students as $student) {
 										if($student["gender"] == "m") {
 											echo "<option";
-											if($answer == $student["id"])
+											if($answer == $student["uid"])
 												echo " selected";
-											echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
+											echo " value=\"".$student["uid"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
 										}
 									}
 									?>
@@ -352,9 +350,9 @@
 									<?php foreach($students as $student) {
 										if($student["gender"] == "w") {
 											echo "<option";
-											if($answer == $student["id"])
+											if($answer == $student["uid"])
 												echo " selected";
-											echo " value=\"".$student["id"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
+											echo " value=\"".$student["uid"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
 										}
 									}
 									?>

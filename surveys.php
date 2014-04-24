@@ -20,7 +20,7 @@
 					?, ?, ?
 				)");
 				
-			$stmt->bind_param("sii", $mysqli->real_escape_string($_POST["text"]), intval($_POST["m"]), intval($_POST["w"]));
+			$stmt->bind_param("sii", $_POST["text"], intval(isset($_POST["m"])), intval(isset($_POST["w"])));
 			
 			$stmt->execute();
 			
@@ -34,7 +34,7 @@
 				LIMIT 1;
 			");
 			
-			$stmt->bind_param("siii", $mysqli->real_escape_string($_POST["text"]), intval($_POST["m"]), intval($_POST["w"]), intval($_GET["survey"]));
+			$stmt->bind_param("siii", $_POST["text"], intval(isset($_POST["m"])), intval(isset($_POST["w"])), intval($_GET["survey"]));
 			
 			$stmt->execute();
 			
