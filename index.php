@@ -14,7 +14,7 @@
 	
 	if(isset($_POST["email"]) && isset($_POST["password"])) {
 		$userID = login($_POST["email"], $_POST["password"]);
-		if($userID > -1) {
+		if($userID >= 0) {
 			$_SESSION["user"] = $userID;
 			header("Location: dashboard.php");
 		}
