@@ -82,8 +82,8 @@
 					
 					CREATE TABLE IF NOT EXISTS `users` (
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
-					  `prename` 	VARCHAR(45) NULL 		DEFAULT NULL,
-					  `lastname` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `prename` 	VARCHAR(45) NOT NULL,
+					  `lastname` 	VARCHAR(45) NOT NULL,
 					  `birthday` 	VARCHAR(45) NULL 		DEFAULT NULL,
 					  `female` 		TINYINT(1) 	NULL 		DEFAULT NULL,
 					  `admin` 		TINYINT(1) 	NULL 		DEFAULT FALSE,
