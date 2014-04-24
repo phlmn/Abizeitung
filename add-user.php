@@ -12,7 +12,7 @@
 	if(isset($_GET["create"])) {
 		$userdata["prename"] 	= $_POST["prename"];
 		$userdata["lastname"] 	= $_POST["lastname"];
-		$userdata["class"] 		= $_POST["class"];
+		$userdata["tutorial"] 		= $_POST["tutorial"];
 		$userdata["birthday"] 	= $_POST["birthday"];
 		$userdata["nickname"] 	= $_POST["nickname"];
 		$userdata["email"] 		= $_POST["email"];
@@ -100,7 +100,7 @@
 					<tr>
 						<td class="title">Tutorium</td>
 						<td>
-                        	<select name="class" form="data_form">
+                        	<select name="tutorial" form="data_form">
                             	<option value="0">-</option>
                                 <?php 
 									$stmt = $mysqli->prepare("
@@ -109,10 +109,10 @@
 									");
 									
 									$stmt->execute();
-									$stmt->bind_result($class["id"], $class["name"]);
+									$stmt->bind_result($tutorial["id"], $tutorial["name"]);
 									
 									while($stmt->fetch()) {
-										echo '<option value="' . $class["id"] . '">' . $class["name"] . "</option>";
+										echo '<option value="' . $tutorial["id"] . '">' . $tutorial["name"] . "</option>";
 									}
 									
 									$stmt->close();
