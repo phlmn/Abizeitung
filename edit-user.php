@@ -65,7 +65,7 @@
 			$userdata["id"] 		= $_GET["user"];
 			$userdata["prename"] 	= $_POST["prename"];
 			$userdata["lastname"] 	= $_POST["lastname"];
-			$userdata["class"]["id"]= $_POST["class"];
+			$userdata["tutorial"]	= $_POST["tutorial"];
 			$userdata["birthday"] 	= $_POST["birthday"];
 			$userdata["nickname"] 	= $_POST["nickname"];
 			$userdata["email"] 		= $_POST["email"];
@@ -147,7 +147,7 @@
 					<tr>
 						<td class="title">Tutorium</td>
 						<td>
-                        	<select name="class" form="data_form">
+                        	<select name="tutorial" form="data_form">
                         		<option>-</option>
                                 <?php 
 								
@@ -157,17 +157,17 @@
 									");
 									
 									$stmt->execute();
-									$stmt->bind_result($class["id"], $class["name"]);
+									$stmt->bind_result($tutorial["id"], $tutorial["name"]);
 									
 									$select = 0;
-									if(isset($edit["class"]["id"]))
-										$select = $edit["class"]["id"];
+									if(isset($edit["tutorial"]))
+										$select = $edit["tutorial"];
 									
 									while($stmt->fetch()) {
-										if($select == $class["id"])
-											echo '<option value="' . $class["id"] . '" selected>' . $class["name"] . "</option>";
+										if($select == $tutorial["id"])
+											echo '<option value="' . $tutorial["id"] . '" selected>' . $tutorial["name"] . "</option>";
 										else
-											echo '<option value="' . $class["id"] . '">' . $class["name"] . "</option>";
+											echo '<option value="' . $tutorial["id"] . '">' . $tutorial["name"] . "</option>";
 									}
 									
 									$stmt->close();
