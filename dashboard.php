@@ -13,7 +13,6 @@
 	
 	if(isset($_GET["update"])) {
 		$userdata["id"] = $data["id"];
-		$userdata["nickname"] = $_POST["nickname"];
 		$userdata["birthday"] = $_POST["birthday"];
 		
 		UserManager::update_userdata($userdata);

@@ -651,7 +651,7 @@
 			// Überprüen, ob der Nutzer vorhanden ist
 			
 			$stmt = $mysqli->prepare("
-				SELECT lastname
+				SELECT id
 				FROM users
 				WHERE id = ?
 				LIMIT 1
@@ -660,10 +660,10 @@
 			$stmt->bind_param("i", intval($data["id"]));
 			$stmt->execute();
 			
-			$res = $stmt->num_rows;
+			$res = $stmt->fetch();
 			$stmt->close();
 			
-			if($res == 0) {
+			if(!$res) {
 				// Nutzer ist nicht vorhanden
 				
 				return -2;
@@ -676,7 +676,7 @@
 				WHERE id = ?
 			");
 			
-			$stmt->bind_param("ssi", null_on_empty($data["birthday"]), intval($data["id"]));
+			$stmt->bind_param("si", null_on_empty($data["birthday"]), intval($data["id"]));
 			$stmt->execute();
 			
 			$res = $stmt->num_rows;
