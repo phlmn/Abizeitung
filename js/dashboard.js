@@ -3,10 +3,10 @@ function openImageSelector(id) {
 	$(id).click();
 }
 
-function uploadImage(user, category, idForm, idState, idPhoto) {
+function uploadImage(user, categoryName, idForm, idState, idPhoto) {
 	var formData = new FormData($(idForm)[0]);
 	$.ajax({
-		url: 'upload.php?user=' + user + '&category=' + category,
+		url: 'upload.php?user=' + user + '&category-name=' + categoryName,
 		type: 'POST',
 		xhr: function() {
 			var myXhr = $.ajaxSettings.xhr();
@@ -34,7 +34,7 @@ function uploadImage(user, category, idForm, idState, idPhoto) {
 			change_bg_img(idPhoto, "none");
 			
 			switch(error1) {
-				case 0:
+				case 1:
 					$(idState).html(
 						'<span class="icon-cancel-circled"></span><br />' +
 						'Fehler beim Hochladen:<br />' +
@@ -42,20 +42,11 @@ function uploadImage(user, category, idForm, idState, idPhoto) {
 						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
 					);
 					break;
-				case 1:
-					$(idState).html(
-						'<span class="icon-cancel-circled"></span><br />' +
-						'Fehler beim Hochladen:<br />' +
-						'Die Datei wurde nicht korrekt übertragen<br />' +
-						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
-					);
-					break;
 				case 2:
 					$(idState).html(
 						'<span class="icon-cancel-circled"></span><br />' +
 						'Fehler beim Hochladen:<br />' +
-						'Ungültiges Dateiformat<br />' +
-						'Erlaubte Formate: .jpg, .png<br />' +
+						'Die Datei wurde nicht korrekt übertragen<br />' +
 						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
 					);
 					break;
@@ -68,6 +59,31 @@ function uploadImage(user, category, idForm, idState, idPhoto) {
 					);
 					break;
 				case 4:
+					$(idState).html(
+						'<span class="icon-cancel-circled"></span><br />' +
+						'Fehler beim Hochladen:<br />' +
+						'Ungültiges Dateiformat<br />' +
+						'Erlaubte Formate: .jpg, .png<br />' +
+						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+					);
+					break;
+				case 5:
+					$(idState).html(
+						'<span class="icon-cancel-circled"></span><br />' +
+						'Datenbankfehler:<br />' +
+						'Fehler beim Erstellen der Kategorie<br />' +
+						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+					);
+					break;
+				case 6:
+					$(idState).html(
+						'<span class="icon-cancel-circled"></span><br />' +
+						'Datenbankfehler:<br />' +
+						'Unbekannte Kategorie<br />' +
+						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
+					);
+					break;
+				case 7:
 					$("span#photo-upload-state").html(
 						'<span class="icon-cancel-circled"></span><br />' +
 						'Datenbankfehler:<br />' +
@@ -75,7 +91,7 @@ function uploadImage(user, category, idForm, idState, idPhoto) {
 						'<em>Fehlercode 0x' + error1 + error0 + '</em>'
 					);
 					break;
-				case 5:
+				case 8:
 					$(idState).html(
 						'<span class="icon-cancel-circled"></span><br />' +
 						'Fehler beim Hochladen:<br />' +

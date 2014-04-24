@@ -756,4 +756,26 @@
 	    return $val;
 	}
 	
+	function get_category_id($name) {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			SELECT id
+			FROM categories
+			WHERE name = ?
+		");
+		
+		$stmt->bind_param("s", $name);
+		$stmt->execute();
+		$stmt->bind_result($id);
+		
+		$res = $stmt->fetch();
+		$stmt->close();
+		
+		if(!$res)
+			return -1;
+			
+		return $id;
+	}
+	
 ?>
