@@ -292,7 +292,7 @@
 					
 					$stmt = $mysqli->prepare("
 						SELECT text 
-						FROM user_questions
+						FROM users_questions
 						WHERE user = ? AND question = ?");
 						
 					$stmt->bind_param("ii", intval($data["id"]), $key);

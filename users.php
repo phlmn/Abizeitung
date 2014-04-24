@@ -52,20 +52,19 @@
 						global $mysqli;
 						
 						$stmt = $mysqli->prepare("
-							SELECT users.id AS id, users.prename, users.lastname, users.nickname, users.birthday, users.female
-							FROM teacher
-							LEFT JOIN users ON teacher.uid = users.id
+							SELECT users.id AS id, users.prename, users.lastname, users.birthday, users.female
+							FROM teachers
+							LEFT JOIN users ON teachers.uid = users.id
 							ORDER BY users.lastname
 						");
 						
 						$stmt->execute();
-						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["nickname"], $row["birthday"], $row["female"]);
+						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["female"]);
 						
 						while($stmt->fetch()): ?>
 						<tr>
 							<td><?php echo $row["prename"] ?></td>
 							<td><?php echo $row["lastname"] ?></td>
-							<td><?php echo $row["nickname"] ?></td>
 							<td><?php echo $row["birthday"] ?></td>
 							<td><?php echo $row["female"] ? "Weiblich" : "Männlich" ?></td>
 							<td class="edit"><a href="edit-user.php?user=<?php echo $row["id"] ?>"><span class="icon-pencil-squared"></span></a></td>
@@ -78,7 +77,6 @@
 					<thead>
 						<th>Vorname</th>
 						<th>Nachname</th>
-						<th>Spitzname</th>
 						<th>Geburtsdatum</th>
 						<th>Geschlecht</th>
 						<th>Tutorium</th>
@@ -90,23 +88,22 @@
 						global $mysqli;
 						
 						$stmt = $mysqli->prepare("
-							SELECT users.id AS id, users.prename, users.lastname, users.nickname, users.birthday, users.female, tutorial.name, tutor.lastname AS tutor 
+							SELECT users.id AS id, users.prename, users.lastname, users.birthday, users.female, tutorials.name, tutors.lastname 
 							FROM students
 							LEFT JOIN users ON students.uid = users.id
-							LEFT JOIN tutorial ON users.class = tutorial.id
-							LEFT JOIN teacher ON tutorial.tutor = teacher.id
-							LEFT JOIN users tutor ON teacher.uid = tutor.id
+							LEFT JOIN tutorials ON students.tutorial = tutorials.id
+							LEFT JOIN teachers ON tutorials.tutor = teachers.id
+							LEFT JOIN users AS tutors ON teachers.uid = tutors.id
 							ORDER BY users.lastname
 						");
 						
 						$stmt->execute();
-						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["nickname"], $row["birthday"], $row["female"], $row["name"], $row["tutor"]);	
+						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["female"], $row["name"], $row["tutor"]);	
 					
 						while($stmt->fetch()): ?>
 						<tr>
 							<td><?php echo $row["prename"] ?></td>
 							<td><?php echo $row["lastname"] ?></td>
-							<td><?php echo $row["nickname"] ?></td>
 							<td><?php echo $row["birthday"] ?></td>
 							<td><?php echo $row["female"] ? "Weiblich" : "Männlich" ?></td>
 							<td><?php echo $row["name"] ?></td>

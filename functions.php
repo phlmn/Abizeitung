@@ -45,7 +45,7 @@
 	}
 	
 	class Dashboard {
-		function update_users_questions($user, $question, $answer) {
+		function update_user_questions($user, $question, $answer) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -111,7 +111,7 @@
 				return false;
 		}
 		
-		function update_users_surveys($user, $survey, $answer) {
+		function update_user_surveys($user, $survey, $answer) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
