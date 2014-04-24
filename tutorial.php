@@ -43,12 +43,12 @@
 						?>
                         <input type="text" name="tutorialname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Tutoriumsname"/>
                         <select name="tutor" form="modal-form">
-                        	<option value="0">-</option>
+                        	<option value="">-</option>
                             <?php
 								$stmt = $mysqli->prepare("
-									SELECT teacher.id, users.lastname
-									FROM teacher
-									INNER JOIN users ON teacher.uid = users.id
+									SELECT teachers.id, users.lastname
+									FROM teachers
+									INNER JOIN users ON teachers.uid = users.id
 								");
 								
 								$stmt->execute();
@@ -84,14 +84,14 @@ if(isset($_GET["action"])) {
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
-			INSERT INTO tutorial (
+			INSERT INTO tutorials (
 				name, tutor
 			) VALUES (
 				?, ?
 			)
 		");
 		
-		$stmt->bind_param("si", null_on_empty($_POST["tutorialname"]), intval($_POST["tutor"]));
+		$stmt->bind_param("si", null_on_empty($_POST["tutorialname"]), null_on_empty($_POST["tutor"]));
 		$stmt->execute();
 		
 		$stmt->close();
@@ -151,7 +151,7 @@ if(isset($_GET["tutorial"])) {
 	
 	$stmt = $mysqli->prepare("
 		SELECT name 
-		FROM tutorial
+		FROM tutorials
 		WHERE id = ?
 		LIMIT 1");
 		
@@ -170,21 +170,23 @@ if(isset($_GET["tutorial"])) {
 	if($tutorialId == -1) {
 		$stmt = $mysqli->prepare("
 			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
-			FROM users
-			LEFT JOIN tutorial AS tutorium ON users.class = tutorium.id
-			LEFT JOIN teacher ON tutorium.tutor = teacher.id
-			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+			FROM students
+			LEFT JOIN users ON students.uid = users.id
+			LEFT JOIN tutorials AS tutorium ON students.tutorial = tutorium.id
+			LEFT JOIN teachers ON tutorium.tutor = teachers.id
+			LEFT JOIN users AS tutor ON teachers.uid = tutor.id
 			ORDER BY users.lastname
 		");	
 	}
 	else {
 		$stmt = $mysqli->prepare("
 			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
-			FROM users
-			LEFT JOIN tutorial AS tutorium ON users.class = tutorium.id
-			LEFT JOIN teacher ON tutorium.tutor = teacher.id
-			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
-			WHERE users.class = ?
+			FROM students
+			LEFT JOIN users ON students.uid = users.id
+			LEFT JOIN tutorials AS tutorium ON students.tutorial = tutorium.id
+			LEFT JOIN teachers ON tutorium.tutor = teachers.id
+			LEFT JOIN users AS tutor ON teachers.uid = tutor.id
+			WHERE students.tutorial = ?
 			ORDER BY users.lastname
 		");
 		
@@ -237,11 +239,11 @@ if(isset($_GET["tutorial"])) {
 			<?php
 				global $mysqli;
 				$stmt = $mysqli->prepare("
-					SELECT tutorial.id, tutorial.name, teacher.id, users.id, users.lastname
-					FROM tutorial
-					LEFT JOIN teacher ON tutorial.tutor = teacher.id
-					LEFT JOIN users ON teacher.uid = users.id
-					ORDER BY tutorial.name ASC;
+					SELECT tutorials.id, tutorials.name, teachers.id, users.id, users.lastname
+					FROM tutorials
+					LEFT JOIN teachers ON tutorials.tutor = teachers.id
+					LEFT JOIN users ON teachers.uid = users.id
+					ORDER BY tutorials.name ASC;
 				");	
 				
 				$stmt->execute();
