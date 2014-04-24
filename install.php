@@ -211,7 +211,7 @@
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
 					  `user` 		INT(11) 	NOT NULL,
 					  `text` 		TEXT 		NULL 		DEFAULT NULL,
-					  `questions` 	INT(11) 	NOT NULL,
+					  `question` 	INT(11) 	NOT NULL,
 					  PRIMARY KEY (`id`),
 					  
 					  INDEX `fk_user_questions_questions1_idx` (`questions` ASC),
