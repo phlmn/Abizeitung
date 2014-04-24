@@ -87,7 +87,7 @@
 					  `birthday` 	VARCHAR(45) NULL 		DEFAULT NULL,
 					  `female` 		BOOLEAN 	NULL 		DEFAULT NULL,
 					  `admin` 		BOOLEAN 	NULL 		DEFAULT FALSE,
-					  `password` 	VARCHAR(45) NULL 		DEFAULT NULL,
+					  `password` 	VARCHAR(128) NULL 		DEFAULT NULL,
 					  `email` 		VARCHAR(45) NULL 		DEFAULT NULL,
 					  `updatetime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
 					  `activated` 	BOOLEAN		NOT NULL 	DEFAULT TRUE,

@@ -629,7 +629,7 @@
 						$stmt->fetch();
 						$stmt->close();
 						
-						if($password != encrypt_pw($data["password"])) {
+						if(check_pw($password, $data["password"])) {
 							// Die Passwörter sind nicht identisch
 							// Passwort konnte nicht geändert werden
 							
@@ -710,7 +710,7 @@
 				return -2;
 			}
 			
-			if($user["password"] === encrypt_pw($password)) {
+			if(check_pw($password, $user["password"])) {
 				$stmt->close();
 				return $user["id"];
 			}
@@ -732,7 +732,11 @@
 	}
 	
 	function encrypt_pw($pw) {
-		return md5($pw);
+		return password_hash($pw, PASSWORD_BCRYPT);
+	}
+	
+	function check_pw($pw, $hash) {
+		return password_verify($pw, $hash);
 	}
 	
 	// converting php.ini file sizes to bytes (32M)

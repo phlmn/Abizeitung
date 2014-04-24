@@ -98,11 +98,11 @@
                     <div class="modal-body">
                     	<h4>Personengruppe</h4>
                         <div>
-                        	<input id="male" type="checkbox" name="m" value="1" <?php if($m == 1): ?>checked <?php endif; ?>>
+                        	<input id="male" type="checkbox" name="m" value="1" <?php if($m == 1 || !$survey): ?>checked <?php endif; ?>>
                             <label for="male">Männlich</label>
                         </div>
                         <div>
-                        	<input id="female" type="checkbox" name="w" value="1" <?php if($w == 1): ?>checked <?php endif; ?>>
+                        	<input id="female" type="checkbox" name="w" value="1" <?php if($w == 1 || !$survey): ?>checked <?php endif; ?>>
                             <label for="female">Weiblich</label>
                         </div>
                     </div>
