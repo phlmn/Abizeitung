@@ -176,16 +176,16 @@
 			$stmt->bind_param("i", $id);
 			$stmt->execute();
 			
-			$res = $stmt->num_rows;
+			$res = $stmt->fetch();
 			$stmt->close();
 			
-			if($res > 0) {
+			if($res) {
 				// Nutzer ist ein Schüler
 				
 				$stmt = $mysqli->prepare("
 					SELECT users.prename, users.lastname, users.birthday, users.admin, users.email, users.female, students.tutorial
 					FROM users
-					INNER JOIN students ON user.id = students.uid
+					INNER JOIN students ON users.id = students.uid
 					WHERE users.id = ?
 					LIMIT 1
 				");
@@ -204,8 +204,8 @@
 					
 					// Schüler ein Tutorium zuordnen
 					
-					$stmt2->prepare("
-						SELECT tutorials.name, teacher.uid
+					$stmt2 = $mysqli->prepare("
+						SELECT tutorials.name, teachers.uid
 						FROM tutorials
 						LEFT JOIN teachers ON tutorials.tutor = teachers.id
 						WHERE tutorials.id = ?
@@ -700,13 +700,12 @@
 			LIMIT 1
 		");
 		
-		$stmt->bind_param("s", $mysqli->real_escape_string($email));
+		$stmt->bind_param("s", $email);
 		
 		$stmt->execute();
 		$stmt->bind_result($user["id"], $user["password"], $user["activated"]);
 		
-		if($stmt->affected_rows > 0) {
-			$stmt->fetch();
+		if($stmt->fetch()) {	
 			
 			if(!$user["activated"]) {
 				$stmt->close();

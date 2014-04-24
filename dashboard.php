@@ -78,9 +78,10 @@
 	
 	$stmt = $mysqli->prepare("
 		SELECT users.id as id, prename, lastname, female
-		FROM users 
-		LEFT JOIN users_classes ON users.id = users_classes.user
-		LEFT JOIN classes ON users_classes.id = classes.id
+		FROM students 
+		LEFT JOIN users ON students.uid = users.id
+		LEFT JOIN students_classes ON users.id = students_classes.student
+		LEFT JOIN classes ON students_classes.id = classes.id
 		ORDER BY users.prename");
 	
 	$stmt->execute();
@@ -126,7 +127,7 @@
 	
 	$stmt = $mysqli->prepare("
 		SELECT survey, m, w
-		FROM user_surveys
+		FROM users_surveys
 		WHERE user = ?
 	");
 	
@@ -227,10 +228,6 @@
 						<div class="row">
 							<div class="col-xs-5 title">Nachname</div>
 							<div class="col-xs-7"><?php echo $data["lastname"] ?></div>
-						</div>
-						<div class="row">
-							<div class="col-xs-5 title">Spitzname</div>
-							<div class="col-xs-7"><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></div>
 						</div>
 						<div class="row">
 							<div class="col-xs-5 title">Geburtsdatum</div>
