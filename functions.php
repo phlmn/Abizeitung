@@ -163,6 +163,24 @@
 		function get_userdata($id) {
 			global $mysqli;
 			
+			$stmt = $mysqli->prepare("
+				SELECT nickname
+				FROM nicknames
+				WHERE
+					`from` = `to`
+				AND `from` = ?
+			");
+			
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			
+			$stmt->bind_result($data["nickname"]);
+			
+			if(!$stmt->fetch())
+				$data["nickname"] = "";
+				
+			$stmt->close();
+			
 			// Überprüfen, ob Nutzer ein Schüler ist
 			
 			$stmt = $mysqli->prepare("
@@ -724,6 +742,82 @@
 				// Nutzer ist nicht vorhanden
 				
 				return -2;
+			}
+			
+			if(empty($data["nickname"])) {
+				$stmt = $mysqli->prepare("
+					SELECT id
+					FROM nicknames
+					WHERE
+						`from` = `to`
+					AND `from` = ?
+				");
+				
+				$stmt->bind_param("i", intval($data["id"]));
+				$stmt->execute();
+				
+				$res = $stmt->fetch();
+				$stmt->close();
+				
+				if($res) {
+					$stmt = $mysqli->prepare("
+						DELETE FROM nicknames
+						WHERE
+							`from` = `to`
+						AND `from` = ?
+					");
+					
+					$stmt->bind_param("i", intval($data["id"]));
+					$stmt->execute();
+					
+					$stmt->close();
+				}
+			}
+			else {
+			
+				$stmt = $mysqli->prepare("
+					SELECT id
+					FROM nicknames
+					WHERE
+						`from` = `to`
+					AND `from` = ?
+				");
+				
+				$stmt->bind_param("i", intval($data["id"]));
+				$stmt->execute();
+				
+				$res = $stmt->fetch();
+				$stmt->close();
+				
+				if($res) {
+					$stmt = $mysqli->prepare("
+						UPDATE nicknames
+						SET
+							nickname = ?
+						WHERE 
+							`from` = `to`
+						AND `from` = ?
+					");
+					
+					$stmt->bind_param("si", null_on_empty($data["nickname"]), intval($data["id"]));
+					$stmt->execute();
+					
+					$stmt->close();
+				}
+				else {
+					$stmt = $mysqli->prepare("
+						INSERT INTO nicknames (
+							nickname, `from`, `to`
+						) VALUES (
+							?, ?, ?
+						)
+					");
+					
+					$stmt->bind_param("sii", $data["nickname"], intval($data["id"]), intval($data["id"]));
+					$stmt->execute();
+					
+					$stmt->close();
+				}
 			}
 			
 			$stmt = $mysqli->prepare("

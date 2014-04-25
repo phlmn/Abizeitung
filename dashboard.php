@@ -14,6 +14,7 @@
 	if(isset($_GET["update"])) {
 		$userdata["id"] = $data["id"];
 		$userdata["birthday"] = $_POST["birthday"];
+		$userdata["nickname"] = $_POST["nickname"];
 		
 		UserManager::update_userdata($userdata);
 		
@@ -225,6 +226,10 @@
 						<div class="row">
 							<div class="col-xs-5 title">Nachname</div>
 							<div class="col-xs-7"><?php echo $data["lastname"] ?></div>
+						</div>
+                        <div class="row">
+							<div class="col-xs-5 title">Spitzname</div>
+							<div class="col-xs-7"><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></div>
 						</div>
 						<div class="row">
 							<div class="col-xs-5 title">Geburtsdatum</div>
