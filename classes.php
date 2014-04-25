@@ -21,12 +21,12 @@
                     </div>
                     <div class="modal-body">
                         <?php
-							$select["tutor"] = 0;
+							$select["teacher"] = 0;
 							$select["name"] = "";
 							
 							if($_GET["editclass"]) {
 								$stmt = $mysqli->prepare("
-									SELECT name, tutor
+									SELECT name, teacher
 									FROM classes
 									WHERE id = ?
 									LIMIT 1
@@ -35,28 +35,28 @@
 								$stmt->bind_param("i", intval($_GET["editclass"]));
 								$stmt->execute();
 								
-								$stmt->bind_result($select["name"], $select["tutor"]);
+								$stmt->bind_result($select["name"], $select["teacher"]);
 								$stmt->fetch();
 								
 								$stmt->close();
 							}
 						?>
                         <input type="text" name="classname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Kursname"/>
-                        <select name="tutor" form="modal-form">
+                        <select name="teacher" form="modal-form">
                         	<option value="0">-</option>
                             <?php
 								$stmt = $mysqli->prepare("
-									SELECT teacher.id, users.lastname
-									FROM teacher
-									INNER JOIN users ON teacher.uid = users.id
+									SELECT teachers.id, users.lastname
+									FROM teachers
+									INNER JOIN users ON teachers.uid = users.id
 								");
 								
 								$stmt->execute();
-								$stmt->bind_result($tutor["id"], $tutor["name"]);
+								$stmt->bind_result($teacher["id"], $teacher["name"]);
 								
 								while($stmt->fetch()) :
 							?>
-                            <option value="<?php echo $tutor["id"] ?>"<?php if($tutor["id"] == $select["tutor"]): ?> selected<?php endif; ?>><?php echo $tutor["name"] ?></option>
+                            <option value="<?php echo $teacher["id"] ?>"<?php if($teacher["id"] == $select["teacher"]): ?> selected<?php endif; ?>><?php echo $teacher["name"] ?></option>
                             <?php 
 								endwhile;
 								
@@ -85,13 +85,13 @@ if(isset($_GET["action"])) {
 		
 		$stmt = $mysqli->prepare("
 			INSERT INTO classes (
-				name, tutor
+				name, teacher
 			) VALUES (
 				?, ?
 			)
 		");
 		
-		$stmt->bind_param("si", null_on_empty($_POST["classname"]), intval($_POST["tutor"]));
+		$stmt->bind_param("si", null_on_empty($_POST["classname"]), intval($_POST["teacher"]));
 		$stmt->execute();
 		
 		$stmt->close();
@@ -108,12 +108,12 @@ if(isset($_GET["action"])) {
 			UPDATE classes
 			SET
 				name = ?,
-				tutor = ?
+				teacher = ?
 			WHERE id = ?
 			LIMIT 1
 		");
 		
-		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), intval($_POST["tutor"]), intval($_GET["class"]));
+		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), intval($_POST["teacher"]), intval($_GET["class"]));
 		$stmt->execute();
 		
 		$stmt->close();
@@ -169,24 +169,26 @@ if(isset($_GET["class"])) {
 	
 	if($classId == -1) {
 		$stmt = $mysqli->prepare("
-			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
-			FROM users
-			LEFT JOIN classes AS tutorium ON users.class = tutorium.id
-			LEFT JOIN teacher ON tutorium.tutor = teacher.id
-			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
+			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
+			FROM students
+			LEFT JOIN users ON students.uid = users.id
+			LEFT JOIN tutorials ON students.tutorial = tutorials.id
+			LEFT JOIN teachers ON tutorials.tutor = teachers.id
+			LEFT JOIN users AS tutor ON teachers.uid = tutor.id
 			ORDER BY users.lastname
 		");	
 	}
 	else {
 		$stmt = $mysqli->prepare("
-			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
-			FROM users
-			LEFT JOIN users_classes ON users.id = users_classes.user
-			LEFT JOIN classes AS tutorium ON users.class = tutorium.id
-			LEFT JOIN classes ON users_classes.id = classes.id
-			LEFT JOIN teacher ON tutorium.tutor = teacher.id
-			LEFT JOIN users AS tutor ON teacher.uid = tutor.id
-			WHERE users_classes.class = ?
+			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
+			FROM students
+			LEFT JOIN users ON students.uid = users.id
+			LEFT JOIN students_classes ON users.id = students_classes.student
+			LEFT JOIN tutorials ON students.tutorial = tutorials.id
+			LEFT JOIN classes ON students_classes.id = classes.id
+			LEFT JOIN teachers ON tutorials.tutor = teachers.id
+			LEFT JOIN users AS tutor ON teachers.uid = tutor.id
+			WHERE students_classes.class = ?
 			ORDER BY users.lastname
 		");
 		
@@ -239,10 +241,10 @@ if(isset($_GET["class"])) {
 			<?php
 				global $mysqli;
 				$stmt = $mysqli->prepare("
-					SELECT classes.id, classes.name, teacher.id, users.id, users.lastname
+					SELECT classes.id, classes.name, teachers.id, users.id, users.lastname
 					FROM classes
-					LEFT JOIN teacher ON classes.tutor = teacher.id
-					LEFT JOIN users ON teacher.uid = users.id
+					LEFT JOIN teachers ON classes.teacher = teachers.id
+					LEFT JOIN users ON teachers.uid = users.id
 					ORDER BY classes.name ASC;
 				");	
 				

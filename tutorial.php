@@ -169,22 +169,22 @@ if(isset($_GET["tutorial"])) {
 	
 	if($tutorialId == -1) {
 		$stmt = $mysqli->prepare("
-			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
 			FROM students
 			LEFT JOIN users ON students.uid = users.id
-			LEFT JOIN tutorials AS tutorium ON students.tutorial = tutorium.id
-			LEFT JOIN teachers ON tutorium.tutor = teachers.id
+			LEFT JOIN tutorials ON students.tutorial = tutorials.id
+			LEFT JOIN teachers ON tutorials.tutor = teachers.id
 			LEFT JOIN users AS tutor ON teachers.uid = tutor.id
 			ORDER BY users.lastname
 		");	
 	}
 	else {
 		$stmt = $mysqli->prepare("
-			SELECT users.id, users.prename, users.lastname, tutorium.name, tutor.lastname 
+			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
 			FROM students
 			LEFT JOIN users ON students.uid = users.id
-			LEFT JOIN tutorials AS tutorium ON students.tutorial = tutorium.id
-			LEFT JOIN teachers ON tutorium.tutor = teachers.id
+			LEFT JOIN tutorials ON students.tutorial = tutorials.id
+			LEFT JOIN teachers ON tutorials.tutor = teachers.id
 			LEFT JOIN users AS tutor ON teachers.uid = tutor.id
 			WHERE students.tutorial = ?
 			ORDER BY users.lastname
