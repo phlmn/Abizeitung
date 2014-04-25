@@ -401,6 +401,7 @@
 				$stmt->execute();
 				
 				$res = $stmt->fetch();
+				$stmt->close();
 				
 				if(!$res) {
 					$stmt = $mysqli->prepare("
@@ -419,8 +420,6 @@
 					$stmt->close();
 				}
 				else {
-					$tutorial = intval($data["tutorial"]);
-				
 					$stmt = $mysqli->prepare("
 						INSERT INTO students (
 							uid, tutorial
@@ -429,14 +428,12 @@
 						)
 					");
 					
-					$stmt->bind_param("ii", intval($id), $tutorial);
+					$stmt->bind_param("ii", intval($id), intval($data["tutorial"]));
 					$stmt->execute();
 					
 					$res = $stmt->affected_rows;
 					$stmt->close();
-				}
-				
-				
+				}	
 			}
 			
 			if($res == 0) {
@@ -469,7 +466,7 @@
 				LIMIT 1
 			");
 			
-			$stmt->bind_param("sssiiss",
+			$stmt->bind_param("sssiissi",
 				null_on_empty($data["prename"]),
 				null_on_empty($data["lastname"]),
 				null_on_empty($data["birthday"]),
@@ -502,7 +499,7 @@
 				$stmt->bind_param("i", intval($data["id"]));
 				$stmt->execute();
 				
-				$res = $stmt->affected_rows;
+				$res = $stmt->fetch();
 				$stmt->close();
 				
 				if($res) {
@@ -524,22 +521,22 @@
 				
 				$stmt = $mysqli->prepare("
 					SELECT id
-					FROM teacher
+					FROM teachers
 					WHERE uid = ?
 				");
 				
 				$stmt->bind_param("i", intval($data["id"]));
 				$stmt->execute();
 				
-				$res = $stmt->affected_rows;
+				$res = $stmt->fetch();
 				$stmt->close();
 				
-				if($res <= 0) {
+				if(!$res) {
 					// Nutzer ist kein Lehrer
 					// Nutzer wird in die Tabelle Lehrer eingefügt
 					
 					$stmt = $mysqli->prepare("
-						INSERT INTO teacher (
+						INSERT INTO teachers (
 							uid
 						) VALUES (
 							?
@@ -558,22 +555,23 @@
 				
 				$stmt = $mysqli->prepare("
 					SELECT id
-					FROM teacher
+					FROM teachers
 					WHERE uid = ?
 				");
 				
 				$stmt->bind_param("i", intval($data["id"]));
 				$stmt->execute();
 				
-				$res = $stmt->affected_rows;
+				$res = $stmt->fetch();
 				$stmt->close();
 				
 				if($res) {
+					
 					// Nutzer ist Lehrer
 					// Nutzer wird aus der Tabelle Lehrer gelöscht
 					
 					$stmt = $mysqli->prepare("
-						DELETE FROM teacher
+						DELETE FROM teachers
 						WHERE uid = ?
 					");
 					
@@ -594,25 +592,56 @@
 				$stmt->bind_param("i", intval($data["id"]));
 				$stmt->execute();
 				
-				$res = $stmt->affected_rows;
+				$res = $stmt->fetch();
 				$stmt->close();
 				
-				if($res <= 0) {
+				if(!$res) {
 					// Nutzer ist kein Schüler
 					// Nutzer wird in die Tabelle Nutzer eingefügt
 					
 					$stmt = $mysqli->prepare("
-						INSERT INTO students (
-							uid, tutorial
-						) VALUES (
-							?, ?
-						)
+						SELECT name
+						FROM tutorials
+						WHERE id = ?
 					");
 					
-					$stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]));
+					$stmt->bind_param("i", intval($data["tutorial"]));
 					$stmt->execute();
 					
+					$res = $stmt->fetch();
 					$stmt->close();
+					
+					if(!$res) {
+						$stmt = $mysqli->prepare("
+							INSERT INTO students (
+								uid
+							) VALUES (
+								?
+							)
+						");
+						
+						$stmt->bind_param("i", intval($data["id"]));
+						
+						$stmt->execute();
+						
+						$res = $stmt->affected_rows;
+						$stmt->close();
+					}
+					else {
+						$stmt = $mysqli->prepare("
+							INSERT INTO students (
+								uid, tutorial
+							) VALUES (
+								?, ?
+							)
+						");
+						
+						$stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]));
+						$stmt->execute();
+						
+						$res = $stmt->affected_rows;
+						$stmt->close();
+					}
 				}
 			}
 			
