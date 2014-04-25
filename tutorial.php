@@ -27,7 +27,7 @@
 							if($_GET["edittutorial"]) {
 								$stmt = $mysqli->prepare("
 									SELECT name, tutor
-									FROM tutorial
+									FROM tutorials
 									WHERE id = ?
 									LIMIT 1
 								");
@@ -105,7 +105,7 @@ if(isset($_GET["action"])) {
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
-			UPDATE tutorial
+			UPDATE tutorials
 			SET
 				name = ?,
 				tutor = ?
@@ -127,7 +127,7 @@ if(isset($_GET["action"])) {
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
-			DELETE FROM tutorial
+			DELETE FROM tutorials
 			WHERE id = ?
 			LIMIT 1
 		");
