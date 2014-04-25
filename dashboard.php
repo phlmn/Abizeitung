@@ -12,6 +12,84 @@
 	
 	global $mysqli;
 	
+	if(isset($_GET["nickname"])) {
+		if($_GET["nickname"] == "new") {
+			
+			$nickname = $mysqli->real_escape_string($_POST["nickname"]);
+			
+			if(!empty($nickname)) {
+			
+				$stmt = $mysqli->prepare("
+					INSERT INTO nicknames (
+						nickname, `from`, `to`, accepted
+					) VALUES (
+						?, ?, ?, 0
+					)
+				");
+				
+				$stmt->bind_param("sii", $nickname, intval($data["id"]), intval($_POST["user"]));
+				$stmt->execute();
+				
+				$res = $stmt->num_rows;
+				$stmt->close();
+				
+				db_close();
+				
+				header("Location: ./dashboard.php?saved");
+				
+				die;
+			}
+			
+			db_close();
+			
+			header("Location: ./dashboard.php?error");
+			
+			die;
+		}
+		else {
+?>
+	<div class="modal-dialog">
+        	<div class="modal-content">
+            	<form method="post" action="dashboard.php?nickname=new">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4>Spitzname vergeben</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" name="nickname" placeholder="Spitzname"/>
+                        <select name="user">
+                        <?php
+							$stmt = $mysqli->prepare("
+								SELECT users.id, users.prename, users.lastname
+								FROM students
+								LEFT JOIN users ON students.uid = users.id
+							");
+							
+							$stmt->execute();
+							$stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
+							
+							while($stmt->fetch()):
+                        ?>
+                        	<option value="<?php echo $user["id"]; ?>"><?php echo $user["prename"] . " " . $user["lastname"]; ?></option>
+                        <?php
+							endwhile;
+							
+							$stmt->close();
+						?>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                    	<button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                    	<button type="submit" class="btn btn-default">Speichern</button>
+                    </div>
+                </form>
+        	</div>
+        </div>
+<?php
+			die;
+		}
+	}
+	
 	if(isset($_GET["update"])) {
 		$userdata["id"] = $data["id"];
 		$userdata["birthday"] = $_POST["birthday"];
@@ -222,6 +300,12 @@
 				
 				$stmt->close();
 			?>
+			
+			function newNickname() {
+				$('#dashboardModal').modal();
+				$('#dashboardModal').load("dashboard.php?nickname");		
+			}
+			
 			$(document).ready(function(){
 				change_bg_img('#photo-enrollment', '<?php echo $enrollment; ?>');
 				change_bg_img('#photo-current', '<?php echo $current; ?>');
@@ -345,6 +429,11 @@
                 <?php endforeach; ?>
                 		</tbody>
                  	</table>
+                    
+                    <div class="buttons">
+						<a class="button" href="javascript:void(newNickname())"><span class="icon-plus-circled"></span> Nickname vergeben</a>
+					</div>
+                    
                 </div>
             </div>
 			
@@ -435,6 +524,9 @@
 				<input type="submit" value="Speichern" form="data_form" />
 				<input type="reset" value="Änderungen verwerfen" form="data_form" />
 			</div>
+            
+            <div class="modal fade" id="dashboardModal" tabindex="-1" role="dialog" aria-hidden="true">
+            </div>
 
 		</div>	
 	</body>
