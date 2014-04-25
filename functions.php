@@ -322,16 +322,16 @@
 				return -2;
 			}
 			
+			$female = $data["female"] ? true : false;
+			$admin =  $data["admin"]  ? true : false;
+			
 			$stmt = $mysqli->prepare("
 				INSERT INTO users (
 					prename, lastname, birthday, female, admin, password, email, activated
 				) VALUES (
-					?, ?, ?, ?, ?, ?, ?
+					?, ?, ?, ?, ?, ?, ?, ?
 				)
 			");
-			
-			$female = $data["female"] ? true : false;
-			$admin =  $data["admin"]  ? true : false;
 			
 			$stmt->bind_param(
 				"sssiissi",
@@ -350,7 +350,7 @@
 			$res = $stmt->affected_rows;
 			$stmt->close();
 			
-			if($res == 0) {
+			if($res <= 0) {
 				return 1;
 			}
 			
@@ -369,8 +369,7 @@
 			$stmt->execute();
 			$stmt->bind_result($id);
 			
-			$res = $stmt->num_rows;
-			$stmt->fetch();
+			$res = $stmt->fetch();
 			
 			$stmt->close();
 			
@@ -380,7 +379,7 @@
 			
 			if($data["teacher"]) {
 				$stmt = $mysqli->prepare("
-					INSERT INTO teacher (
+					INSERT INTO teachers (
 						uid
 					) VALUES (
 						?
@@ -395,18 +394,51 @@
 			} 
 			else {
 				$stmt = $mysqli->prepare("
-					INSERT INTO students (
-						uid, tutorial
-					) VALUES (
-						?, ?
-					)
+					SELECT name
+					FROM tutorials
+					WHERE id = ?
 				");
 				
-				$stmt->bind_param("ii", intval($id), intval($data["tutorial"]));
+				$stmt->bind_param("i", intval($data["tutorial"]));
 				$stmt->execute();
 				
-				$res = $stmt->affected_rows;
-				$stmt->close();
+				$res = $stmt->fetch();
+				
+				if(!$res) {
+					$stmt = $mysqli->prepare("
+						INSERT INTO students (
+							uid
+						) VALUES (
+							?
+						)
+					");
+					
+					$stmt->bind_param("i", intval($id));
+					
+					$stmt->execute();
+					
+					$res = $stmt->affected_rows;
+					$stmt->close();
+				}
+				else {
+					$tutorial = intval($data["tutorial"]);
+				
+					$stmt = $mysqli->prepare("
+						INSERT INTO students (
+							uid, tutorial
+						) VALUES (
+							?, ?
+						)
+					");
+					
+					$stmt->bind_param("ii", intval($id), $tutorial);
+					$stmt->execute();
+					
+					$res = $stmt->affected_rows;
+					$stmt->close();
+				}
+				
+				
 			}
 			
 			if($res == 0) {

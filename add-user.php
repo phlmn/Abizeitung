@@ -12,7 +12,7 @@
 	if(isset($_GET["create"])) {
 		$userdata["prename"] 	= $_POST["prename"];
 		$userdata["lastname"] 	= $_POST["lastname"];
-		$userdata["tutorial"] 		= $_POST["tutorial"];
+		$userdata["tutorial"] 	= $_POST["tutorial"];
 		$userdata["birthday"] 	= $_POST["birthday"];
 		$userdata["nickname"] 	= $_POST["nickname"];
 		$userdata["email"] 		= $_POST["email"];
@@ -105,7 +105,7 @@
                                 <?php 
 									$stmt = $mysqli->prepare("
 										SELECT id, name
-										FROM tutorial
+										FROM tutorials
 									");
 									
 									$stmt->execute();
@@ -149,7 +149,7 @@
 						
 			<div class="buttons">
 				<input type="submit" value="Erstellen" form="data_form" />
-				<a class="button" href="users.php">Zurück<a/>
+				<a class="button" href="users.php">Zurück</a>
 			</div>
 
 		</div>	
