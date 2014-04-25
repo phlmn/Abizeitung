@@ -92,6 +92,39 @@
 	
 	$stmt->close();
 	
+	// Alle von anderen Nutzer vergebenen Nicknames speichern
+	
+	$nicknames = array();
+	
+	$stmt = $mysqli->prepare("
+		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname, nicknames.accepted
+		FROM nicknames
+		LEFT JOIN users ON nicknames.`from` = users.id
+		WHERE 
+		NOT	nicknames.`to` = nicknames.`from`
+		AND nicknames.`to` = ?
+	");
+	
+	$stmt->bind_param("i", $data["id"]);
+	$stmt->execute();
+	
+	$stmt->bind_result($row["id"], $row["nickname"], $row["prename"], $row["lastname"], $row["accepted"]);
+	
+	while($stmt->fetch()) {
+		$nicknames[intval($row["id"])] = array(
+			"nickname" 	=> $row["nickname"],
+			"from"		=> array(
+				"prename" 	=> $row["prename"],
+				"lastname" 	=> $row["lastname"]
+			),
+			"accepted" 	=> $row["accepted"]
+		);
+	}
+	
+	$stmt->close();
+	
+	// Alle Fragen speichern
+	
 	$questions = array();
 	
 	$stmt = $mysqli->prepare("
@@ -121,6 +154,8 @@
 	}
 	
 	$stmt->close();
+	
+	// Alle Umfragen speichern
 	
 	$survey_answers = array();
 	
@@ -287,6 +322,31 @@
 					</div>
 				</div>
 			</div>
+            
+            <div class="nicknames box">
+            	<h2>Spitznamen</h2>
+                <div class="nickname-list row">
+                	<table class="table table-striped">
+                        <thead>
+                            <th>Spitzname</th>
+                            <th>Vergeben von</th>
+                            <th class="accept"></th>
+                        </thead>
+                        <tbody>
+                <?php foreach($nicknames as $key => $nickname): ?>
+                			<tr>
+                            	<td><?php echo $nickname["nickname"] ?></td>
+								<td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
+                                <td class="accept">
+                                	<input id="accept" type="checkbox" value="1" name="accept"<?php if($nickname["accepted"]): ?> checked<?php endif; ?>/>
+                                    <label for="accept">Spitzname akzeptieren</label>
+                                </td>
+                    		</tr>
+                <?php endforeach; ?>
+                		</tbody>
+                 	</table>
+                </div>
+            </div>
 			
 			<div class="questions box">
 				<h2>Fragen</h2>
