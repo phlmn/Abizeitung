@@ -251,10 +251,10 @@
 				$stmt->bind_param("i", $id);
 				$stmt->execute();
 				
-				$res = $stmt->num_rows;
+				$res = $stmt->fetch();
 				$stmt->close();
 				
-				if($res > 0) {
+				if($res) {
 					// Nutzer ist ein Lehrer
 					
 					$stmt = $mysqli->prepare("
@@ -269,11 +269,9 @@
 					
 					$stmt->bind_result($data["prename"], $data["lastname"], $data["birthday"], $data["admin"], $data["email"], $data["female"]);
 					
-					if($stmt->num_rows > 0) {
-						$stmt->fetch();
-						
+					if($stmt->fetch()) {
 						$data["id"] = $id;
-						$data["isteacher"] = false;
+						$data["isteacher"] = true;
 						
 						$stmt->close();
 						

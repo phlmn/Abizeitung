@@ -153,7 +153,7 @@
 								
 									$stmt = $mysqli->prepare("
 										SELECT id, name
-										FROM tutorial
+										FROM tutorials
 									");
 									
 									$stmt->execute();
