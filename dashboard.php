@@ -18,7 +18,6 @@
 			$nickname = $mysqli->real_escape_string($_POST["nickname"]);
 			
 			if(!empty($nickname)) {
-			
 				$stmt = $mysqli->prepare("
 					INSERT INTO nicknames (
 						nickname, `from`, `to`, accepted
@@ -63,9 +62,13 @@
 								SELECT users.id, users.prename, users.lastname
 								FROM students
 								LEFT JOIN users ON students.uid = users.id
+								WHERE NOT users.id = ?
+								ORDER BY users.lastname ASC
 							");
 							
+							$stmt->bind_param("i", intval($data["id"]));
 							$stmt->execute();
+							
 							$stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
 							
 							while($stmt->fetch()):
@@ -101,13 +104,37 @@
 		
 		$stmt = $mysqli->prepare("
 			SELECT id
+			FROM nicknames
+			WHERE
+			NOT	`to` = `from`
+			AND `to` = ?
+		");
+		
+		$stmt->bind_param("i", $data["id"]);
+		$stmt->execute();
+		
+		$stmt->bind_result($n["id"]);
+		$stmt->store_result();
+		
+		$fails = 0;
+		
+		while($stmt->fetch()) {
+			if(isset($_POST["accept_" . $n["id"]])) {
+				if(Dashboard::update_user_nicknames($data["id"], $n["id"], $_POST["accept_" . $n["id"]]))
+					$fails++;
+			}
+		}
+		
+		$stmt->free_result();
+		$stmt->close();
+		
+		$stmt = $mysqli->prepare("
+			SELECT id
 			FROM questions");
 		
 		$stmt->execute();
 		$stmt->bind_result($q["id"]);
 		$stmt->store_result();
-		
-		$fails = 0;
 		
 		while($stmt->fetch()) {
 			if(isset($_POST["question_" . $q["id"]])) {
@@ -422,8 +449,8 @@
                             	<td><?php echo $nickname["nickname"] ?></td>
 								<td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
                                 <td class="accept">
-                                	<input id="accept" type="checkbox" value="1" name="accept"<?php if($nickname["accepted"]): ?> checked<?php endif; ?>/>
-                                    <label for="accept">Spitzname akzeptieren</label>
+                                	<input id="accept_<?php echo $key ?>" type="checkbox" value="1" name="accept_<?php echo $key ?>" form="data_form"<?php if($nickname["accepted"]): ?> checked<?php endif; ?>/>
+                                    <label for="accept_<?php echo $key ?>">Spitzname akzeptieren</label>
                                 </td>
                     		</tr>
                 <?php endforeach; ?>

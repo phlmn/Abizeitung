@@ -1,6 +1,28 @@
 <?php
 
 	class Dashboard {
+		function update_user_nicknames($user, $nicknameId, $accept) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				UPDATE nicknames
+				SET accepted = ?
+				WHERE id = ?
+				AND `to` = ?
+			");
+			
+			$stmt->bind_param("iii", intval($accept), intval($nicknameId), intval($user));
+			$stmt->execute();
+			
+			$res = $stmt->affected_rows;
+			$stmt->close;
+			
+			if($mysqli->error || $res < 0)
+				return true;
+			else
+				return false;
+		}
+		
 		function update_user_questions($user, $question, $answer) {
 			global $mysqli;
 			
