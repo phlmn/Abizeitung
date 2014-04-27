@@ -120,7 +120,11 @@
 		
 		while($stmt->fetch()) {
 			if(isset($_POST["accept_" . $n["id"]])) {
-				if(Dashboard::update_user_nicknames($data["id"], $n["id"], $_POST["accept_" . $n["id"]]))
+				if(Dashboard::update_user_nicknames($data["id"], $n["id"], 1))
+					$fails++;
+			}
+			else {
+				if(Dashboard::update_user_nicknames($data["id"], $n["id"], 0))
 					$fails++;
 			}
 		}
