@@ -41,7 +41,7 @@
 			
 			db_close();
 			
-			header("Location: ./dashboard.php?error");
+			header("Location: ./dashboard.php?failed=nickname");
 			
 			die;
 		}
@@ -353,11 +353,25 @@
             <?php else: if(isset($_GET["failed"])): ?>
                 <div class="alert alert-danger">
                 	Speichern fehlgeschlagen.<br />
-                    <?php if($_GET["failed"] == 1): ?>
-						1 Anfrage konnte nicht gespeichert werden.
-                    <?php else: if($_GET["failed"] > 1): ?>
-                    	<?php echo $_GET["failed"] ?> Anfragen konnten nicht gespeichert werden.
-                    <?php endif; endif; ?>
+			<?php 
+				switch($_GET["failed"]):
+					case "nickname": 
+				?>
+					Der Spitzname konne nicht gesendet werden.<br />
+                    Das Feld Spitzname darf nicht leer sein.
+				<?php
+						break;
+					case 1:
+				?>
+                	1 Anfrage konnte nicht gespeichert werden.
+				<?php 
+                    	break;
+					case NULL:
+						break;
+                    default:
+                ?>
+                	Anfragen konnten nicht gespeichert werden.
+			<?php endswitch; ?>
                 </div>
             <?php endif; endif; ?>
 			<div class="intro">
