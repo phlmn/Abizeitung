@@ -309,6 +309,26 @@
 						ON DELETE CASCADE
 						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
+					
+				-- TABLE ERROR_REPORT --
+				
+					CREATE TABLE IF NOT EXISTS `error_report` (
+					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
+					  `code` 		INT(11) 	NULL 		DEFAULT NULL,
+					  `message` 	VARCHAR(255) NULL 		DEFAULT NULL,
+					  `page`		VARCHAR(45) NOT NULL	
+					  `function` 	VARCHAR(100) NULL 		DEFAULT NULL,
+					  `user` 		INT(11) 	NULL 		DEFAULT NULL,
+					  `time` 		TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_error_report_users1_idx` (`user` ASC),
+					  CONSTRAINT `fk_error_report_users1`
+						FOREIGN KEY (`user`)
+						REFERENCES `users` (`id`)
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
+					) ENGINE = InnoDB;
 			");
 			
 			while($mysqli->next_result());
