@@ -4,8 +4,10 @@ require_once("functions.php");
 if(!file_exists("photos/"))
 	mkdir("photos/");
 	
-if(!isset($_GET["user"]) || !isset($_GET["category-name"]))
+if(!isset($_GET["user"]) || !isset($_GET["category-name"])) {
+	error_report(1, "unknown user or category-name", "upload.php", NULL, $_GET["user"]); 
 	die("1");
+}
 
 $user["id"] 		= intval($_GET["user"]);
 $category["name"] 	= mysql_real_escape_string($_GET["category-name"]);
@@ -14,8 +16,10 @@ $category["id"]		= -1;
 if(!file_exists("photos/" . $category["name"]))
 	mkdir("photos/" . $category["name"]);
 	
-if(!isset($_FILES['photo']['name']))
+if(!isset($_FILES['photo']['name'])) {
+	error_report(2, "unknown photoname", "upload.php", NULL, $_GET["user"]);
 	die("2");
+}
 
 if($_FILES['photo']['size'] > return_ini_bytes(ini_get("upload_max_filesize")))
 	die("3");
@@ -48,6 +52,7 @@ if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) 
 		$stmt->close();
 		
 		if(!$res) {
+			error_report(5, "database error - cannot insert new category", "upload.php", NULL, $_GET["user"]);
 			db_close();
 			die("5");
 		}
@@ -55,6 +60,7 @@ if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) 
 		$category["id"] = get_category_id($category["name"]);
 		
 		if($category["id"] < 0) {
+			error_report(6, "database error - unknown category", "upload.php", NULL, $_GET["user"]);
 			db_close();
 			die("6");
 		}
@@ -76,11 +82,15 @@ if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) 
 	
 	db_close();
 		
-	if(!$res)
+	if(!$res) {
+		error_report(7, "cannot add file", "upload.php", NULL, $_GET["user"]);
 		die("7");
+	}
 	
 	echo $file;
-} else
+} else {
+	error_report(8, "cannot upload file", "upload.php", NULL, $_GET["user"]);
 	die("8");
+}
 
 ?>
