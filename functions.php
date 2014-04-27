@@ -3,12 +3,12 @@
 	require_once("./classes/cUserManager.php");
 	
 	function head() {
-		require("head.php");
+		require_once("head.php");
 	}
 	
 	function db_connect() {
 		global $mysqli;
-		include("config.php");
+		include_once("config.php");
 		$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 		
 		if($mysqli->connect_errno)
@@ -89,6 +89,15 @@
 		}
 	}
 	
+	function null_on_0($var) {
+		if(!$var) {
+			return NULL;
+		}
+		else {
+			return intval($var);
+		}
+	}
+	
 	function encrypt_pw($pw) {
 		return password_hash($pw, PASSWORD_BCRYPT);
 	}
@@ -134,6 +143,34 @@
 			return -1;
 			
 		return $id;
+	}
+	
+	function error_report($code, $message, $page, $function, $user) {
+		$connect = false;
+		
+		if(!DB_HOST) {
+			db_connect();
+			$connect = true;
+		}
+		
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			INSERT INTO error_report (
+				code, message, page, function, user
+			) VALUES (
+				?, ?, ?, ?, ?
+			)
+		");
+		
+		$stmt->bind_param("isssi", null_on_0($code), null_on_empty($message), null_on_empty($page), null_on_empty($function), null_on_0($user));
+		$stmt->execute();
+		
+		$stmt->close();
+		
+		if($connect) {
+			db_close();
+		}
 	}
 	
 ?>
