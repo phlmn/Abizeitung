@@ -10,5 +10,6 @@
 <![endif]-->
 <script src="js/jquery.js" type="text/javascript"></script>
 <script src="js/jquery-ui-1.10.4.min.js" type="text/javascript"></script>
+<script src="js/fancySelect.js" type="text/javascript"></script>
 <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="js/less-1.7.0.min.js" type="text/javascript"></script>

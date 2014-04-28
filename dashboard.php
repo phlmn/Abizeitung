@@ -299,13 +299,16 @@
 			
 			function newNickname() {
 				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?nickname");		
+				$('#dashboardModal').load("dashboard.php?nickname", function() {
+					$("#dashboardModal select").fancySelect();
+				});		
 			}
 			
 			$(document).ready(function(){
 				change_bg_img('#photo-enrollment', '<?php echo $enrollment; ?>');
 				change_bg_img('#photo-current', '<?php echo $current; ?>');
 				$("div.common *").tooltip();
+				$("select").fancySelect();
 			});
 		</script>
 	</head>

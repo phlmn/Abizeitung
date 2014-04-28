@@ -130,7 +130,7 @@ div.box {
 }
 
 
-select {
+.customSelect {
 	height: 32px;
 	-webkit-appearance: none;
 	-moz-appearance: none;
@@ -144,12 +144,112 @@ select {
 	background: url("arrow-down.png") no-repeat right;
 	background-size: 32px 32px;
 	background-color: #fff;
+	line-height: 30px;
 	
-	&:focus {
+	&.customSelectFocus {
 		outline: none;	
 		border-color: #777;
 	}
 }
+
+div.fancy-select {
+	position: relative;
+	color: #000;
+	display: inline-block;
+	
+	&.disabled {
+		opacity: 0.5;
+	}
+	
+	select:focus + div.trigger {
+	
+	}
+	
+	select:focus + div.trigger.open {
+	
+	}
+	
+	div.trigger {
+		cursor: pointer;
+		padding: 0 32px 0 10px;
+		line-height: 30px;
+		height: 32px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		position: relative;
+		background: #fff;
+		min-width: 80px;
+		border: 1px solid #ddd;
+	}
+	
+	div.trigger:after {
+		content: "";
+		display: block;
+		position: absolute;
+		width: 0;
+		height: 0;
+		border: 5px solid transparent;
+		border-top-color: #333;
+		top: 14px;
+		right: 9px;
+	}
+	
+	div.trigger.open {
+	
+	}
+	
+	div.trigger.open:after {
+	
+	}
+	
+	ul.options {
+		padding: 0;
+		list-style: none;
+		margin: 0;
+		position: absolute;
+		top: 32px;
+		left: 0;
+		visibility: hidden;
+		opacity: 0;
+		z-index: 50;
+		max-height: 200px;
+		overflow: auto;
+		min-width: 200px;
+		.box-shadow(0 0 5px rgba(0,0,0,.2));
+	}
+	
+	ul.options.open {
+		visibility: visible;
+		opacity: 1;
+	}
+	
+	ul.options.overflowing {
+		top: auto;
+		bottom: 40px;
+	}
+	
+	ul.options.overflowing.open {
+		top: auto;
+		bottom: 50px;
+	}
+	
+	ul.options li {
+		padding: 8px 12px;
+		cursor: pointer;
+		white-space: nowrap;
+		background: #fff;
+	}
+	
+	ul.options li.selected {
+	
+	}
+	
+	ul.options li.hover {
+
+	}
+}
+
 
 .alert {
 	text-align: center;
@@ -639,8 +739,4 @@ div.questions {
 
 div.surveys {
 	border-color: @color4;
-}
-
-div.nicknames {
-	border-color: @color5;
 }
