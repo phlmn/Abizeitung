@@ -157,9 +157,11 @@
 			// Falls mindestens einer leer ist, kann sich der Nutzer nicht anmelden und wird deaktiviert
 			
 			$activated = true;
+			$unlock_key = NULL;
 			
 			if(empty($data["email"]) || empty($data["password"])) {
 				$activated = false;
+				$unlock_key = get_unlock_code();
 			}
 			
 			$stmt = $mysqli->prepare("
@@ -184,14 +186,14 @@
 			
 			$stmt = $mysqli->prepare("
 				INSERT INTO users (
-					prename, lastname, birthday, female, admin, password, email, activated
+					prename, lastname, birthday, female, admin, password, email, activated, unlock_key
 				) VALUES (
-					?, ?, ?, ?, ?, ?, ?, ?
+					?, ?, ?, ?, ?, ?, ?, ?, ?
 				)
 			");
 			
 			$stmt->bind_param(
-				"sssiissi",
+				"sssiissis",
 				null_on_empty($data["prename"]),
 				null_on_empty($data["lastname"]),
 				null_on_empty($data["birthday"]),
@@ -199,7 +201,8 @@
 				$admin,
 				encrypt_pw($data["password"]),
 				null_on_empty($data["email"]),
-				$activated
+				$activated,
+				$unlock_key
 			);
 			
 			$stmt->execute();
