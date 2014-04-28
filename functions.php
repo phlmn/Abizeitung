@@ -106,6 +106,17 @@
 		return password_verify($pw, $hash);
 	}
 	
+	function str_rand($length) {
+		if($length < 1) {
+			$length = 1;
+		}
+		else if($length > 32) {
+			return strtoupper(substr(md5(rand()), 0, $length)) . str_rand($length - 32);
+		}
+		
+		return strtoupper(substr(md5(rand()), (rand() % (33 - $length)), $length));
+	}
+	
 	// converting php.ini file sizes to bytes (32M)
 	
 	function return_ini_bytes($val) {
