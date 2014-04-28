@@ -62,11 +62,13 @@
 								SELECT users.id, users.prename, users.lastname
 								FROM students
 								LEFT JOIN users ON students.uid = users.id
-								WHERE NOT users.id = ?
+								WHERE 
+									NOT users.id = ?
+									AND students.tutorial = ?
 								ORDER BY users.lastname ASC
 							");
 							
-							$stmt->bind_param("i", intval($data["id"]));
+							$stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]["id"]));
 							$stmt->execute();
 							
 							$stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
