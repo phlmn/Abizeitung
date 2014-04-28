@@ -136,55 +136,237 @@
 				return false;
 		}
 		
-		function get_modal_nicknames($data) {
+		function insert_nickname($data) {
+			global $mysqli;
+			
+			$nickname = $mysqli->real_escape_string($data["nickname"]);
+		
+			if(!empty($nickname)) {
+				$stmt = $mysqli->prepare("
+					INSERT INTO nicknames (
+						nickname, `from`, `to`, accepted
+					) VALUES (
+						?, ?, ?, 0
+					)
+				");
+				
+				$stmt->bind_param("sii", $nickname, intval($data["id"]), intval($data["user"]));
+				$stmt->execute();
+				
+				$res = $stmt->num_rows;
+				$stmt->close();
+				
+				db_close();
+				
+				header("Location: ./dashboard.php?saved");
+				
+				die;
+			}
+			
+			db_close();
+			
+			header("Location: ./dashboard.php?failed=nickname");
+			
+			die;
+		}
+		
+		function insert_question($data) {/*
+			
+			### ToDo: 	- change db-model
+						- add option for accept suggest
+						- add list on questions.php for suggestions
 			
 			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				INSERT INTO questions (
+					title
+				) VALUES (
+					?
+				)");
+				
+			$stmt->bind_param("s", $mysqli->real_escape_string($data["question"]));
+			
+			$stmt->execute();
+			
+			$stmt->close();
+		*/}
+		
+		function insert_survey($data) {/*
+			
+			### ToDo:	- change db-model
+						- add option for accept survey
+						- add list on surveys.php for suggestions
+			
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				INSERT INTO surveys (
+					title, m, w
+				) VALUES (
+					?, ?, ?
+				)");
+				
+			$stmt->bind_param("sii", $mysqli->real_escape_string($data["text"]), intval(isset($data["male"])), intval(isset($data["female"])));
+			
+			$stmt->execute();
+			
+			$stmt->close();
+			
+		*/}
+		
+		function suggest_nickname($data) {
+			global $mysqli;
 ?>
-	<div class="modal-dialog">
-        	<div class="modal-content">
-            	<form method="post" action="dashboard.php?nickname=new">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4>Spitzname vergeben</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" name="nickname" placeholder="Spitzname"/>
-                        <select name="user">
-                        <?php
-							$stmt = $mysqli->prepare("
-								SELECT users.id, users.prename, users.lastname
-								FROM students
-								LEFT JOIN users ON students.uid = users.id
-								WHERE 
-									NOT users.id = ?
-									AND students.tutorial = ?
-								ORDER BY users.lastname ASC
-							");
-							
-							$stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]["id"]));
-							$stmt->execute();
-							
-							$stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
-							
-							while($stmt->fetch()):
-                        ?>
-                        	<option value="<?php echo $user["id"]; ?>"><?php echo $user["prename"] . " " . $user["lastname"]; ?></option>
-                        <?php
-							endwhile;
-							
-							$stmt->close();
-						?>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                    	<button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
-                    	<button type="submit" class="btn btn-default">Speichern</button>
-                    </div>
-                </form>
-        	</div>
-        </div>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form method="post" action="dashboard.php?nickname">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Spitzname vergeben</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" name="nickname" placeholder="Spitzname"/>
+                <select name="user">
+                <?php
+                    $stmt = $mysqli->prepare("
+                        SELECT users.id, users.prename, users.lastname
+                        FROM students
+                        LEFT JOIN users ON students.uid = users.id
+                        WHERE 
+                            NOT users.id = ?
+                            AND students.tutorial = ?
+                        ORDER BY users.lastname ASC
+                    ");
+                    
+                    $stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]["id"]));
+                    $stmt->execute();
+                    
+                    $stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
+                    
+                    while($stmt->fetch()):
+                ?>
+                    <option value="<?php echo $user["id"]; ?>"><?php echo $user["prename"] . " " . $user["lastname"]; ?></option>
+                <?php
+                    endwhile;
+                    
+                    $stmt->close();
+                ?>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                <button type="submit" class="btn btn-default">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+<?php
+		}
+		
+		function suggest_question() {
+			global $mysqli;
+?>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form method="post" action="dashboard.php?question">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Frage vorschlagen</h4>
+            </div>
+            <div class="modal-body">
+                <textarea name="question" placeholder="Frage eingeben..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                <button type="submit" class="btn btn-default">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+<?php
+		}
+		
+		function suggest_survey() {
+			global $mysqli;
+?>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form method="post" action="dashboard.php?survey">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Umfrage vorschlagen</h4>
+            </div>
+            <div class="modal-body">
+                <textarea name="survey" placeholder="Frage eingeben..."></textarea>
+            </div>
+            <div class="modal-body">
+                <h4>Personengruppe</h4>
+                <div>
+                    <input id="male" type="checkbox" name="m" value="1" checked>
+                    <label for="male">Männlich</label>
+                </div>
+                <div>
+                    <input id="female" type="checkbox" name="w" value="1" checked>
+                    <label for="female">Weiblich</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                <button type="submit" class="btn btn-default">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
 <?php
 		}
 	}
+	
+	/*
+		-- SAMPLES --
+	
+		###
+		### JavaScript modal
+		###
+	
+		<script type="text/javascript">
+			function suggestNickname() {
+				$('#dashboardModal').modal();
+				$('#dashboardModal').load("dashboard.php?suggest=nickname", function() {
+					$("#dashboardModal select").fancySelect();
+				});		
+			}
+			
+			function suggestQuestion() {
+				$('#dashboardModal').modal();
+				$('#dashboardModal').load("dashboard.php?suggest=question", function() {
+					$("#dashboardModal select").fancySelect();
+				});
+			}
+			
+			function suggestSurvey() {
+				$('#dashboardModal').modal();
+				$('#dashboardModal').load("dashboard.php?suggest=survey", function() {
+					$("#dashboardModal select").fancySelect();
+				});
+			}
+		</script>
+		
+		###
+		### HTML buttons
+		###
+		
+		<div class="buttons">
+			<a class="button" href="javascript:void(suggestNickname())"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
+		</div>
+		
+		<div class="buttons">
+			<a class="button" href="javascript:void(suggestQuestion())"><span class="icon-plus-circled"></span> Frage vorschlagen</a>
+		</div>
+		
+		<div class="buttons">
+			<a class="button" href="javascript:void(suggestSurvey())"><span class="icon-plus-circled"></span>Frage vorschlagen</a>
+		</div>
+	*/
 	
 ?>

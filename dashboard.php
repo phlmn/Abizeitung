@@ -12,46 +12,47 @@
 	
 	global $mysqli;
 	
-	if(isset($_GET["nickname"])) {
-		if($_GET["nickname"] == "new") {
-			
-			$nickname = $mysqli->real_escape_string($_POST["nickname"]);
-			
-			if(!empty($nickname)) {
-				$stmt = $mysqli->prepare("
-					INSERT INTO nicknames (
-						nickname, `from`, `to`, accepted
-					) VALUES (
-						?, ?, ?, 0
-					)
-				");
-				
-				$stmt->bind_param("sii", $nickname, intval($data["id"]), intval($_POST["user"]));
-				$stmt->execute();
-				
-				$res = $stmt->num_rows;
-				$stmt->close();
-				
-				db_close();
-				
-				header("Location: ./dashboard.php?saved");
-				
-				die;
-			}
-			
-			db_close();
-			
-			header("Location: ./dashboard.php?failed=nickname");
-			
-			die;
+	if(isset($_GET["suggest"])) {
+		switch($_GET["suggest"]) {
+			case "nickname":
+				Dashboard::suggest_nickname($data);
+				break;
+			case "question":
+				Dashboard::suggest_question();
+				break;
+			case "survey":
+				Dashboard::suggest_survey();
+				break;
+			default:
 		}
-		else {
-			Dashboard::get_modal_nicknames($data);
-			
-			die;
-		}
+		
+		db_close();
+		
+		die;
 	}
 	
+	if(isset($_GET["nickname"])) {
+		$suggest["nickname"] 	= $_POST["nickname"];
+		$suggest["user"] 		= $_POST["user"];
+		$suggest["id"] 			= $data["id"];
+		
+		Dashboard::insert_nickname($suggest);
+	}
+	else if(isset($_GET["question"])) {
+		$suggest["question"] 	= $_POST["question"];
+		$suggest["id"] 			= $data["id"];
+		
+		Dashboard::insert_question($suggest);
+	}
+	else if(isset($_GET["survey"])) {
+		$suggest["survey"] 	= $_POST["survey"];
+		$suggest["male"] 	= $_POST["m"];
+		$suggest["female"] 	= $_POST["w"];
+		$suggest["id"] 		= $data["id"];
+		
+		Dashboard::insert_survey($suggest);
+	}
+		
 	if(isset($_GET["update"])) {
 		$userdata["id"] = $data["id"];
 		$userdata["birthday"] = $_POST["birthday"];
@@ -297,9 +298,9 @@
 				$stmt->close();
 			?>
 			
-			function newNickname() {
+			function suggestNickname() {
 				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?nickname", function() {
+				$('#dashboardModal').load("dashboard.php?suggest=nickname", function() {
 					$("#dashboardModal select").fancySelect();
 				});		
 			}
@@ -443,7 +444,7 @@
                  	</table>
                     
                     <div class="buttons">
-						<a class="button" href="javascript:void(newNickname())"><span class="icon-plus-circled"></span> Nickname vergeben</a>
+						<a class="button" href="javascript:void(suggestNickname())"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
 					</div>
                     
                 </div>
@@ -474,7 +475,7 @@
 						<div class=""><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $text ?></textarea></div>
 					</div>
 				<?php endforeach; ?>
-				</div>
+                </div>
 			</div>
 			
 			<div class="surveys box">
