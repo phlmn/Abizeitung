@@ -29,15 +29,23 @@
 				$admin_mail		= null_on_empty($_POST['admin-mail']);
 				$admin_pw = $_POST['admin-pw'];
 				
+				$unlock_key = null_on_0($_POST['unlock-key']);
+				
+				if($unlock_key < 10) {
+					$unlock_key = 10;
+				}
+				
 				file_put_contents(
 					"config.php", 
-					"<?php
-						define('DB_HOST', '" . $db_host ."');
-						define('DB_USER', '" . $db_user . "');
-						define('DB_NAME', '" . $db_name . "');
-						define('DB_PASSWORD', '" . $db_password . "');
-					?>"
-				);
+					"
+<?php
+	define('DB_HOST', '" . $db_host ."');
+	define('DB_USER', '" . $db_user . "');
+	define('DB_NAME', '" . $db_name . "');
+	define('DB_PASSWORD', '" 	. $db_password 	. "');
+	
+	define('UNLOCK_KEY', '" 	. $unlock_key 	. "');
+?>");
 				
 			}
 			
@@ -433,6 +441,10 @@
                         <input name="db-user" type="text" placeholder="DB Nutzer" />
                         <input name="db-password" type="password" placeholder="DB Passwort" />
                         <input name="db-name" type="text" placeholder="DB Name" />
+                    </div>
+                    <div id="reg">
+                    	<h4>Registrierung</h4>
+                        <input name="unlock-key" type="text" placeholder="Schlüssellänge" />
                     </div>
                     <div id="admin">
                     	<h4>Admin</h4>

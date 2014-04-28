@@ -117,6 +117,12 @@
 		return strtoupper(substr(md5(rand()), (rand() % (33 - $length)), $length));
 	}
 	
+	function get_unlock_code() {
+		include_once("config.php");
+		
+		return str_rand(UNLOCK_KEY);
+	}
+	
 	// converting php.ini file sizes to bytes (32M)
 	
 	function return_ini_bytes($val) {
