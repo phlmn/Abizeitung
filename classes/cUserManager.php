@@ -265,13 +265,13 @@
 				if(!$res) {
 					$stmt = $mysqli->prepare("
 						INSERT INTO students (
-							uid
+							uid, tutorial
 						) VALUES (
-							?
+							?, ?
 						)
 					");
 					
-					$stmt->bind_param("i", intval($id));
+					$stmt->bind_param("ii", intval($id), null_on_0($data["tutorial"]));
 					
 					$stmt->execute();
 					
@@ -473,13 +473,13 @@
 					if(!$res) {
 						$stmt = $mysqli->prepare("
 							INSERT INTO students (
-								uid
+								uid, tutorial
 							) VALUES (
-								?
+								?, ?
 							)
 						");
 						
-						$stmt->bind_param("i", intval($data["id"]));
+						$stmt->bind_param("ii", intval($data["id"]), null_on_0($data["tutorial"]));
 						
 						$stmt->execute();
 						
@@ -501,6 +501,17 @@
 						$res = $stmt->affected_rows;
 						$stmt->close();
 					}
+				} else {
+					$stmt = $mysqli->prepare("
+						UPDATE students SET
+							tutorial = ?
+						LIMIT 1
+					");
+					
+					$stmt->bind_param("i", null_on_0($data["tutorial"]));
+					$stmt->execute();
+					
+					$stmt->close();
 				}
 			}
 			

@@ -111,9 +111,9 @@
 									$stmt->execute();
 									$stmt->bind_result($tutorial["id"], $tutorial["name"]);
 									
-									while($stmt->fetch()) {
-										echo '<option value="' . $tutorial["id"] . '">' . $tutorial["name"] . "</option>";
-									}
+									while($stmt->fetch()) : ?>
+										<option value="<?php echo $tutorial["id"] ?>"><?php echo $tutorial["name"] ?></option>
+									<?php endwhile;
 									
 									$stmt->close();
 								?>

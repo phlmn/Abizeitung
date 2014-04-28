@@ -160,8 +160,8 @@
 									$stmt->bind_result($tutorial["id"], $tutorial["name"]);
 									
 									$select = 0;
-									if(isset($edit["tutorial"]))
-										$select = $edit["tutorial"];
+									if(isset($edit["tutorial"]["id"]))
+										$select = $edit["tutorial"]["id"];
 									
 									while($stmt->fetch()) {
 										if($select == $tutorial["id"])
