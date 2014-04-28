@@ -81,7 +81,7 @@
 						$data["tutorial"] = array(
 							"id"	=> $tutorial["id"],
 							"name"	=> $tutorial["name"],
-							"tutor" => UserManager::get_userdata($tutor["id"])
+							"tutor" => UserManager::get_userdata($tutor["uid"])
 						);
 					}
 					
