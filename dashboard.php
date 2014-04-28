@@ -423,6 +423,9 @@
             <div class="nicknames box">
             	<h2>Spitznamen</h2>
                 <div class="nickname-list row">
+                <?php if(empty($nicknames)) : ?>
+                	Bisher hat dir niemand einen Spitznamen vorgeschlagen.
+                <?php else: ?>
                 	<table class="table table-striped">
                         <thead>
                             <th>Spitzname</th>
@@ -430,7 +433,7 @@
                             <th class="accept"></th>
                         </thead>
                         <tbody>
-                <?php foreach($nicknames as $key => $nickname): ?>
+                	<?php foreach($nicknames as $key => $nickname): ?>
                 			<tr>
                             	<td><?php echo $nickname["nickname"] ?></td>
 								<td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
@@ -439,9 +442,10 @@
                                     <label for="accept_<?php echo $key ?>">Spitzname akzeptieren</label>
                                 </td>
                     		</tr>
-                <?php endforeach; ?>
+                	<?php endforeach; ?>
                 		</tbody>
                  	</table>
+                <?php endif; ?>
                     
                     <div class="buttons">
 						<a class="button" href="javascript:void(suggestNickname())"><span class="icon-plus-circled"></span> Spitzname vergeben</a>

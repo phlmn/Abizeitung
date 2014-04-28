@@ -165,7 +165,16 @@
 					CREATE TABLE IF NOT EXISTS `questions` (
 					  `id` 			INT(11) 		NOT NULL 	AUTO_INCREMENT,
 					  `title` 		VARCHAR(255) 	NOT NULL,
-					  PRIMARY KEY (`id`)
+					  `user` 		INT(11) 		NULL 		DEFAULT NULL,
+					  `accepted` 	TINYINT(1) 		NOT NULL 	DEFAULT 1,
+					  PRIMARY KEY (`id`),
+					  
+					  INDEX `fk_questions_users1_idx` (`user` ASC),
+					  CONSTRAINT `fk_questions_users1`
+					    FOREIGN KEY (`user`)
+					    REFERENCES `users` (`id`)
+					    ON DELETE SET NULL
+					    ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE TUTORIALS --
@@ -213,7 +222,15 @@
 					  `title` 		VARCHAR(255) NOT NULL,
 					  `m` 			BOOLEAN 	NULL 		DEFAULT TRUE,
 					  `w` 			BOOLEAN 	NULL 		DEFAULT TRUE,
-					  PRIMARY KEY (`id`)
+					  `user` 		INT(11) 	NULL		DEFAULT NULL,
+					  `accepted` 	TINYINT(1) 	NOT NULL 	DEFAULT 1,
+					  PRIMARY KEY (`id`),
+					  INDEX `fk_surveys_users1_idx` (`user` ASC),
+					  CONSTRAINT `fk_surveys_users1`
+						FOREIGN KEY (`user`)
+						REFERENCES `users` (`id`)
+						ON DELETE SET NULL
+						ON UPDATE CASCADE
 					) ENGINE = InnoDB;
 					
 				-- TABLE USERS_QUESTIONS --
@@ -416,6 +433,7 @@
                     <li>Tabellen sind angelegt.</li>
                     <li>Admin ist erstellt.</li>
                 </ul>
+                <a href="./">Zur Seite</a>
             </div>
             <?php  else: if(isset($_GET["error"])): ?>
                 <div class="alert alert-danger">
