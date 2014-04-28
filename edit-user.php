@@ -9,7 +9,7 @@
 	check_admin();
 	
 	if(isset($_GET["delete"])) {
-		$stmt->prepare("
+		$stmt = $mysqli->prepare("
 			SELECT id
 			FROM users
 			WHERE id = ?
