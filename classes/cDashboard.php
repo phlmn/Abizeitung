@@ -170,50 +170,39 @@
 			die;
 		}
 		
-		function insert_question($data) {/*
-			
-			### ToDo: 	- change db-model
-						- add option for accept suggest
-						- add list on questions.php for suggestions
-			
+		function insert_question($data) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
 				INSERT INTO questions (
-					title
+					title, user, accepted
 				) VALUES (
-					?
+					?, ?, 0
 				)");
 				
-			$stmt->bind_param("s", $mysqli->real_escape_string($data["question"]));
+			$stmt->bind_param("si", $mysqli->real_escape_string($data["question"]), intval($data["id"]));
 			
 			$stmt->execute();
 			
 			$stmt->close();
-		*/}
+		}
 		
-		function insert_survey($data) {/*
-			
-			### ToDo:	- change db-model
-						- add option for accept survey
-						- add list on surveys.php for suggestions
-			
+		function insert_survey($data) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
 				INSERT INTO surveys (
-					title, m, w
+					title, m, w, user, accepted
 				) VALUES (
-					?, ?, ?
+					?, ?, ?, ?, 0
 				)");
 				
-			$stmt->bind_param("sii", $mysqli->real_escape_string($data["text"]), intval(isset($data["male"])), intval(isset($data["female"])));
+			$stmt->bind_param("siii", $mysqli->real_escape_string($data["text"]), intval(isset($data["male"])), intval(isset($data["female"])), intval($data["id"]));
 			
 			$stmt->execute();
 			
 			$stmt->close();
-			
-		*/}
+		}
 		
 		function suggest_nickname($data) {
 			global $mysqli;
