@@ -92,7 +92,9 @@
 					  `updatetime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
 					  `activated` 	BOOLEAN		NOT NULL 	DEFAULT TRUE,
 					  `unlock_key` 	VARCHAR(45) NULL,
-					  PRIMARY KEY (`id`)
+					  PRIMARY KEY (`id`),
+					  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+					  UNIQUE INDEX `unlock_key_UNIQUE` (`unlock_key` ASC)
 					) ENGINE = InnoDB;
 					
 				-- TABLE TEACHERS --
