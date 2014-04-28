@@ -5,7 +5,7 @@
 	
 	db_connect();
 	check_login();
-	check_admin(); 
+	check_admin();
 
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
@@ -116,7 +116,9 @@
                 <?php endif; ?>
 				
 			</div>
-						
+            
+			<a class="link" href="csv-import.php">Aus *.csv importieren</a>
+            	
 			<div class="buttons">
 				<a class="button" href="add-user.php"><span class="icon-plus-circled"></span> Nutzer erstellen</a>
 			</div>
