@@ -59,7 +59,7 @@
 		
 		UserManager::update_userdata($userdata);
 		
-		$data = UserManager::get_userdata($_SESSION["user"]);
+		// Update Nicknames
 		
 		$stmt = $mysqli->prepare("
 			SELECT id
@@ -91,6 +91,8 @@
 		$stmt->free_result();
 		$stmt->close();
 		
+		// Update Questions
+		
 		$stmt = $mysqli->prepare("
 			SELECT id
 			FROM questions");
@@ -109,6 +111,8 @@
 		$stmt->free_result();
 		$stmt->close();
 		
+		// Update Surveys
+		
 		$stmt = $mysqli->prepare("
 			SELECT id
 			FROM surveys");
@@ -123,11 +127,13 @@
 				"male" => NULL
 			);
 				
-			if(isset($_POST["survey_w_" . $s["id"]]) && !empty($_POST["survey_w_" . $s["id"]]))
-				$answer["female"] = intval($_POST["survey_w_" . $s["id"]]);
+			if(isset($_POST["survey_w_" . $s["id"]]))
+				if(!empty($_POST["survey_w_" . $s["id"]]))
+					$answer["female"] = intval($_POST["survey_w_" . $s["id"]]);
 				
 			if(isset($_POST["survey_m_" . $s["id"]]))
-				$answer["male"]   = intval($_POST["survey_m_" . $s["id"]] && !empty($_POST["survey_m_" . $s["id"]]));
+				if(!empty($_POST["survey_m_" . $s["id"]]))
+					$answer["male"]   = intval($_POST["survey_m_" . $s["id"]]);
 			
 			if(Dashboard::update_user_surveys($data["id"], $s["id"], $answer))
 				$fails++;
@@ -483,13 +489,14 @@
 							<div class="icon-male">
 								<select name="survey_m_<?php echo $key ?>" form="data_form">
 									<option value=""<?php echo ($answer) ? "" : " selected" ?>>-</option>
-									<?php foreach($students as $student) {
-										if($student["gender"] == "m") {
-											echo "<option";
-											if($answer == $student["uid"])
-												echo " selected";
-											echo " value=\"".$student["uid"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
-										}
+									<?php
+									foreach($students as $student) {
+										if($student["gender"] == "m") : ?>
+										<option value="<?php echo $student["uid"] ?>"<?php if($answer == $student["uid"]): ?> selected<?php endif; ?>>
+											<?php echo $student["prename"] . " " . $student["lastname"]; ?>
+										</option>
+									<?php 
+										endif;
 									}
 									?>
 								</select>
@@ -503,15 +510,16 @@
 								$answer = $survey_answers[$key]["w"];
 						?>
 							<div class="icon-female">
-								<select name="survey_w_<?php echo $key ?>" form="data_form">
-									<option value="" <?php echo ($answer) ? "" : " selected" ?>>-</option>
-									<?php foreach($students as $student) {
-										if($student["gender"] == "w") {
-											echo "<option";
-											if($answer == $student["uid"])
-												echo " selected";
-											echo " value=\"".$student["uid"]."\">".$student["prename"]." ".$student["lastname"]."</option>";	
-										}
+                            	<select name="survey_w_<?php echo $key ?>" form="data_form">
+									<option value=""<?php echo ($answer) ? "" : " selected" ?>>-</option>
+									<?php
+									foreach($students as $student) {
+										if($student["gender"] == "w") : ?>
+										<option value="<?php echo $student["uid"] ?>"<?php if($answer == $student["uid"]): ?> selected<?php endif; ?>>
+											<?php echo $student["prename"] . " " . $student["lastname"]; ?>
+										</option>
+									<?php 
+										endif;
 									}
 									?>
 								</select>
