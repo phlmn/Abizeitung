@@ -91,6 +91,7 @@
 					  `email` 		VARCHAR(45) NULL 		DEFAULT NULL,
 					  `updatetime` 	TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
 					  `activated` 	BOOLEAN		NOT NULL 	DEFAULT TRUE,
+					  `unlock_key` 	VARCHAR(45) NULL,
 					  PRIMARY KEY (`id`)
 					) ENGINE = InnoDB;
 					
