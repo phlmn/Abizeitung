@@ -12,6 +12,17 @@ function setArgs(pagename, arg, classname, management, dataId, modal) {
 	args["management"] = management; 	// class-management
 	args["dataId"] = dataId; 			// data-classid
 	args["modal"] = modal; 				// classesModal
+	
+}
+
+function initGroups() {
+	$(".groups > div").each(function(index, e) {
+		$(e).droppable({
+			drop: function(event, ui) {
+				$(ui.helper).remove();
+			}
+		});
+	});
 }
 
 $.expr[":"].contains = $.expr.createPseudo(function(arg) {
@@ -59,7 +70,7 @@ function showGroup(id) {
 						if(count > 1)
 							ui.helper.html(count + " Nutzer");	
 					}
-				});
+				}).data("id", e['id']);
 				$(li).click(function() {
 					$(this).toggleClass("selected");	
 				});	

@@ -226,6 +226,7 @@ if(isset($_GET["tutorial"])) {
 			setArgs("tutorial", "tutorial", "tutorial", "tutorial-management", "data-tutorialid", "tutorialModal");
 			
 			$(document).ready(function() {
+				initGroups();
 				showGroup(-1);
 			});
 		</script>

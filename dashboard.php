@@ -354,12 +354,11 @@
 				<div class="alert alert-success">Änderungen gespeichert.</div>
             <?php else: if(isset($_GET["failed"])): ?>
                 <div class="alert alert-danger">
-                	Speichern fehlgeschlagen.<br />
+                	Speichern fehlgeschlagen: 
 			<?php 
 				switch($_GET["failed"]):
 					case "nickname": 
 				?>
-					Der Spitzname konne nicht gesendet werden.<br />
                     Das Feld Spitzname darf nicht leer sein.
 				<?php
 						break;
