@@ -46,51 +46,8 @@
 			die;
 		}
 		else {
-?>
-	<div class="modal-dialog">
-        	<div class="modal-content">
-            	<form method="post" action="dashboard.php?nickname=new">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4>Spitzname vergeben</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" name="nickname" placeholder="Spitzname"/>
-                        <select name="user">
-                        <?php
-							$stmt = $mysqli->prepare("
-								SELECT users.id, users.prename, users.lastname
-								FROM students
-								LEFT JOIN users ON students.uid = users.id
-								WHERE 
-									NOT users.id = ?
-									AND students.tutorial = ?
-								ORDER BY users.lastname ASC
-							");
-							
-							$stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]["id"]));
-							$stmt->execute();
-							
-							$stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
-							
-							while($stmt->fetch()):
-                        ?>
-                        	<option value="<?php echo $user["id"]; ?>"><?php echo $user["prename"] . " " . $user["lastname"]; ?></option>
-                        <?php
-							endwhile;
-							
-							$stmt->close();
-						?>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                    	<button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
-                    	<button type="submit" class="btn btn-default">Speichern</button>
-                    </div>
-                </form>
-        	</div>
-        </div>
-<?php
+			Dashboard::get_modal_nicknames($data);
+			
 			die;
 		}
 	}
