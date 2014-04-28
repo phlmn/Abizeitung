@@ -110,11 +110,11 @@
 		if($length < 1) {
 			$length = 1;
 		}
-		else if($length > 32) {
-			return strtoupper(substr(md5(rand()), 0, $length)) . str_rand($length - 32);
+		else if($length > 31) {
+			return strtoupper(substr(md5(rand()), 0, 31)) . str_rand($length - 31);
 		}
 		
-		return strtoupper(substr(md5(rand()), (rand() % (33 - $length)), $length));
+		return strtoupper(substr(md5(rand()), (rand() % (32 - $length)), $length));
 	}
 	
 	function get_unlock_code() {
