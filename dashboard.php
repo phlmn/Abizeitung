@@ -96,7 +96,9 @@
 		
 		$stmt = $mysqli->prepare("
 			SELECT id
-			FROM questions");
+			FROM questions
+			WHERE accepted = 1
+		");
 		
 		$stmt->execute();
 		$stmt->bind_result($q["id"]);
@@ -116,7 +118,9 @@
 		
 		$stmt = $mysqli->prepare("
 			SELECT id
-			FROM surveys");
+			FROM surveys
+			WHERE accepted = 1
+		");
 			
 		$stmt->execute();
 		$stmt->bind_result($s["id"]);

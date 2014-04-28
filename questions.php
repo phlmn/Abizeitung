@@ -110,6 +110,28 @@
 		
 		die;
 	}
+	else if(isset($_GET["accept"])) {
+		if(null_on_0($_GET["accept"]) > 0) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				UPDATE questions
+				SET accepted = 1
+				WHERE id = ?
+			");
+			
+			$stmt->bind_param("i", intval($_GET["accept"]));
+			$stmt->execute();
+			
+			$stmt->close();
+			
+			db_close();
+			
+			header("Location: ./questions.php?saved");
+			
+			die;
+		}
+	}
 	
 ?>
 
@@ -147,6 +169,7 @@
 					$stmt = $mysqli->prepare("
 						SELECT id, title
 						FROM questions
+						WHERE accepted = 1
 					");
 					
 					$stmt->execute();
@@ -158,7 +181,31 @@
 	                    	<td><?php echo $questions["title"] ?></td>
 	                        <td class="edit"><a href="javascript:void(showQuestion(<?php echo $questions["id"] ?>))"><span class="icon-pencil-squared"></span></a></td>
 	                    </tr>
-	            <?php endwhile; ?>
+	            <?php 
+					endwhile; 
+					
+					$stmt->close();
+					
+					$stmt = $mysqli->prepare("
+						SELECT id, title
+						FROM questions
+						WHERE accepted = 0
+					");
+					
+					$stmt->execute();
+					$stmt->bind_result($questions["id"], $questions["title"]);
+					
+					while($stmt->fetch()):
+				?>
+	            		<tr class="inactive">
+	                    	<td><?php echo $questions["title"] ?></td>
+	                        <td class="edit"><a title="Frage akzeptieren" href="questions.php?accept=<?php echo $questions["id"] ?>"><span class="icon-ok-circled"></span></a></td>
+	                    </tr>
+	            <?php 
+					endwhile; 
+					
+					$stmt->close();
+				?>
 	            	</tbody>
 	            </table>
 	            

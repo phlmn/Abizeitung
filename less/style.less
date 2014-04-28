@@ -805,6 +805,18 @@ td.edit a {
 	}
 }
 
+div.questions,
+div.surveys {
+	.inactive > td {
+		color: #A94442;
+		background: lighten(@color4, 20%);
+	}
+	
+	.inactive:nth-child(2n+1) > td {
+		background: lighten(@color4, 25%);
+	}
+}
+
 div.questions {
 	border-color: @color3;
 }

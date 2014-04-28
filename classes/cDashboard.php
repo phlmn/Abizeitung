@@ -185,6 +185,12 @@
 			$stmt->execute();
 			
 			$stmt->close();
+			
+			db_close();
+			
+			header("Location: ./dashboard.php?saved");
+			
+			die;
 		}
 		
 		function insert_survey($data) {
@@ -197,11 +203,17 @@
 					?, ?, ?, ?, 0
 				)");
 				
-			$stmt->bind_param("siii", $mysqli->real_escape_string($data["text"]), intval(isset($data["male"])), intval(isset($data["female"])), intval($data["id"]));
+			$stmt->bind_param("siii", $mysqli->real_escape_string($data["survey"]), intval(isset($data["male"])), intval(isset($data["female"])), intval($data["id"]));
 			
 			$stmt->execute();
 			
 			$stmt->close();
+			
+			db_close();
+			
+			header("Location: ./dashboard.php?saved");
+			
+			die;
 		}
 		
 		function suggest_nickname($data) {

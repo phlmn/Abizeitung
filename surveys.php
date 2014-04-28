@@ -123,6 +123,28 @@
 		
 		die;
 	}
+	else if(isset($_GET["accept"])) {
+		if(null_on_0($_GET["accept"]) > 0) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				UPDATE surveys
+				SET accepted = 1
+				WHERE id = ?
+			");
+			
+			$stmt->bind_param("i", intval($_GET["accept"]));
+			$stmt->execute();
+			
+			$stmt->close();
+			
+			db_close();
+			
+			header("Location: ./surveys.php?saved");
+			
+			die;
+		}
+	}
 	
 ?>
 
@@ -162,6 +184,7 @@
 					$stmt = $mysqli->prepare("
 						SELECT id, title, m, w
 						FROM surveys
+						WHERE accepted = 1
 					");
 					
 					$stmt->execute();
@@ -175,7 +198,33 @@
 	                        <td class="edit"><?php if($surveys["w"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
 	                        <td class="edit"><a href="javascript:void(showSurvey(<?php echo $surveys["id"]; ?>))"><span class="icon-pencil-squared"></span></a></td>
 	                    </tr>
-	            <?php endwhile; ?>
+	            <?php 
+					endwhile; 
+					
+					$stmt->close();
+					
+					$stmt = $mysqli->prepare("
+						SELECT id, title, m, w
+						FROM surveys
+						WHERE accepted = 0
+					");
+					
+					$stmt->execute();
+					$stmt->bind_result($surveys["id"], $surveys["title"], $surveys["m"], $surveys["w"]);
+					
+					while($stmt->fetch()):
+				?>
+	            		<tr class="inactive">
+	                    	<td><?php echo $surveys["title"] ?></td>
+	                        <td class="edit"><?php if($surveys["m"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
+	                        <td class="edit"><?php if($surveys["w"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
+	                        <td class="edit"><a title="Frage akzeptieren" href="surveys.php?accept=<?php echo $surveys["id"]; ?>"><span class="icon-ok-circled"></span></a></td>
+	                    </tr>
+	            <?php 
+					endwhile; 
+					
+					$stmt->close();
+				?>
 	            	</tbody>
 	            </table>
 	            
