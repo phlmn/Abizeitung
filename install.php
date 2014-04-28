@@ -31,8 +31,8 @@
 				
 				$unlock_key = null_on_0($_POST['unlock-key']);
 				
-				if($unlock_key < 10) {
-					$unlock_key = 10;
+				if($unlock_key < 5) {
+					$unlock_key = 5;
 				}
 				
 				file_put_contents(
