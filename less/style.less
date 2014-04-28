@@ -259,16 +259,16 @@ div.fancy-select {
 
 
 #login {
-	width: 320px;
+	width: 640px;
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	margin: -120px 0 0 -160px;
+	margin: -120px 0 0 -320px;
 	background: #fff;
-	padding: 20px 40px 30px;
+	padding: 20px 10px 30px;
 	
 	&.login-failed {
-		.box-shadow(0 0 30px rgba(217, 51, 51, .9));
+		
 	}
 	
 	label {
@@ -283,10 +283,9 @@ div.fancy-select {
 	
 	
 	input[type="submit"] {
-		width: 240px;
+		width: 100%;
 		display: block;
 		.transition(all .4s);
-		
 	}
 	
 	input[type="submit"]:hover {
@@ -299,10 +298,78 @@ div.fancy-select {
 		text-align: center;
 	}
 	
-	a.link {
-		float: right;
-		margin: 5px 5px 5px 0;
+	> div {
+		padding: 0 30px;
 	}
+	
+	.registration {
+		
+		margin-top: 30px;
+		border-left: 1px solid #eee;
+		
+		> div {
+			font-size: 22px;
+			text-align: center;
+			font-weight: lighter;	
+			padding: 40px 0;
+		}
+	}
+}
+
+
+
+/* ===== Registration ===== */
+
+
+#registration {
+	width: 320px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -120px 0 0 -160px;
+	background: #fff;
+	padding: 20px 30px 30px;
+	
+	&.registration-failed {
+		
+	}
+	
+	label {
+		display: block;
+		margin-top: 12px;
+	}
+	
+	input {
+		width: 100%;
+		margin-top: 10px;
+	}
+	
+	.code {
+		font-weight: lighter;
+		font-size: 24px;
+		height: 48px;
+		line-height: 46px;
+		text-align: center;
+		width: 70%;
+		margin: 12px 15%;
+	}
+	
+	input[type="submit"] {
+		width: 100%;
+		display: block;
+		.transition(all .4s);
+	}
+	
+	input[type="submit"]:hover {
+		background: #ddd;
+		color: #333;
+	}
+	
+	h1 {
+		margin: 8px 0;
+		text-align: center;
+	}
+	
 }
 
 

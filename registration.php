@@ -112,20 +112,20 @@
 		<?php head(); ?>
 	</head>
 	
-	<body class="login">
-		<div id="login" <?php if($register_failed): ?>class="login-failed"<?php endif; ?>>
+	<body class="registration">
+		<div id="registration" <?php if($register_failed): ?>class="registration-failed"<?php endif; ?>>
 			<h1>Registrieren</h1>
             <?php if($activate && isset($_POST["unlock_key"])): ?>
 			<form action="registration.php?register" method="post">
             	<input name="unlock_key" type="hidden" value="<?php echo $_POST["unlock_key"]; ?>" />
 				<input placeholder="E-Mail" name="email" type="email" />
 				<input placeholder="Passwort" name="password" type="password" />
-				<input type="submit" value="Anmelden" />			
+				<input type="submit" value="Registrieren" />			
 			</form>
             <?php else: ?>
             <form action="registration.php?activate" method="post">
-				<input placeholder="Aktivierungscode" name="unlock_key" />
-				<input type="submit" value="Anmelden" />			
+				<input type="text" class="code" placeholder="Code" name="unlock_key" />
+				<input type="submit" value="Registrieren" />			
 			</form>	
 
             <?php endif; ?>	

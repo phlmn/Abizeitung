@@ -36,14 +36,18 @@
 	
 	<body class="login">
 		<div id="login" <?php if($login_failed): ?>class="login-failed"<?php endif; ?>>
-			<h1>Login</h1>
-			<form action="./" method="post">
-				<input placeholder="E-Mail" name="email" value="<?php echo isset($_POST["email"]) ? $_POST["email"] : "" ?>" type="email" />
-				<input placeholder="Passwort" name="password" type="password" />
-                <a class="link" href="registration.php">Registrieren</a>
-				<input type="submit" value="Anmelden" />			
-			</form>		
-		</div>	
+			<div class="col-sm-6">
+				<h1>Login</h1>
+				<form action="./" method="post">
+					<input placeholder="E-Mail" name="email" value="<?php echo isset($_POST["email"]) ? $_POST["email"] : "" ?>" type="email" />
+					<input placeholder="Passwort" name="password" type="password" />
+					<input type="submit" value="Anmelden" />			
+				</form>
+			</div>	
+			<div class="col-sm-6 registration">
+				<div>oder <a href="registration.php">registriere</a> dich mit deinem Aktivierungscode.</div>
+			</div>	
+		</div>
 	</body>
 </html>
 
