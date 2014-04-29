@@ -210,8 +210,8 @@
 		                </div>
 					</div>
 				</div>
-                <div class="row">
-                	<h2>Kurse</h2>
+                <h2>Kurse</h2>
+                <div class="classes row">
                 	<table class="table table-striped">
                     	<thead>
                         	<th>Kurs</th>
