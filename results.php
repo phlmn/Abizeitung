@@ -45,10 +45,10 @@
 					
 				?>
                 	<div class="progress-bar" style="width: <?php echo $gender["percent"][0] ?>%;">
-                    	Männlich <span class="percent">(<?php echo $gender["percent"][0] ?>%)</span>
+                    	Männlich <span class="percent"><?php echo $gender["percent"][0] ?>%</span>
                     </div>
                     <div class="progress-bar" style="width: <?php echo $gender["percent"][1] ?>%;">
-                    	Weiblich <span class="percent">(<?php echo $gender["percent"][1] ?>%)</span>
+                    	Weiblich <span class="percent"><?php echo $gender["percent"][1] ?>%</span>
                     </div>
                 </div>
                 <h4>Aufteilung Tutorien</h4>
@@ -82,9 +82,9 @@
 						array_push($tutorials, db_count("students", "tutorial", $id));
 					}
 					
-					$tutorials = get_percent($tutorials);
+					$tutorials = get_percent($tutorials, 2);
 					
-					get_progressbar($tutorials["percent"], $tut["names"]);
+					get_progressbar($tutorials["percent"], NULL, $tut["names"]);
 					
 				?>
                 </div>
