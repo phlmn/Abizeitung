@@ -934,5 +934,39 @@ div.surveys {
 			.lighter-color(background-color, @color5)
 		}
 	}
+	
+	.surveys {
+		.row {
+			.row:nth-child(5n+1) {
+				.progress-bar {
+					background-color: @color1;
+				}
+			}
+			
+			.row:nth-child(5n+2) {
+				.progress-bar {
+					background-color: @color2;
+				}
+			}
+			
+			.row:nth-child(5n+3) {
+				.progress-bar {
+					background-color: @color3;
+				}
+			}
+			
+			.row:nth-child(5n+4) {
+				.progress-bar {
+					background-color: @color4;
+				}
+			}
+			
+			.row:nth-child(5n+5) {
+				.progress-bar {
+					background-color: @color5;
+				}
+			}
+		}
+	}
 }
 

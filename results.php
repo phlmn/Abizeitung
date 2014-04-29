@@ -160,7 +160,7 @@
 				?>
                 </div>
             </div>
-			<div class="box">
+			<div class="surveys box">
 				<h2>Umfragen</h2>
                 <?php
 					$surveys = array();
