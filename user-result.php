@@ -18,6 +18,8 @@
 	
 	$user = UserManager::get_userdata(intval($_GET["user"]));
 	
+	global $mysqli;
+	
 	// Alle von anderen Nutzer vergebenen Nicknames speichern
 	
 	$nicknames = array();
@@ -208,6 +210,44 @@
 		                </div>
 					</div>
 				</div>
+                <div class="row">
+                	<h2>Kurse</h2>
+                	<table class="table table-striped">
+                    	<thead>
+                        	<th>Kurs</th>
+                            <th>Lehrer</th>
+                        </thead>
+                        <tbody>
+                        <?php 
+							$stmt = $mysqli->prepare("
+								SELECT classes.name, users.lastname
+								FROM students_classes
+								LEFT JOIN classes ON students_classes.class = classes.id
+								LEFT JOIN teachers ON classes.teacher = teachers.id
+								LEFT JOIN users ON teachers.uid = users.id
+								LEFT JOIN students ON students_classes.student = students.id
+								WHERE students.uid = ?
+							");
+							
+							$stmt->bind_param("i", $user["id"]);
+							$stmt->execute();
+							
+							$stmt->bind_result($name, $teacher);
+							
+							while($stmt->fetch()):
+						?>
+                        	<tr>
+                                <td><?php echo $name ?></td>
+                                <td><?php echo $teacher ?></td>
+                            </tr>
+                        <?php 
+							endwhile;
+							
+							$stmt->close();
+						?>
+                        </tbody>
+                    </table>
+                </div>
 			</div>
             
             <div class="nicknames box">
