@@ -87,7 +87,7 @@ function Group() {
 				});
 				
 				data["users"].forEach(function(e) {
-					var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="' + args["class"] + '">' + e[args["class"]] + ' - ' + e["tutor"] + '</span></li>');
+					var li = $('<li><span class="name">' + e["prename"] + ' ' + e["lastname"] + '</span><span class="info">' + e[args["class"]] + ' - ' + e["tutor"] + '</span></li>');
 					
 					$(li).hide(0).css("opacity", 0);
 					$(".sidebar .users ul").append(li);

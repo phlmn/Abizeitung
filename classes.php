@@ -32,7 +32,7 @@
 									LIMIT 1
 								");
 								
-								$stmt->bind_param("i", intval($_GET["editclass"]));
+								$stmt->bind_param("i", $_GET["editclass"]);
 								$stmt->execute();
 								
 								$stmt->bind_result($select["name"], $select["teacher"]);
@@ -43,7 +43,7 @@
 						?>
                         <input type="text" name="classname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Kursname"/>
                         <select name="teacher" form="modal-form">
-                        	<option value="0">-</option>
+                        	<option value="null">-</option>
                             <?php
 								$stmt = $mysqli->prepare("
 									SELECT teachers.id, users.lastname
@@ -66,7 +66,7 @@
                     </div>
                     <div class="modal-footer">
                     <?php if($_GET["editclass"]) : ?>
-                    	<button type="button" class="btn btn-default delete" onClick="javascript:void(window.location='classes.php?action=delete&class=<?php echo $_GET["editclass"]; ?>')" data-dismiss="modal">Löschen</button>
+                    	<button type="button" class="btn btn-default delete" onclick="void(window.location='classes.php?action=delete&class=<?php echo $_GET["editclass"]; ?>')" data-dismiss="modal">Löschen</button>
                     <?php endif; ?>
                     	<button type="button" class="btn btn-default" form="modal-form" data-dismiss="modal">Schließen</button>
                     	<button type="submit" class="btn btn-default" form="modal-form">Speichern</button>
@@ -113,7 +113,7 @@ if(isset($_GET["action"])) {
 			LIMIT 1
 		");
 		
-		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), intval($_POST["teacher"]), intval($_GET["class"]));
+		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), $_POST["teacher"], $_GET["class"]);
 		$stmt->execute();
 		
 		$stmt->close();
@@ -132,7 +132,7 @@ if(isset($_GET["action"])) {
 			LIMIT 1
 		");
 		
-		$stmt->bind_param("i", intval($_GET["class"]));
+		$stmt->bind_param("i", $_GET["class"]);
 		$stmt->execute();
 		
 		$stmt->close();
@@ -225,10 +225,11 @@ if(isset($_GET["class"])) {
         <script type="text/javascript" src="js/groups.js"></script>
 		<script type="text/javascript">
 			
-			setArgs("classes", "class", "class", "class-management", "data-classid", "classesModal");
+			var classes = new Group();
+			classes.setArgs("classes", "class", "class", "class-management", "data-classid", "classesModal");
 			
 			$(document).ready(function() {
-				showGroup(-1);
+				classes.showGroup(-1);
 			});
 		</script>
 	</head>
@@ -254,9 +255,9 @@ if(isset($_GET["class"])) {
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="groups">					
-						<div class="addGroup" onClick="javascript:void(editGroup(0))"></div>
+						<div class="addGroup" onclick="void(classes.editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
-						<div data-classid="<?php echo $class["id"] ?>" onclick="showGroup(<?php echo $class["id"] ?>)">
+						<div data-classid="<?php echo $class["id"] ?>" onclick="classes.showGroup(<?php echo $class["id"] ?>)">
 							<div class="info">
 								<div class="name"><?php echo $class["name"] ?></div>
 								<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
@@ -272,7 +273,7 @@ if(isset($_GET["class"])) {
 								<h3 class="title">Alle Nutzer</h3>
 							</div>
 							<div class="col-sm-6">
-								<input class="form-control filter" onkeyup="filter()" type="search" placeholder="Suchen..." />
+								<input class="form-control filter" onkeyup="classes.filter()" type="search" placeholder="Suchen..." />
 							</div>
 						</div>
 						<div class="users">

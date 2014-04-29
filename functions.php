@@ -121,7 +121,7 @@
 			return NULL;	
 		}
 		else {
-			return mysql_real_escape_string($var);
+			return $var;
 		}
 	}
 	
