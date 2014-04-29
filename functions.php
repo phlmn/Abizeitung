@@ -79,24 +79,32 @@
 		return -1;
 	}
 	
-	function db_count($table, $column = NULL, $where = NULL) {
+	function db_count($table) {
 		global $mysqli;
 		
-		if($column && $where) {
-			$stmt = $mysqli->prepare("
-				SELECT COUNT(*) 
-				FROM " . null_on_empty($table) . "
-				WHERE " . null_on_empty($column) . " = ?
-			");
-			echo $mysqli->error;
-			$stmt->bind_param("s", null_on_empty($where));
+		
+		$where = "";
+		
+		if(func_num_args() > 1) {
+			$where .= " WHERE ";
+			$i = 1;
+			
+			while(func_num_args() > $i + 1) {
+				
+				if(strpos(func_get_arg($i + 1), "NULL") !== false) {
+					$where .= mysql_real_escape_string(func_get_arg($i++)) . " IS " . mysql_real_escape_string(func_get_arg($i++)) . " ";
+				}
+				else {
+					$where .= mysql_real_escape_string(func_get_arg($i++)) . " = " . mysql_real_escape_string(func_get_arg($i++)) . " ";
+				}
+			}
 		}
-		else {
-			$stmt = $mysqli->prepare("
-				SELECT COUNT(*) 
-				FROM " . null_on_empty($table) . "
-			");
-		}
+		
+		$stmt = $mysqli->prepare("
+			SELECT COUNT(*) 
+			FROM " . null_on_empty($table) . 
+			$where
+		);
 		
 		$stmt->execute();
 		
@@ -116,31 +124,45 @@
 		}
 	}
 	
-	function get_percent($args, $precision = 2) {
+	function get_percent($args, $precision = 2, $all = NULL) {
 		$res = array(
 			"all" => 0, 
 			"percent" => array(),
 			"absolute" => array()
 		);
 		
-		foreach($args as $arg) {
-			$res["all"] += intval($arg);
-			array_push($res["absolute"], intval($arg));
+		if(is_array($args)) {
+			foreach($args as $arg) {
+				$res["all"] += intval($arg);
+				array_push($res["absolute"], intval($arg));
+			}
+			
+			for($i = 0; $i < count($args); $i++) {
+				$res["percent"][$i] = round($res["absolute"][$i] * 100 / $res["all"], intval($precision));
+			}
 		}
-		
-		for($i = 0; $i < count($args); $i++) {
-			$res["percent"][$i] = round($res["absolute"][$i] * 100 / $res["all"], intval($precision));
+		else {
+			$res["all"] = intval($all);
+			$res["absolute"] = intval($args);
+			$res["percent"] = round($res["absolute"] * 100 / $res["all"], intval($precision));
 		}
 		
 		return $res;
 	}
 	
 	function get_progressbar($percent, $absolute = NULL, $name = NULL) {
-		for($i = 0; $i < count($percent); $i++): ?>
-                	<div class="progress-bar" style="width: <?php echo $percent[$i]; ?>%;">
-                    	<?php echo ($absolute) ? $absolute[$i] : $percent[$i] . "%"; ?> <?php echo $name[$i]; ?>
-                    </div>
-        <?php endfor;
+		if(is_array($percent)) {
+			for($i = 0; $i < count($percent); $i++): ?>
+						<div class="progress-bar" style="width: <?php echo $percent[$i]; ?>%;">
+							<?php echo ($absolute) ? $absolute[$i] : $percent[$i] . "%"; ?> <?php echo $name[$i]; ?>
+						</div>
+			<?php endfor;
+		}
+		else { ?>
+        				<div class="progress-bar" style="width: <?php echo $percent; ?>%;">
+							<?php echo ($absolute) ? $absolute : $percent . "%"; ?> <?php echo $name; ?>
+						</div>
+		<?php }
 	}
 	
 	function null_on_empty($var) {

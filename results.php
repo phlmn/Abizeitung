@@ -173,6 +173,7 @@
 					$stmt->execute();
 					
 					$stmt->bind_result($row["id"], $row["title"], $row["m"], $row["w"]);
+					$stmt->store_result();
 					
 					while($stmt->fetch()) {	
 						array_push(
@@ -181,30 +182,27 @@
 								"id" => $row["id"],
 								"title" => $row["title"],
 								"m" => $row["m"],
-								"w" => $row["w"]
+								"w" => $row["w"],
+								"max" => array(
+									"m" => db_count("users_surveys", "survey", $row["id"], "AND m", "NOT NULL"),
+									"w" => db_count("users_surveys", "survey", $row["id"], "AND w", "NOT NULL")
+								)
 							)
 						);	
 					}
 					
+					$stmt->free_result();
 					$stmt->close();
 					
 					foreach($surveys as $survey):
 					
 						$res = array(
-							"m" => array(
-								"count" => array(),
-								"id" 	=> array(),
-								"name" 	=> array()
-							),
-							"w" => array(
-								"count" => array(),
-								"id" 	=> array(),
-								"name" 	=> array()
-							)
+							"m" => array(),
+							"w" => array()
 						);
 						
 						if($survey["m"]) {
-					
+												
 							$stmt = $mysqli->prepare("
 								SELECT COUNT(*) AS most, users.id, users.prename, users.lastname
 								FROM users_surveys
@@ -215,16 +213,21 @@
 								ORDER BY most DESC
 								LIMIT 5;
 							");
-							echo $mysqli->error;
+							
 							$stmt->bind_param("i", $survey["id"]);
 							$stmt->execute();
 							
 							$stmt->bind_result($count, $id, $prename, $lastname);
 							
 							while($stmt->fetch()) {
-								array_push($res["m"]["count"], 	$count);
-								array_push($res["m"]["id"], 	$id);
-								array_push($res["m"]["name"], 	$prename . " " . $lastname);
+								array_push(
+									$res["m"], 
+									array(
+										"count" => 	$count,
+										"id" =>		$id,
+										"name" =>  	$prename . " " . $lastname
+									)
+								);
 							}
 							
 							$stmt->close();
@@ -249,37 +252,49 @@
 							$stmt->bind_result($count, $id, $prename, $lastname);
 							
 							while($stmt->fetch()) {
-								array_push($res["w"]["count"], 	$count);
-								array_push($res["w"]["id"], 	$id);
-								array_push($res["w"]["name"], 	$prename . " " . $lastname);
+								array_push(
+									$res["w"], 
+									array(
+										"count" => 	$count,
+										"id" =>		$id,
+										"name" =>  	$prename . " " . $lastname
+									)
+								);
 							}
 							
 							$stmt->close();
 						}
 				?>
                 	<h4><?php echo $survey["title"] ?></h4>
-                    <?php if($survey["m"]): ?>
+                    <?php 
+					if($survey["m"]): 
+						foreach($res["m"] as $male) : 
+					?>
                     <div class="progress">
                     <?php
-						$percent = get_percent($res["m"]["count"]);
+						$percent = get_percent($male["count"], 2, $survey["max"]["m"]);
 						
-						get_progressbar($percent["percent"],$percent["absolute"], $res["m"]["name"]);
+						get_progressbar($percent["percent"], NULL, $male["name"]);
 					?>
                     </div>
                     <?php 
-						endif; 
-						if($survey["w"]):
+						endforeach;
+						
+					endif; 
+					if($survey["w"]):
+						foreach($res["w"] as $female):
 					?>
                     <div class="progress">
                     <?php
-						$percent = get_percent($res["w"]["count"]);
+						$percent = get_percent($female["count"], 2, $survey["max"]["w"]);
 						
-						get_progressbar($percent["percent"],$percent["absolute"], $res["w"]["name"]);
+						get_progressbar($percent["percent"], NULL, $female["name"]);
 					?>
                     </div>
-                    <?php endif; ?>
-                <?php
-					endforeach;
+                    <?php 
+						endforeach;
+					endif;
+				endforeach;
 				?>
 			</div>
 		</div>	
