@@ -88,7 +88,7 @@
 					
 				?>
                 </div>
-                <h4>Meisten Nicknames</h4>
+                <h4>Meisten Nicknames bekommen</h4>
                 <div class="progress">
                 <?php
 					
@@ -123,11 +123,50 @@
 					get_progressbar($students["data"]["percent"], $students["data"]["absolute"], $students["name"]);
 				?>
                 </div>
+                <h4>Meisten Nicknames vergeben</h4>
+                <div class="progress">
+                <?php
+					
+					$students = array(
+						"count" => array(),
+						"name" => array(),
+						"data" => array()
+					);
+					
+					$stmt = $mysqli->prepare("
+						SELECT COUNT(*) AS most, users.prename, users.lastname
+						FROM nicknames
+						INNER JOIN users ON nicknames.`from` = users.id
+						GROUP BY `from`
+						ORDER BY most DESC
+						LIMIT 5
+					");
+					
+					$stmt->execute();
+					
+					$stmt->bind_result($count, $prename, $lastname);
+					
+					while($stmt->fetch()) {
+						array_push($students["count"], $count);
+						array_push($students["name"], ($prename . " " . $lastname));
+					}
+					
+					$stmt->close();
+					
+					$students["data"] = get_percent($students["count"]);
+					
+					get_progressbar($students["data"]["percent"], $students["data"]["absolute"], $students["name"]);
+				?>
+                </div>
             </div>
 			<div class="box">
-				<h2>Kategorien</h2>
+				<h2>Fragen</h2>
                 <ul class="nav nav-tabs">
-                	
+                	<li<?php if($group == "students"): 	?> class="active"<?php endif; ?>><a href="users.php?group=students">Frage 1</a></li>
+                    <li<?php if($group == "teachers"): 	?> class="active"<?php endif; ?>><a href="users.php?group=teachers">Frage 2</a></li>
+                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Frage 3</a></li>
+                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Frage 4</a></li>
+                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Frage 5</a></li>
                 </ul>
 			</div>
 		</div>	

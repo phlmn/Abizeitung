@@ -38,7 +38,7 @@
 							<td><?php echo $row["female"] ? "Weiblich" : "Männlich" ?></td>
 							<td><?php echo $row["name"] ?></td>
 							<td><?php echo $row["tutor"] ?></td>
-							<td class="edit"><a href="edit-user.php?user=<?php echo $row["id"] ?>"><span class="icon-pencil-squared"></span></a></td>
+							<td class="edit"><a title="Bearbeiten" href="edit-user.php?user=<?php echo $row["id"] ?>"><span class="icon-pencil-squared"></span></a></td>
 						</tr>
 					<?php 
 						endwhile; 
@@ -105,6 +105,7 @@
 						<th>Bilder</th>
                         <th>Fragen</th>
 						<th>Umfragen</th>
+                        <th class="edit"></th>
 					</thead>
 					<tbody>
 					<?php
@@ -145,9 +146,12 @@
 							<td class="<?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
 							<td class="<?php echo ($row["birthday"]) 							? "existing" : "missing"?>"><?php echo $row["birthday"] ?></td>
 							<td class="<?php echo ($row["activated"]) 							? "existing" : "missing"?>"><?php echo $row["activated"] ?></td>
-                            <td class="<?php echo ($row["images"] 		== $count["images"]) 	? "existing" : "missing"?>"><?php echo $count["images"] ?></td>
-                            <td class="<?php echo ($row["questions"] 	== $count["questions"]) ? "existing" : "missing"?>"><?php echo $count["questions"] ?></td>
-                            <td class="<?php echo ($row["surveys"] 		== $count["surveys"]) 	? "existing" : "missing"?>"><?php echo $count["surveys"] ?></td>
+                            <td class="<?php echo ($row["images"] 		== $count["images"]) 	? "existing" : "missing"?>"><?php echo $row["images"] ?></td>
+                            <td class="<?php echo ($row["questions"] 	== $count["questions"]) ? "existing" : "missing"?>"><?php echo $row["questions"] ?></td>
+                            <td class="<?php echo ($row["surveys"] 		== $count["surveys"]) 	? "existing" : "missing"?>"><?php echo $row["surveys"] ?></td>
+                            <td class="<?php echo ($missing) ? "existing" : "missing"?> edit">
+                            	<a title="Auswertung" href="user-result.php?user=<?php echo $row["id"] ?>"><span class="icon-download"></span></a>
+                            </td>
 						</tr>
 					<?php 
 						endwhile; 
