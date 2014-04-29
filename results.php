@@ -92,6 +92,9 @@
                 <div class="progress">
                 <?php
 					
+					// set percentage hurdle for users
+					$hurdle = 5;
+					
 					$students = array(
 						"count" => array(),
 						"name" => array(),
@@ -104,7 +107,6 @@
 						INNER JOIN users ON nicknames.`to` = users.id
 						GROUP BY `to`
 						ORDER BY most DESC
-						LIMIT 5
 					");
 					
 					$stmt->execute();
@@ -139,7 +141,6 @@
 						INNER JOIN users ON nicknames.`from` = users.id
 						GROUP BY `from`
 						ORDER BY most DESC
-						LIMIT 5
 					");
 					
 					$stmt->execute();
@@ -268,31 +269,32 @@
                 	<h4><?php echo $survey["title"] ?></h4>
                     <?php 
 					if($survey["m"]): 
-						foreach($res["m"] as $male) : 
+						foreach($res["m"] as $male):
+							$percent = get_percent($male["count"], 2, $survey["max"]["m"]);
+							
+							if($percent["percent"] > $hurdle):
 					?>
                     <div class="progress">
-                    <?php
-						$percent = get_percent($male["count"], 2, $survey["max"]["m"]);
-						
-						get_progressbar($percent["percent"], NULL, $male["name"]);
-					?>
+                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
                     </div>
                     <?php 
+							endif;
 						endforeach;
 						
 					endif; 
-					if($survey["w"]):
-						foreach($res["w"] as $female):
+					if($survey["w"]): 
+						foreach($res["w"] as $male):
+							$percent = get_percent($male["count"], 2, $survey["max"]["w"]);
+							
+							if($percent["percent"] > $hurdle):
 					?>
-                    <div class="progress">
-                    <?php
-						$percent = get_percent($female["count"], 2, $survey["max"]["w"]);
-						
-						get_progressbar($percent["percent"], NULL, $female["name"]);
-					?>
+                    <div class="progress left">
+                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
                     </div>
                     <?php 
+							endif;
 						endforeach;
+						
 					endif;
 				endforeach;
 				?>
