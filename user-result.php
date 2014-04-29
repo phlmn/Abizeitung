@@ -26,7 +26,6 @@
 		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname, nicknames.accepted
 		FROM nicknames
 		LEFT JOIN users ON nicknames.`from` = users.id
-		WHERE nicknames.accepted = 1
 		AND nicknames.`to` = ?
 	");
 	
@@ -206,8 +205,9 @@
             	<h2>Spitznamen</h2>
                 <div class="nickname-list row">
                 <?php if(empty($nicknames)) : ?>
-                	<?php echo $user["prename"]; ?> hat noch keinen Spitznamen bekommen, oder noch keinen akzeptiert
+                	<?php echo $user["prename"]; ?> hat noch keinen Spitznamen bekommen.
                 <?php else: ?>
+                	<h4>Akzeptiert</h4>
                 	<table class="table table-striped">
                         <thead>
                             <th>Spitzname</th>
@@ -215,10 +215,29 @@
                         </thead>
                         <tbody>
                 	<?php foreach($nicknames as $key => $nickname): ?>
+                		<?php if($nickname["accepted"]): ?>	
                 			<tr>
                             	<td><?php echo $nickname["nickname"] ?></td>
 								<td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
                     		</tr>
+                    	<?php endif; ?>
+                	<?php endforeach; ?>
+                		</tbody>
+                 	</table>
+                 	<h4>Nicht akzeptiert</h4>
+                 	<table class="table table-striped">
+                        <thead>
+                            <th>Spitzname</th>
+                            <th>Vergeben von</th>
+                        </thead>
+                        <tbody>
+                	<?php foreach($nicknames as $key => $nickname): ?>
+                		<?php if(!$nickname["accepted"]): ?>
+                			<tr>
+                            	<td><?php echo $nickname["nickname"] ?></td>
+								<td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
+                    		</tr>
+                    	<?php endif; ?>
                 	<?php endforeach; ?>
                 		</tbody>
                  	</table>
