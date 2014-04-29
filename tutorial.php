@@ -142,6 +142,23 @@ if(isset($_GET["action"])) {
 		
 		die;
 	}
+	else if($_GET["action"] == "addToGroup") {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			UPDATE students
+			LEFT JOIN users ON students.uid = users.id
+			SET students.tutorial = ?
+			WHERE users.id = ?
+		");
+		
+		$stmt->bind_param("ii", $_POST["group"] == -1 ? null : $_POST["group"], $_POST["user"]);
+		$stmt->execute();
+		
+		$stmt->close();
+		db_close();
+		die;
+	}
 }
 
 if(isset($_GET["tutorial"])) {
@@ -222,12 +239,22 @@ if(isset($_GET["tutorial"])) {
 		<?php head(); ?>
         <script type="text/javascript" src="js/groups.js"></script>
 		<script type="text/javascript">
-		
-			setArgs("tutorial", "tutorial", "tutorial", "tutorial-management", "data-tutorialid", "tutorialModal");
+			var tutorials = new Group();
+			
+			tutorials.setArgs("tutorial", "tutorial", "tutorial", "tutorial-management", "data-tutorialid", "tutorialModal");
 			
 			$(document).ready(function() {
-				initGroups();
-				showGroup(-1);
+				tutorials.initGroups();
+				tutorials.showGroup(-1);
+				
+				tutorials.setHandler(function(actions) {
+					actions.forEach(function(e) {
+						$.post("tutorial.php?action=addToGroup", {
+							group: e.group,
+							user: e.user	
+						});
+					});
+				});
 			});
 		</script>
 	</head>
@@ -253,9 +280,9 @@ if(isset($_GET["tutorial"])) {
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="groups">
-						<div class="addGroup" onClick="javascript:void(editGroup(0))"></div>
+						<div class="addGroup" onclick="void(tutorials.editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
-						<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="showGroup(<?php echo $tutorial["id"] ?>)">
+						<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="void(tutorials.showGroup(<?php echo $tutorial["id"] ?>))">
 							<div class="info">
 								<div class="name"><?php echo $tutorial["name"] ?></div>
 								<div class="teacher"><?php echo $tutorial["teacher"]["lastname"] ?></div>
@@ -271,7 +298,7 @@ if(isset($_GET["tutorial"])) {
 								<h3 class="title">Alle Nutzer</h3>
 							</div>
 							<div class="col-sm-6">
-								<input class="form-control filter" onkeyup="filter()" type="search" placeholder="Suchen..." />
+								<input class="form-control filter" onkeyup="tutorials.filter()" type="search" placeholder="Suchen..." />
 							</div>
 						</div>
 						<div class="users">
