@@ -96,9 +96,13 @@ function Group() {
 						helper: "clone",
 						appendTo: "#" + args["management"],
 						start: function(e, ui) {
+							$(".groups .addGroup").addClass("remove");
 							var count = $("#" + args["management"] + " div.sidebar div.users ul > li.selected").length;
 							if(count > 1)
 								ui.helper.html(count + " Nutzer");	
+						},
+						stop: function(e, ui) {
+							$(".groups .addGroup").removeClass("remove");
 						}
 					}).data("id", e['id']);
 					$(li).click(function() {

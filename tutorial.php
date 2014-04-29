@@ -280,7 +280,7 @@ if(isset($_GET["tutorial"])) {
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="groups">
-						<div class="addGroup" onclick="void(tutorials.editGroup(0))"></div>
+						<div class="addGroup" data-classid="-1" onclick="void(tutorials.editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
 						<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="void(tutorials.showGroup(<?php echo $tutorial["id"] ?>))">
 							<div class="info">

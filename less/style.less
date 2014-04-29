@@ -753,6 +753,15 @@ td.edit a {
 				.scale(1, 1);
 				.rotate(90deg);
 			}
+			
+			&.remove {
+				background-color: #e21919;
+				.rotate(45deg);
+				
+				&.hover {
+					opacity: .6;
+				}
+			}
 		}
 	}
 	
@@ -835,6 +844,7 @@ td.edit a {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		background: #fff;
+		background: rgba(255, 255, 255, .8);
 		
 		span.name {
 			font-size: 16px;
