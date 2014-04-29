@@ -154,13 +154,13 @@
 		if(is_array($percent)) {
 			for($i = 0; $i < count($percent); $i++): ?>
 						<div class="progress-bar" style="width: <?php echo $percent[$i]; ?>%;">
-							<?php echo ($absolute) ? $absolute[$i] : $percent[$i] . "%"; ?> <?php echo $name[$i]; ?>
+							 <?php echo $name[$i]; ?> <span class="percent"><?php echo ($absolute) ? $absolute[$i] : $percent[$i] . "%"; ?></span>
 						</div>
 			<?php endfor;
 		}
 		else { ?>
         				<div class="progress-bar" style="width: <?php echo $percent; ?>%;">
-							<?php echo ($absolute) ? $absolute : $percent . "%"; ?> <?php echo $name; ?>
+							<?php echo $name; ?> <span class="percent"><?php echo ($absolute) ? $absolute : $percent . "%"; ?></span>
 						</div>
 		<?php }
 	}

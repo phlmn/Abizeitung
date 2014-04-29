@@ -45,10 +45,10 @@
 					
 				?>
                 	<div class="progress-bar" style="width: <?php echo $gender["percent"][0] ?>%;">
-                    	<?php echo $gender["percent"][0] ?> % Männlich
+                    	Männlich <span class="percent">(<?php echo $gender["percent"][0] ?>%)</span>
                     </div>
                     <div class="progress-bar" style="width: <?php echo $gender["percent"][1] ?>%;">
-                    	<?php echo $gender["percent"][1] ?>% Weiblich
+                    	Weiblich <span class="percent">(<?php echo $gender["percent"][1] ?>%)</span>
                     </div>
                 </div>
                 <h4>Aufteilung Tutorien</h4>
@@ -272,31 +272,45 @@
 		                    <?php 
 							if($survey["m"]): 
 								foreach($res["m"] as $male):
-									$percent = get_percent($male["count"], 2, $survey["max"]["m"]);
+									$percent = get_percent($male["count"], 0, $survey["max"]["m"]);
 									
 									if($percent["percent"] > $hurdle):
 							?>
-		                    <div class="progress right">
-		                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
-		                    </div>
-		                    <?php 
-									endif;
-								endforeach;
-								
-							endif; 
-							?>
-		                	</div>
-		                	<div class="col-sm-6">
+							<div class="row">
+								<div class="col-sm-5 name">
+		                			<?php echo $male["name"]; ?>
+		                		</div>
+		                		<div class="col-sm-7">
+				                    <div class="progress right">
+				                    <?php get_progressbar($percent["percent"], NULL, ""); ?>
+				                    </div>
+		                		</div>
+							</div>
+			                    <?php 
+			                    	endif;
+									endforeach;
+									
+								endif; 
+								?>
+		                </div>
+		                <div class="col-sm-6">
 		                	<?php
 							if($survey["w"]): 
 								foreach($res["w"] as $male):
-									$percent = get_percent($male["count"], 2, $survey["max"]["w"]);
+									$percent = get_percent($male["count"], 0, $survey["max"]["w"]);
 									
 									if($percent["percent"] > $hurdle):
 							?>
-		                    <div class="progress">
-		                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
-		                    </div>
+		                    <div class="row">
+		                		<div class="col-sm-7">
+				                    <div class="progress">
+				                    <?php get_progressbar($percent["percent"], NULL, ""); ?>
+				                    </div>
+		                		</div>
+		                		<div class="col-sm-5 name">
+		                			<?php echo $male["name"]; ?>
+		                		</div>
+							</div>
 		                    <?php 
 									endif;
 								endforeach;
