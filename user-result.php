@@ -26,7 +26,7 @@
 		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname, nicknames.accepted
 		FROM nicknames
 		LEFT JOIN users ON nicknames.`from` = users.id
-		AND nicknames.`to` = ?
+		WHERE nicknames.`to` = ?
 	");
 	
 	$stmt->bind_param("i", $user["id"]);
@@ -189,12 +189,21 @@
 					
 					<div class="col-sm-4">
 						<div id="photo-enrollment" class="photo" title="Einschulungsfoto" style="background-image: url('<?php echo $enrollment; ?>');">
+                        	<div class="upload">
+                            	<a href="./<?php echo $enrollment; ?>" target="_blank">
+                                	<span class="icon-download"></span><br />
+                                    Bild Downloaden
+                                </a>
+		                    </div>
 						</div>
 					</div>
 					<div class="col-sm-4">
 		                <div id="photo-current" class="photo" title="Aktuelles Foto" style="background-image: url('<?php echo $current; ?>');">
-							<div id="photo-upload-current" class="photo-upload"></div>
 		                	<div class="upload">
+                            	<a href="./<?php echo $enrollment; ?>" target="_blank">
+                                	<span class="icon-download"></span><br />
+                                    Bild Downloaden
+                                </a>
 		                    </div>
 		                </div>
 					</div>
