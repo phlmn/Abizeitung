@@ -88,7 +88,7 @@
 				FROM " . null_on_empty($table) . "
 				WHERE " . null_on_empty($column) . " = ?
 			");
-			
+			echo $mysqli->error;
 			$stmt->bind_param("s", null_on_empty($where));
 		}
 		else {
@@ -114,6 +114,24 @@
 		else {
 			return NULL;
 		}
+	}
+	
+	function get_percent($args, $precision = 2) {
+		$res = array(
+			"all" => 0, 
+			"percent" => array()
+		);
+		
+		foreach($args as $arg) {
+			$res["all"] += intval($arg);
+			array_push($res, intval($arg));
+		}
+		
+		for($i = 0; $i < count($args); $i++) {
+			$res["percent"][$i] = round($res[$i] * 100 / $res["all"], intval($precision));
+		}
+		
+		return $res;
 	}
 	
 	function null_on_empty($var) {

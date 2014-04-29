@@ -9,6 +9,7 @@
 				<li><a href="classes.php">Kurse</a></li>
 				<li><a href="questions.php">Fragen</a></li>
 				<li><a href="surveys.php">Umfragen</a></li>
+				<li><a href="results.php">Auswertung</a></li>
 				<?php endif; ?>
 			</ul>
 		</div>
