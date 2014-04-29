@@ -43,7 +43,7 @@
 						?>
                         <input type="text" name="classname" form="modal-form" value="<?php echo $select["name"]?>" placeholder="Kursname"/>
                         <select name="teacher" form="modal-form">
-                        	<option value="null">-</option>
+                        	<option value="">-</option>
                             <?php
 								$stmt = $mysqli->prepare("
 									SELECT teachers.id, users.lastname
@@ -91,7 +91,7 @@ if(isset($_GET["action"])) {
 			)
 		");
 		
-		$stmt->bind_param("si", null_on_empty($_POST["classname"]), intval($_POST["teacher"]));
+		$stmt->bind_param("si", null_on_empty($_POST["classname"]), null_on_empty($_POST["teacher"]));
 		$stmt->execute();
 		
 		$stmt->close();
@@ -113,7 +113,7 @@ if(isset($_GET["action"])) {
 			LIMIT 1
 		");
 		
-		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), $_POST["teacher"], $_GET["class"]);
+		$stmt->bind_param("sii", null_on_empty($_POST["classname"]), null_on_empty($_POST["teacher"]), $_GET["class"]);
 		$stmt->execute();
 		
 		$stmt->close();

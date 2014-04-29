@@ -14,7 +14,8 @@
 			mkdir("csv");
 			
 		if(isset($_FILES["file"]["name"])) {
-			if($_FILES["file"]["type"] == "application/vnd.ms-excel") {
+		echo $_FILES["file"]["type"];
+			if($_FILES["file"]["type"] == "application/vnd.ms-excel" || $_FILES["file"]["type"] == "text/csv") {
 				$file = realpath(dirname(__FILE__)) . "/csv/" . time() . "_" . $_FILES["file"]["name"];
 				
 				if(move_uploaded_file($_FILES["file"]["tmp_name"], $file)) {
