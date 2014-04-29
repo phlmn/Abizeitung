@@ -160,14 +160,127 @@
                 </div>
             </div>
 			<div class="box">
-				<h2>Fragen</h2>
-                <ul class="nav nav-tabs">
-                	<li<?php if($group == "students"): 	?> class="active"<?php endif; ?>><a href="users.php?group=students">Frage 1</a></li>
-                    <li<?php if($group == "teachers"): 	?> class="active"<?php endif; ?>><a href="users.php?group=teachers">Frage 2</a></li>
-                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Frage 3</a></li>
-                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Frage 4</a></li>
-                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Frage 5</a></li>
-                </ul>
+				<h2>Umfragen</h2>
+                <?php
+					$surveys = array();
+	
+					$stmt = $mysqli->prepare("
+						SELECT id, title, m, w
+						FROM surveys
+						WHERE accepted = 1
+					");
+					
+					$stmt->execute();
+					
+					$stmt->bind_result($row["id"], $row["title"], $row["m"], $row["w"]);
+					
+					while($stmt->fetch()) {	
+						array_push(
+							$surveys, 
+							array(
+								"id" => $row["id"],
+								"title" => $row["title"],
+								"m" => $row["m"],
+								"w" => $row["w"]
+							)
+						);	
+					}
+					
+					$stmt->close();
+					
+					foreach($surveys as $survey):
+					
+						$res = array(
+							"m" => array(
+								"count" => array(),
+								"id" 	=> array(),
+								"name" 	=> array()
+							),
+							"w" => array(
+								"count" => array(),
+								"id" 	=> array(),
+								"name" 	=> array()
+							)
+						);
+						
+						if($survey["m"]) {
+					
+							$stmt = $mysqli->prepare("
+								SELECT COUNT(*) AS most, users.id, users.prename, users.lastname
+								FROM users_surveys
+								INNER JOIN users ON users_surveys.m = users.id
+								WHERE users_surveys.survey = ?
+								AND users_surveys.m IS NOT NULL
+								GROUP BY users.id
+								ORDER BY most DESC
+								LIMIT 5;
+							");
+							echo $mysqli->error;
+							$stmt->bind_param("i", $survey["id"]);
+							$stmt->execute();
+							
+							$stmt->bind_result($count, $id, $prename, $lastname);
+							
+							while($stmt->fetch()) {
+								array_push($res["m"]["count"], 	$count);
+								array_push($res["m"]["id"], 	$id);
+								array_push($res["m"]["name"], 	$prename . " " . $lastname);
+							}
+							
+							$stmt->close();
+						}
+						
+						if($survey["w"]) {
+							
+							$stmt = $mysqli->prepare("
+								SELECT COUNT(*) AS most, users.id, users.prename, users.lastname
+								FROM users_surveys
+								INNER JOIN users ON users_surveys.w = users.id
+								WHERE users_surveys.survey = ?
+								AND users_surveys.w IS NOT NULL
+								GROUP BY users.id
+								ORDER BY most DESC
+								LIMIT 5;
+							");
+							
+							$stmt->bind_param("i", $survey["id"]);
+							$stmt->execute();
+							
+							$stmt->bind_result($count, $id, $prename, $lastname);
+							
+							while($stmt->fetch()) {
+								array_push($res["w"]["count"], 	$count);
+								array_push($res["w"]["id"], 	$id);
+								array_push($res["w"]["name"], 	$prename . " " . $lastname);
+							}
+							
+							$stmt->close();
+						}
+				?>
+                	<h4><?php echo $survey["title"] ?></h4>
+                    <?php if($survey["m"]): ?>
+                    <div class="progress">
+                    <?php
+						$percent = get_percent($res["m"]["count"]);
+						
+						get_progressbar($percent["percent"],$percent["absolute"], $res["m"]["name"]);
+					?>
+                    </div>
+                    <?php 
+						endif; 
+						if($survey["w"]):
+					?>
+                    <div class="progress">
+                    <?php
+						$percent = get_percent($res["w"]["count"]);
+						
+						get_progressbar($percent["percent"],$percent["absolute"], $res["w"]["name"]);
+					?>
+                    </div>
+                    <?php endif; ?>
+                <?php
+					endforeach;
+				?>
 			</div>
 		</div>	
 	</body>
