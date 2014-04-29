@@ -79,6 +79,42 @@
 		return -1;
 	}
 	
+	function db_count($table, $column = NULL, $where = NULL) {
+		global $mysqli;
+		
+		if($column && $where) {
+			$stmt = $mysqli->prepare("
+				SELECT COUNT(*) 
+				FROM " . null_on_empty($table) . "
+				WHERE " . null_on_empty($column) . " = ?
+			");
+			
+			$stmt->bind_param("s", null_on_empty($where));
+		}
+		else {
+			$stmt = $mysqli->prepare("
+				SELECT COUNT(*) 
+				FROM " . null_on_empty($table) . "
+			");
+		}
+		
+		$stmt->execute();
+		
+		$stmt->store_result();
+		$stmt->bind_result($count);
+		
+		$res = $stmt->fetch();
+		
+		$stmt->free_result();
+		$stmt->close();
+		
+		if($res) {
+			return $count;
+		}
+		else {
+			return NULL;
+		}
+	}
 	
 	function null_on_empty($var) {
 		if(empty($var)) {

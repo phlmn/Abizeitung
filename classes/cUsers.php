@@ -121,80 +121,33 @@
 						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["activated"]);
 						$stmt->store_result();
 						
+						$count["images"] 	= db_count("categories");
+						$count["questions"] = db_count("questions", "accepted", "1");
+						$count["surveys"] 	= db_count("surveys", "accepted", "1");
+						
 						while($stmt->fetch()): 
 						
-							$count["images"] 	= 0;
-							$count["questions"] = 0;
-							$count["surveys"] 	= 0;
+							$row["images"] 		= db_count("images", "uid", $row["id"]);
+							$row["questions"] 	= db_count("users_questions", "user", $row["id"]);
+							$row["surveys"] 	= db_count("users_surveys", "user", $row["id"]);
 							
-							$stmt2 = $mysqli->prepare("
-								SELECT COUNT(id)
-								FROM images
-								WHERE uid = ?
-							");
-							
-							$stmt2->bind_param("i", intval($row["id"]));
-							$stmt2->execute();
-							
-							$stmt2->bind_result($row["images"]);
-							$stmt2->store_result();
-							
-							if($stmt2->fetch()) {
-								$count["images"] = $row["images"];
-							}
-							
-							$stmt2->free_result();
-							$stmt2->close();
-							
-							$stmt2 = $mysqli->prepare("
-								SELECT COUNT(id)
-								FROM users_questions
-								WHERE user = ?
-							");
-							
-							$stmt2->bind_param("i", intval($row["id"]));
-							$stmt2->execute();
-							
-							$stmt2->bind_result($row["questions"]);
-							$stmt2->store_result();
-							
-							if($stmt2->fetch()) {
-								$count["questions"] = $row["questions"];
-							}
-							
-							$stmt2->free_result();
-							$stmt2->close();
-							
-							$stmt2 = $mysqli->prepare("
-								SELECT COUNT(id)
-								FROM users_surveys
-								WHERE user = ?
-							");
-							
-							$stmt2->bind_param("i", intval($row["id"]));
-							$stmt2->execute();
-							
-							$stmt2->bind_result($row["surveys"]);
-							$stmt2->store_result();
-							
-							if($stmt2->fetch()) {
-								$count["surveys"] = $row["surveys"];
-							}
-							
-							$stmt2->free_result();
-							$stmt2->close();
-							
-							$missing = ($row["birthday"] && $row["activated"] && $count["images"] && $count["questions"] && $count["surveys"]);
+							$missing = (
+								$row["birthday"] && 
+								$row["activated"] && 
+								$row["images"] == $count["images"] && 
+								$row["questions"] == $count["questions"] && 
+								$row["surveys"] == $count["surveys"]
+							);
 							
 						?>
 						<tr>
-							<td class="<?php echo ($missing)			? "existing" : "missing"?>"><?php echo $row["prename"] ?></td>
-							<td class="<?php echo ($missing)			? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
-							<td class="<?php echo ($row["birthday"]) 	? "existing" : "missing"?>"><?php echo $row["birthday"] ?></td>
-							<td class="<?php echo ($row["activated"]) 	? "existing" : "missing"?>"><?php echo $row["activated"] ?></td>
-                            <td class="<?php echo ($count["images"]) 	? "existing" : "missing"?>"><?php echo $count["images"] ?></td>
-                            <td class="<?php echo ($count["questions"]) ? "existing" : "missing"?>"><?php echo $count["questions"] ?></td>
-                            <td class="<?php echo ($count["surveys"]) 	? "existing" : "missing"?>"><?php echo $count["surveys"] ?></td>
+							<td class="<?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["prename"] ?></td>
+							<td class="<?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
+							<td class="<?php echo ($row["birthday"]) 							? "existing" : "missing"?>"><?php echo $row["birthday"] ?></td>
+							<td class="<?php echo ($row["activated"]) 							? "existing" : "missing"?>"><?php echo $row["activated"] ?></td>
+                            <td class="<?php echo ($row["images"] 		== $count["images"]) 	? "existing" : "missing"?>"><?php echo $count["images"] ?></td>
+                            <td class="<?php echo ($row["questions"] 	== $count["questions"]) ? "existing" : "missing"?>"><?php echo $count["questions"] ?></td>
+                            <td class="<?php echo ($row["surveys"] 		== $count["surveys"]) 	? "existing" : "missing"?>"><?php echo $count["surveys"] ?></td>
 						</tr>
 					<?php 
 						endwhile; 
