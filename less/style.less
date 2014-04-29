@@ -860,28 +860,42 @@ div.surveys {
 	border-color: @color4;
 }
 
-.progress:nth-child(5n+1) {
-	.progress-bar {
-		.lighter-color(background-color, @color1)
+
+#results {
+	
+	.progress {
+		height: 40px;
+		border-radius: 0;
+		
+		.progress-bar {
+			line-height: 40px;
+		}	
+	}
+	
+	.progress:nth-child(5n+1) {
+		.progress-bar {
+			.lighter-color(background-color, @color1)
+		}
+	}
+	.progress:nth-child(5n+2) {
+		.progress-bar {
+			.lighter-color(background-color, @color2)
+		}
+	}
+	.progress:nth-child(5n+3) {
+		.progress-bar {
+			.lighter-color(background-color, @color3)
+		}
+	}
+	.progress:nth-child(5n+4) {
+		.progress-bar {
+			.lighter-color(background-color, @color4)
+		}
+	}
+	.progress:nth-child(5n+5) {
+		.progress-bar {
+			.lighter-color(background-color, @color5)
+		}
 	}
 }
-.progress:nth-child(5n+2) {
-	.progress-bar {
-		.lighter-color(background-color, @color2)
-	}
-}
-.progress:nth-child(5n+3) {
-	.progress-bar {
-		.lighter-color(background-color, @color3)
-	}
-}
-.progress:nth-child(5n+4) {
-	.progress-bar {
-		.lighter-color(background-color, @color4)
-	}
-}
-.progress:nth-child(5n+5) {
-	.progress-bar {
-		.lighter-color(background-color, @color5)
-	}
-}
+
