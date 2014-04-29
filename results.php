@@ -267,35 +267,45 @@
 						}
 				?>
                 	<h4><?php echo $survey["title"] ?></h4>
-                    <?php 
-					if($survey["m"]): 
-						foreach($res["m"] as $male):
-							$percent = get_percent($male["count"], 2, $survey["max"]["m"]);
-							
-							if($percent["percent"] > $hurdle):
-					?>
-                    <div class="progress">
-                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
-                    </div>
-                    <?php 
+                	<div class="row">
+	                	<div class="col-sm-6">
+		                    <?php 
+							if($survey["m"]): 
+								foreach($res["m"] as $male):
+									$percent = get_percent($male["count"], 2, $survey["max"]["m"]);
+									
+									if($percent["percent"] > $hurdle):
+							?>
+		                    <div class="progress right">
+		                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
+		                    </div>
+		                    <?php 
+									endif;
+								endforeach;
+								
+							endif; 
+							?>
+		                	</div>
+		                	<div class="col-sm-6">
+		                	<?php
+							if($survey["w"]): 
+								foreach($res["w"] as $male):
+									$percent = get_percent($male["count"], 2, $survey["max"]["w"]);
+									
+									if($percent["percent"] > $hurdle):
+							?>
+		                    <div class="progress">
+		                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
+		                    </div>
+		                    <?php 
+									endif;
+								endforeach;
+								
 							endif;
-						endforeach;
-						
-					endif; 
-					if($survey["w"]): 
-						foreach($res["w"] as $male):
-							$percent = get_percent($male["count"], 2, $survey["max"]["w"]);
-							
-							if($percent["percent"] > $hurdle):
-					?>
-                    <div class="progress left">
-                    <?php get_progressbar($percent["percent"], NULL, $male["name"]); ?>
-                    </div>
-                    <?php 
-							endif;
-						endforeach;
-						
-					endif;
+							?>
+	                	</div>
+                	</div>
+                	<?php
 				endforeach;
 				?>
 			</div>
