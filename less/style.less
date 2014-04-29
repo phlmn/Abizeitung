@@ -639,6 +639,35 @@ td.edit a {
 			}
 		}	
 	}
+	
+	table.state {
+		th,
+		td {
+			text-align: center;
+		}
+		
+		tbody {
+			tr {
+				td.missing {
+					background: lighten(@color4, 25%);
+				}
+				
+				td.existing {
+					background: lighten(@color3, 20%);
+				}
+			}
+			
+			tr:nth-child(2n+1) {
+				td.missing {
+					background: lighten(@color4, 20%);
+				}
+				
+				td.existing {
+					background: lighten(@color3, 15%);
+				}
+			}
+		}
+	}
 
 	.buttons {
 		margin-top: 40px;
@@ -809,11 +838,11 @@ div.questions,
 div.surveys {
 	.inactive > td {
 		color: #A94442;
-		background: lighten(@color4, 20%);
+		background: lighten(@color4, 25%);
 	}
 	
 	.inactive:nth-child(2n+1) > td {
-		background: lighten(@color4, 25%);
+		background: lighten(@color4, 20%);
 	}
 }
 

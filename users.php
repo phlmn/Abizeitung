@@ -2,6 +2,7 @@
 	session_start();
 	
 	require_once("functions.php");
+	require_once("classes/cUsers.php");
 	
 	db_connect();
 	check_login();
@@ -34,87 +35,22 @@
 			<div class="users box">
 				<h2>Nutzer</h2>
                 <ul class="nav nav-tabs">
-                	<li<?php if($group == "students"): ?> class="active"<?php endif; ?>><a href="users.php?group=students">Schüler</a></li>
-                    <li<?php if($group == "teacher"): ?> class="active"<?php endif; ?>><a href="users.php?group=teacher">Lehrer</a></li>
+                	<li<?php if($group == "students"): 	?> class="active"<?php endif; ?>><a href="users.php?group=students">Schüler</a></li>
+                    <li<?php if($group == "teachers"): 	?> class="active"<?php endif; ?>><a href="users.php?group=teachers">Lehrer</a></li>
+                    <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Status</a></li>
                 </ul>
-                <?php if($group == "teacher"): ?>
-                <table class="table table-striped">
-					<thead>
-						<th>Vorname</th>
-						<th>Nachname</th>
-						<th>Spitzname</th>
-						<th>Geburtsdatum</th>
-						<th>Geschlecht</th>
-						<th class="edit"></th>
-					</thead>
-					<tbody>
-					<?php
-						global $mysqli;
-						
-						$stmt = $mysqli->prepare("
-							SELECT users.id AS id, users.prename, users.lastname, users.birthday, users.female
-							FROM teachers
-							LEFT JOIN users ON teachers.uid = users.id
-							ORDER BY users.lastname
-						");
-						
-						$stmt->execute();
-						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["female"]);
-						
-						while($stmt->fetch()): ?>
-						<tr>
-							<td><?php echo $row["prename"] ?></td>
-							<td><?php echo $row["lastname"] ?></td>
-							<td><?php echo $row["birthday"] ?></td>
-							<td><?php echo $row["female"] ? "Weiblich" : "Männlich" ?></td>
-							<td class="edit"><a href="edit-user.php?user=<?php echo $row["id"] ?>"><span class="icon-pencil-squared"></span></a></td>
-						</tr>
-					<?php endwhile; ?>
-					</tbody>
-				</table>
-                <?php else: ?>
-                <table class="table table-striped">
-					<thead>
-						<th>Vorname</th>
-						<th>Nachname</th>
-						<th>Geburtsdatum</th>
-						<th>Geschlecht</th>
-						<th>Tutorium</th>
-						<th>Tutor</th>
-						<th class="edit"></th>
-					</thead>
-					<tbody>
-					<?php
-						global $mysqli;
-						
-						$stmt = $mysqli->prepare("
-							SELECT users.id AS id, users.prename, users.lastname, users.birthday, users.female, tutorials.name, tutors.lastname 
-							FROM students
-							LEFT JOIN users ON students.uid = users.id
-							LEFT JOIN tutorials ON students.tutorial = tutorials.id
-							LEFT JOIN teachers ON tutorials.tutor = teachers.id
-							LEFT JOIN users AS tutors ON teachers.uid = tutors.id
-							ORDER BY users.lastname
-						");
-						
-						$stmt->execute();
-						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["female"], $row["name"], $row["tutor"]);	
-					
-						while($stmt->fetch()): ?>
-						<tr>
-							<td><?php echo $row["prename"] ?></td>
-							<td><?php echo $row["lastname"] ?></td>
-							<td><?php echo $row["birthday"] ?></td>
-							<td><?php echo $row["female"] ? "Weiblich" : "Männlich" ?></td>
-							<td><?php echo $row["name"] ?></td>
-							<td><?php echo $row["tutor"] ?></td>
-							<td class="edit"><a href="edit-user.php?user=<?php echo $row["id"] ?>"><span class="icon-pencil-squared"></span></a></td>
-						</tr>
-					<?php endwhile; ?>
-					</tbody>
-				</table>
-                <?php endif; ?>
-				
+                <?php 
+					switch($group) {
+						case "teachers":
+							Users::display_teachers();
+							break;
+						case "state":
+							Users::display_state();
+							break;
+						default:
+							Users::display_students();
+					}
+				?>
 			</div>
             
 			<a class="link" href="csv-import.php">Aus *.csv importieren</a>
