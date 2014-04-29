@@ -11,7 +11,7 @@
 	if(isset($_GET["delete"])) {
 		$stmt = $mysqli->prepare("
 			SELECT id
-			FROM users
+			FROM teachers
 			WHERE id = ?
 		");
 		
@@ -23,7 +23,7 @@
 		
 		if($res > 0) {
 			$stmt = $mysqli->prepare("
-				DELETE FROM teacher
+				DELETE FROM teachers
 				WHERE uid = ?
 			");
 			
@@ -31,6 +31,8 @@
 			$stmt->execute();
 			
 			$stmt->close();
+		}
+		else {
 			
 			$stmt = $mysqli->prepare("
 				DELETE FROM students
@@ -42,15 +44,18 @@
 			
 			$stmt->close();
 			
-			$stmt = $mysqli->prepare("
-				DELETE FROM users
-				WHERE id = ?
-				LIMIT 1
-			");
-			
-			$stmt->bind_param("i", intval($_GET["user"]));
-			$stmt->execute();
 		}
+			
+		$stmt = $mysqli->prepare("
+			DELETE FROM users
+			WHERE id = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("i", intval($_GET["user"]));
+		$stmt->execute();
+		
+		$stmt->close();
 		
 		header("Location: ./users.php");
 		exit;	
