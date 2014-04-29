@@ -140,11 +140,11 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-5 title">Tutorium</div>
-							<div class="col-xs-7"><?php if(isset($user["class"]["name"])) echo $user["class"]["name"] ?></div>
+							<div class="col-xs-7"><?php if(isset($user["tutorial"]["name"])) echo $user["tutorial"]["name"] ?></div>
 						</div>
 						<div class="row">
 							<div class="col-xs-5 title">Tutor</div>
-							<div class="col-xs-7"><?php if(isset($user["class"]["tutor"]["lastname"])) echo $user["class"]["tutor"]["lastname"] ?></div>
+							<div class="col-xs-7"><?php if(isset($user["tutorial"]["tutor"]["lastname"])) echo $user["tutorial"]["tutor"]["lastname"] ?></div>
 						</div>
 					</div>
                     

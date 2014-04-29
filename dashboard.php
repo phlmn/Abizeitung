@@ -378,11 +378,11 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-5 title">Tutorium</div>
-							<div class="col-xs-7"><?php if(isset($data["class"]["name"])) echo $data["class"]["name"] ?></div>
+							<div class="col-xs-7"><?php if(isset($data["tutorial"]["name"])) echo $data["tutorial"]["name"] ?></div>
 						</div>
 						<div class="row">
 							<div class="col-xs-5 title">Tutor</div>
-							<div class="col-xs-7"><?php if(isset($data["class"]["tutor"]["lastname"])) echo $data["class"]["tutor"]["lastname"] ?></div>
+							<div class="col-xs-7"><?php if(isset($data["tutorial"]["tutor"]["lastname"])) echo $data["tutorial"]["tutor"]["lastname"] ?></div>
 						</div>
 					</div>
 					
