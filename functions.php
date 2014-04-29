@@ -119,19 +119,28 @@
 	function get_percent($args, $precision = 2) {
 		$res = array(
 			"all" => 0, 
-			"percent" => array()
+			"percent" => array(),
+			"absolute" => array()
 		);
 		
 		foreach($args as $arg) {
 			$res["all"] += intval($arg);
-			array_push($res, intval($arg));
+			array_push($res["absolute"], intval($arg));
 		}
 		
 		for($i = 0; $i < count($args); $i++) {
-			$res["percent"][$i] = round($res[$i] * 100 / $res["all"], intval($precision));
+			$res["percent"][$i] = round($res["absolute"][$i] * 100 / $res["all"], intval($precision));
 		}
 		
 		return $res;
+	}
+	
+	function get_progressbar($percent, $absolute = NULL, $name = NULL) {
+		for($i = 0; $i < count($percent); $i++): ?>
+                	<div class="progress-bar" style="width: <?php echo $percent[$i]; ?>%;">
+                    	<?php echo ($absolute) ? $absolute[$i] : $percent[$i] . "%"; ?> <?php echo $name[$i]; ?>
+                    </div>
+        <?php endfor;
 	}
 	
 	function null_on_empty($var) {

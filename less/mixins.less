@@ -21,3 +21,29 @@
 		@{property}: @color5;
 	} 
 }
+
+.lighter-color(@property, @color) {
+	&:nth-child(6n+1) {
+		@{property}: lighten(@color, 15%);
+	}
+	
+	&:nth-child(6n+2) {
+		@{property}: @color;
+	}
+	
+	&:nth-child(6n+3) {
+		@{property}: lighten(@color, 10%);
+	}
+	
+	&:nth-child(5n+4) {
+		@{property}: lighten(@color, 5%);
+	}
+	
+	&:nth-child(6n+5) {
+		@{property}: lighten(@color, 10%);
+	}
+	
+	&:nth-child(6n+6) {
+		@{property}: @color;
+	}
+}

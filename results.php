@@ -32,7 +32,7 @@
 		<div id="results" class="container">
 			<h1>Auswertung</h1>
             <div class="box">
-            	<h2>Allgemein</h2>
+            	<h4>Geschlecht</h4>
                 <div class="progress">
                 <?php
 				
@@ -47,10 +47,11 @@
                 	<div class="progress-bar" style="width: <?php echo $gender["percent"][0] ?>%;">
                     	<?php echo $gender["percent"][0] ?> % Männlich
                     </div>
-                    <div class="progress-bar progress-bar-success" style="width: <?php echo $gender["percent"][1] ?>%;">
+                    <div class="progress-bar" style="width: <?php echo $gender["percent"][1] ?>%;">
                     	<?php echo $gender["percent"][1] ?>% Weiblich
                     </div>
                 </div>
+                <h4>Aufteilung Tutorien</h4>
                 <div class="progress">
                 <?php
 					global $mysqli;
@@ -83,12 +84,44 @@
 					
 					$tutorials = get_percent($tutorials);
 					
-					for($i = 0; $i < count($tutorials["percent"]); $i++):
+					get_progressbar($tutorials["percent"], $tut["names"]);
+					
 				?>
-                	<div class="progress-bar" style="width: <?php echo $tutorials["percent"][$i]; ?>%;">
-                    	<?php echo $tutorials["percent"][$i]; ?>% <?php echo $tut["names"][$i]; ?>
-                    </div>
-                <?php endfor; ?>
+                </div>
+                <h4>Meisten Nicknames</h4>
+                <div class="progress">
+                <?php
+					
+					$students = array(
+						"count" => array(),
+						"name" => array(),
+						"data" => array()
+					);
+					
+					$stmt = $mysqli->prepare("
+						SELECT COUNT(*) AS most, users.prename, users.lastname
+						FROM nicknames
+						INNER JOIN users ON nicknames.`to` = users.id
+						GROUP BY `to`
+						ORDER BY most DESC
+						LIMIT 5
+					");
+					
+					$stmt->execute();
+					
+					$stmt->bind_result($count, $prename, $lastname);
+					
+					while($stmt->fetch()) {
+						array_push($students["count"], $count);
+						array_push($students["name"], ($prename . " " . $lastname));
+					}
+					
+					$stmt->close();
+					
+					$students["data"] = get_percent($students["count"]);
+					
+					get_progressbar($students["data"]["percent"], $students["data"]["absolute"], $students["name"]);
+				?>
                 </div>
             </div>
 			<div class="box">
