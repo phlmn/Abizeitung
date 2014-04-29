@@ -1,7 +1,7 @@
 <?php
 
 	class Dashboard {
-		function update_user_nicknames($user, $nicknameId, $accept) {
+		public static function update_user_nicknames($user, $nicknameId, $accept) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -23,7 +23,7 @@
 				return false;
 		}
 		
-		function update_user_questions($user, $question, $answer) {
+		public static function update_user_questions($user, $question, $answer) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -89,7 +89,7 @@
 				return false;
 		}
 		
-		function update_user_surveys($user, $survey, $answer) {
+		public static function update_user_surveys($user, $survey, $answer) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -136,7 +136,7 @@
 				return false;
 		}
 		
-		function insert_nickname($data) {
+		public static function insert_nickname($data) {
 			global $mysqli;
 			
 			$nickname = $mysqli->real_escape_string($data["nickname"]);
@@ -170,7 +170,7 @@
 			die;
 		}
 		
-		function insert_question($data) {
+		public static function insert_question($data) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -193,7 +193,7 @@
 			die;
 		}
 		
-		function insert_survey($data) {
+		public static function insert_survey($data) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -216,7 +216,7 @@
 			die;
 		}
 		
-		function suggest_nickname($data) {
+		public static function suggest_nickname($data) {
 			global $mysqli;
 ?>
 <div class="modal-dialog">
@@ -265,7 +265,7 @@
 <?php
 		}
 		
-		function suggest_question() {
+		public static function suggest_question() {
 			global $mysqli;
 ?>
 <div class="modal-dialog">
@@ -288,7 +288,7 @@
 <?php
 		}
 		
-		function suggest_survey() {
+		public static function suggest_survey() {
 			global $mysqli;
 ?>
 <div class="modal-dialog">

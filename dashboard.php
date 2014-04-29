@@ -270,12 +270,12 @@
 					FROM images
 					WHERE 
 						uid = ? AND
-						category = ?
+						category = 1
 					ORDER BY id DESC
 					LIMIT 1
 				");
 				
-				$stmt->bind_param("ii", $data["id"], intval(1));
+				$stmt->bind_param("i", $data["id"]);
 				$stmt->execute();
 				
 				$stmt->bind_result($enrollment);
@@ -288,12 +288,12 @@
 					FROM images
 					WHERE 
 						uid = ? AND
-						category = ?
+						category = 2
 					ORDER BY id DESC
 					LIMIT 1
 				");
 				
-				$stmt->bind_param("ii", $data["id"], intval(2));
+				$stmt->bind_param("i", $data["id"]);
 				$stmt->execute();
 				
 				$stmt->bind_result($current);

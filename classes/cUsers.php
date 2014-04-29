@@ -2,7 +2,7 @@
 
 	class Users {
 		
-		function display_students() {
+		public static function display_students() {
 			global $mysqli;
 ?>
 				<table class="table table-striped">
@@ -50,7 +50,7 @@
 <?php
 		}
 		
-		function display_teachers() {
+		public static function display_teachers() {
 			global $mysqli;
 ?>
 				<table class="table table-striped">
@@ -93,7 +93,7 @@
 <?php
 		}
 		
-		function display_state() {
+		public static function display_state() {
 			global $mysqli;
 ?>
 				<table class="table table-striped state">

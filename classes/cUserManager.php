@@ -1,7 +1,7 @@
 <?php
 
 	class UserManager {
-		function get_userdata($id) {
+		public static function get_userdata($id) {
 			global $mysqli;
 			
 			$stmt = $mysqli->prepare("
@@ -142,7 +142,7 @@
 			}
 		}	
 		
-		function add_user($data) {
+		public static function add_user($data) {
 			global $mysqli;
 			
 			// Überprüfen, ob Vor- und Nachname angegeben sind
@@ -305,7 +305,7 @@
 			return 0;
 		}
 		
-		function edit_user($data) {
+		public static function edit_user($data) {
 			global $mysqli;
 			
 			// Überprüfen, ob Vor- und Nachname angegeben sind
@@ -575,7 +575,7 @@
 			
 		}
 		
-		function update_userdata($data) {
+		public static function update_userdata($data) {
 			global $mysqli;
 			
 			// Überprüen, ob der Nutzer vorhanden ist
