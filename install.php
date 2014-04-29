@@ -37,8 +37,7 @@
 				
 				file_put_contents(
 					"config.php", 
-					"
-<?php
+					"<?php
 	define('DB_HOST', '" . $db_host ."');
 	define('DB_USER', '" . $db_user . "');
 	define('DB_NAME', '" . $db_name . "');
