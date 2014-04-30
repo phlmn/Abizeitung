@@ -329,7 +329,7 @@
 			");
 			
 			$stmt->bind_param(
-				"ssiss",
+				"ssss",
 				$admin_prename,
 				$admin_name,
 				encrypt_pw($admin_pw),

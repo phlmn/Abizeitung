@@ -184,11 +184,11 @@
 	}
 	
 	function encrypt_pw($pw) {
-		return password_hash($pw, PASSWORD_BCRYPT);
+		return crypt($pw);
 	}
 	
 	function check_pw($pw, $hash) {
-		return password_verify($pw, $hash);
+		return (crypt($pw, $hash) === $hash);
 	}
 	
 	function str_rand($length) {
