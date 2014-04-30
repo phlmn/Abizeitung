@@ -129,18 +129,69 @@
 	<head>
 		<title>Abizeitung - CSV Import</title>
 		<?php head(); ?>
+        <script type="text/javascript">
+			var tables = new Array(
+				"prename", 
+				"lastname", 
+				"female", 
+				"tutorial", 
+				"tutor"
+			);
+			
+			function reset_field(id) {
+				$(id).val("");
+				$(id).removeClass("alternate");
+			}
+			
+			$(document).ready(function() {
+				for(i = 0; i < tables.length; i++) {
+					div1 = $('<div class="item draggable col-md-2">' + tables[i] + '</div>');
+					div2 = $('<input id="table-field-' + i +'" type="text" class="table-field droppable col-md-2" placeholder="Reihe ' + (i + 1) + '" onfocus="this.blur()" readonly />' + 
+								'<label for="table-field-' + i + '" class="reset" onclick="reset_field(\'#table-field-' + i + '\')"><span class="icon-minus-circled"></span></lable>');
+					
+					$("#items").append(div1);
+					$(div1).draggable({
+						revert: true
+					}).data("name", tables[i]);
+					
+					$("#table-fields").append(div2);
+				}
+			});
+			
+			$(function() {
+				$(".droppable").droppable({
+					drop: function( event, ui ) {
+						$(this).val(ui.draggable.data("name"))
+						$(this).addClass("alternate");
+					}
+				});
+				
+				$("form").bind("reset", function() {
+					$(".droppable").each(function(index, e) {
+						$(e).removeClass("alternate");
+					});
+				});
+			});
+		</script>
 	</head>
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management" class="container">
+		<div id="csv-import" class="container">
 			<h1>CSV Nutzer Import</h1>
             
             <form method="post" name="data" action="csv-import.php?import" enctype="multipart/form-data">
             <div class="users box">
+            	<h4>Vorhandene Spalten</h4>
+            	<div id="items" class="row">
+                </div>
+                <h4>Reihenfolge der .csv Spalten</h4>
+                <div id="table-fields" class="row">
+                </div>
             	<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get("upload_max_filesize")); ?>" />
                 <input id="file" name="file" type="file" />
                 <button type="submit">Importieren</button>
+                <button type="reset">Zurücksetzen</button>
             </div>
             </form>
 		</div>	
