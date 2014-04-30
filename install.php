@@ -324,7 +324,7 @@
 				INSERT INTO `users` (
 					prename, lastname, admin, password, email
 				) VALUES (
-					?, ?, ?, ?, ?
+					?, ?, 1, ?, ?
 				)
 			");
 			
@@ -332,7 +332,6 @@
 				"ssiss",
 				$admin_prename,
 				$admin_name,
-				intval(1),
 				encrypt_pw($admin_pw),
 				$admin_mail
 			);
