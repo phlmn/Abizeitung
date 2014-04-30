@@ -486,10 +486,10 @@
 			</div>
             
             <div class="nicknames box">
-            	<h2>Spitznamen</h2>
+            	<h2>Vorgeschlagene Spitznamen</h2>
                 <div class="nickname-list row">
                 <?php if(empty($nicknames)) : ?>
-                	Bisher hat dir niemand einen Spitznamen vorgeschlagen.
+                	<div class="alert">Bisher hat dir niemand einen Spitznamen vorgeschlagen.</div>
                 <?php else: ?>
                 	<table class="table table-striped">
                         <thead>
@@ -517,9 +517,10 @@
 					</div>
                     
                 </div>
+                <h2>Versendete Spitznamen</h2>
                 <div class="nickname-list row">
                 <?php if(empty($suggestedNicknames)) : ?>
-                	Bisher hast du niemand einen Spitznamen vorgeschlagen.
+                	<div class="alert">Bisher hast du niemanden einen Spitznamen vorgeschlagen.</div>
                 <?php else: ?>
                 	<table class="table table-striped">
                         <thead>
