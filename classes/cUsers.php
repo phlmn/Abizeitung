@@ -193,7 +193,7 @@
 				while($stmt->fetch()):
 			?>
             			<tr>
-                        	<td><?php echo $row["prename"] ?><a class="printonly"><br />http://www.mes-kassel.de</a></td>
+                        	<td><?php echo $row["prename"] ?><a class="printonly"><br />http://<?php echo $_SERVER["SERVER_NAME"] ?></a></td>
                             <td><?php echo $row["lastname"] ?></td>
                             <td>
                             	<label class="printonly" for="key_<?php echo $row["key"] ?>">Aktivierungscode: </label>
