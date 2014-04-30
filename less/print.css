@@ -32,4 +32,10 @@
 	#user-management .box table tbody tr td {
 		padding: 25px 0;
 	}
+	
+	#user-management table tr {
+		page-break-after: auto;
+		page-break-inside: avoid;
+		page-break-before: auto;
+	}
 }
