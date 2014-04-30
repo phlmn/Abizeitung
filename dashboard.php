@@ -14,12 +14,15 @@
 	
 	if(isset($_GET["suggest"])) {
 		switch($_GET["suggest"]) {
+			// get modal for suggesting nickname
 			case "nickname":
 				Dashboard::suggest_nickname($data);
 				break;
+			// get modal for suggesting question
 			case "question":
 				Dashboard::suggest_question();
 				break;
+			// get modal for suggesting survey
 			case "survey":
 				Dashboard::suggest_survey();
 				break;
@@ -32,28 +35,37 @@
 	}
 	
 	if(isset($_GET["nickname"])) {
+		// save post data
 		$suggest["nickname"] 	= $_POST["nickname"];
 		$suggest["user"] 		= $_POST["user"];
 		$suggest["id"] 			= $data["id"];
 		
+		// insert data into database
 		Dashboard::insert_nickname($suggest);
 	}
 	else if(isset($_GET["question"])) {
+		// save post data
 		$suggest["question"] 	= $_POST["question"];
 		$suggest["id"] 			= $data["id"];
 		
+		// insert data into database
 		Dashboard::insert_question($suggest);
 	}
 	else if(isset($_GET["survey"])) {
+		// save post data
 		$suggest["survey"] 	= $_POST["survey"];
 		$suggest["male"] 	= $_POST["m"];
 		$suggest["female"] 	= $_POST["w"];
 		$suggest["id"] 		= $data["id"];
 		
+		// insert data into database
 		Dashboard::insert_survey($suggest);
 	}
 		
 	if(isset($_GET["update"])) {
+		// update user post
+		// save post data
+		
 		$userdata["id"] = $data["id"];
 		$userdata["birthday"] = $_POST["birthday"];
 		$userdata["nickname"] = $_POST["nickname"];
