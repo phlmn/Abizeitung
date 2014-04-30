@@ -210,6 +210,7 @@
 		                </div>
 					</div>
 				</div>
+                <?php if(!$user["isteacher"]): ?>
                 <h2>Kurse</h2>
                 <div class="classes row">
                 	<table class="table table-striped">
@@ -219,6 +220,7 @@
                         </thead>
                         <tbody>
                         <?php 
+							
 							$stmt = $mysqli->prepare("
 								SELECT classes.name, users.lastname
 								FROM students_classes
@@ -249,6 +251,7 @@
                     </table>
                 </div>
 			</div>
+            <?php endif; ?>
             
             <div class="nicknames box">
             	<h2>Spitznamen</h2>
