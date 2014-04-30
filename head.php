@@ -4,7 +4,7 @@
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
 <link rel="stylesheet/less" type="text/css" href="bootstrap/less/bootstrap.less" />
 <link rel="stylesheet/less" href="less/style.less">
-<link rel="stylesheet" href="icons/css/fontello.css">
+<link rel="stylesheet" href="fontello/css/fontello.css">
 <!--[if IE 7]>
 <link rel="stylesheet" href="icons/css/fontello-ie7.css">
 <![endif]-->
