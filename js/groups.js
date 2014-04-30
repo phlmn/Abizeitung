@@ -33,31 +33,60 @@ function Group() {
 		selfpointer = this;
 		
 		$(".groups > div").each(function(index, e) {
-			$(e).droppable({
-				drop: function(event, ui) {
-					$(ui.helper).remove();
-					var dropGroup = $(this).attr(selfpointer.args["dataId"]);
-					var actions = new Array();
-					if($("#" + selfpointer.args["management"] + " div.sidebar div.users ul > li.selected").length > 0) {
-						$("#" + selfpointer.args["management"] + " div.sidebar div.users ul > li.selected").each(function (i, user) {
-							actions.push({user: $(user).data("id"), group: dropGroup});		
-						});	
+			if(index == 0) {
+				$(e).droppable({
+					drop: function(event, ui) {
+						$(ui.helper).remove();
+						var dropGroup = selfpointer.selectedGroup;
+						var actions = new Array();
+						if($("#" + selfpointer.args["management"] + " div.sidebar div.users ul > li.selected").length > 0) {
+							$("#" + selfpointer.args["management"] + " div.sidebar div.users ul > li.selected").each(function (i, user) {
+								actions.push({user: $(user).data("id"), group: dropGroup});		
+							});	
+						}
+						else {
+							actions.push({user: ui.draggable.data("id"), group: dropGroup});
+						}
+						
+						selfpointer.removeFromGroup(actions);
+						selfpointer.showGroup(selfpointer.selectedGroup, true);
+						$(this).removeClass("hover");
+					},
+					over: function(event, ui) {
+						$(this).addClass("hover");	
+					},
+					out: function(event, ui) {
+						$(this).removeClass("hover");		
 					}
-					else {
-						actions.push({user: ui.draggable.data("id"), group: dropGroup});
+				});	
+			}
+			else {
+				$(e).droppable({
+					drop: function(event, ui) {
+						$(ui.helper).remove();
+						var dropGroup = $(this).attr(selfpointer.args["dataId"]);
+						var actions = new Array();
+						if($("#" + selfpointer.args["management"] + " div.sidebar div.users ul > li.selected").length > 0) {
+							$("#" + selfpointer.args["management"] + " div.sidebar div.users ul > li.selected").each(function (i, user) {
+								actions.push({user: $(user).data("id"), group: dropGroup});		
+							});	
+						}
+						else {
+							actions.push({user: ui.draggable.data("id"), group: dropGroup});
+						}
+						
+						selfpointer.addToGroup(actions);
+						selfpointer.showGroup(selfpointer.selectedGroup, true);
+						$(this).removeClass("hover");
+					},
+					over: function(event, ui) {
+						$(this).addClass("hover");	
+					},
+					out: function(event, ui) {
+						$(this).removeClass("hover");		
 					}
-					
-					selfpointer.addToGroup(actions);
-					selfpointer.showGroup(selfpointer.selectedGroup, true);
-					$(this).removeClass("hover");
-				},
-				over: function(event, ui) {
-					$(this).addClass("hover");	
-				},
-				out: function(event, ui) {
-					$(this).removeClass("hover");		
-				}
-			});
+				});
+			}
 		});
 		
 		
