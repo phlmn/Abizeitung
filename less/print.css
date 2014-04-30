@@ -34,7 +34,7 @@
 	}
 	
 	#user-management table tr {
-		page-break-after: auto;
+		page-break-after: always;
 		page-break-inside: avoid;
 		page-break-before: auto;
 	}
