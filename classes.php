@@ -142,6 +142,45 @@ if(isset($_GET["action"])) {
 		
 		die;
 	}
+	else if($_GET["action"] == "addToGroup") {
+		global $mysqli;
+		
+		$exists = false;
+		
+		$stmt = $mysqli->prepare("
+			SELECT *
+			FROM students_classes
+			LEFT JOIN students ON students_classes.student = students.id
+			LEFT JOIN users ON students.uid = users.id
+			WHERE users.id = ? AND students_classes.class = ?
+		");
+		
+		$stmt->bind_param("ii", $_POST["user"], $_POST["group"]);
+		$stmt->execute();
+		
+		if($stmt->fetch()) $exists = true;
+		
+		$stmt->close();
+		
+		echo $_POST["user"] . "     " . $_POST["group"];
+		if(!$exists) {
+			echo "create";
+			$stmt = $mysqli->prepare("
+				INSERT INTO students_classes (student, class)
+				SELECT students.id, ?
+				FROM students
+				LEFT JOIN users ON students.uid = users.id
+				WHERE users.id = ?
+			");
+			
+			$stmt->bind_param("ii", $_POST["group"], $_POST["user"]);
+			$stmt->execute();
+			
+			$stmt->close();	
+		}		
+		db_close();
+		die;
+	}
 }
 
 if(isset($_GET["class"])) {
@@ -183,7 +222,7 @@ if(isset($_GET["class"])) {
 			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
 			FROM students
 			LEFT JOIN users ON students.uid = users.id
-			LEFT JOIN students_classes ON users.id = students_classes.student
+			LEFT JOIN students_classes ON students.id = students_classes.student
 			LEFT JOIN tutorials ON students.tutorial = tutorials.id
 			LEFT JOIN classes ON students_classes.id = classes.id
 			LEFT JOIN teachers ON tutorials.tutor = teachers.id
@@ -229,7 +268,17 @@ if(isset($_GET["class"])) {
 			classes.setArgs("classes", "class", "class", "class-management", "data-classid", "classesModal");
 			
 			$(document).ready(function() {
+				classes.initGroups();
 				classes.showGroup(-1);
+				
+				classes.setAddHandler(function(actions) {
+					actions.forEach(function(e) {
+						$.post("classes.php?action=addToGroup", {
+							group: e.group,
+							user: e.user	
+						});
+					});
+				});
 			});
 		</script>
 	</head>

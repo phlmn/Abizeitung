@@ -18,8 +18,14 @@ function Group() {
 	
 	this.addToGroup;
 	
-	this.setHandler = function(func) {
+	this.setAddHandler = function(func) {
 		this.addToGroup = func;
+	}
+	
+	this.removeFromGroup;
+	
+	this.setRemoveHandler = function(func) {
+		this.removeFromGroup = func;
 	}
 	
 	this.initGroups = function() {

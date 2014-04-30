@@ -247,7 +247,7 @@ if(isset($_GET["tutorial"])) {
 				tutorials.initGroups();
 				tutorials.showGroup(-1);
 				
-				tutorials.setHandler(function(actions) {
+				tutorials.setAddHandler(function(actions) {
 					actions.forEach(function(e) {
 						$.post("tutorial.php?action=addToGroup", {
 							group: e.group,
