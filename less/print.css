@@ -1,0 +1,35 @@
+@media print {
+	.printonly {
+		display: block;
+	}
+	
+	#nav-bar,
+	.noprint,
+	#user-management h1,
+	#user-management h2,
+	#user-management .buttons,
+	#user-management .box ul.nav,
+	#user-management .box table thead {
+		display: none;
+	}
+	
+	#user-management,
+	#user-management .box {
+		border: none;
+		margin: none;
+	}
+	
+	input {
+		background: none;
+		border: none;
+		text-align: center;
+	}
+	
+	#user-management input.key {
+		width: 100px;
+	}
+	
+	#user-management .box table tbody tr td {
+		padding: 25px 0;
+	}
+}

@@ -172,13 +172,13 @@
 						<th>Vorname</th>
 						<th>Nachname</th>
 						<th>Aktivierungscode</th>
-						<th>Tutorium</th>
+						<th class="noprint">Tutorium</th>
 					</thead>
                     <tbody>
         <?php
 			
 			$stmt = $mysqli->prepare("
-				SELECT users.prename, users.lastname, users.unlock_key, tutorials.name
+				SELECT users.id, users.prename, users.lastname, users.unlock_key, tutorials.name
 				FROM users
 				LEFT JOIN students ON users.id = students.uid
 				LEFT JOIN tutorials ON students.tutorial = tutorials.id
@@ -188,15 +188,18 @@
 			
 			$stmt->execute();
 			
-			$stmt->bind_result($row["prename"], $row["lastname"], $row["key"], $row["tutorial"]);
+			$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["key"], $row["tutorial"]);
 			
 				while($stmt->fetch()):
 			?>
             			<tr>
-                        	<td><?php echo $row["prename"] ?></td>
+                        	<td><?php echo $row["prename"] ?><a class="printonly"><br />http://www.mes-kassel.de</a></td>
                             <td><?php echo $row["lastname"] ?></td>
-                            <td><input class="key" type="text" value="<?php echo $row["key"] ?>" onclick="this.select()" readonly="readonly"/></td>
-                            <td><?php echo $row["tutorial"] ?></td>
+                            <td>
+                            	<label class="printonly" for="key_<?php echo $row["key"] ?>">Aktivierungscode: </label>
+                            	<input id="key_<?php echo $row["key"] ?>" class="key" type="text" value="<?php echo $row["key"] ?>" onclick="this.select()" readonly="readonly"/>
+                            </td>
+                            <td class="noprint"><?php echo $row["tutorial"] ?></td>
                         </tr>
             <?php
 				endwhile;
