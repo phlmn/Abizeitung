@@ -33,6 +33,11 @@
 		<title>Abizeitung - Login</title>
 		<?php head(); ?>
 	</head>
+    <script type="text/javascript">
+		$(document).ready(function() {
+			$('#login.login-failed').effect("shake");
+		});
+	</script>
 	
 	<body class="login">
 		<div id="login" <?php if($login_failed): ?>class="login-failed"<?php endif; ?>>
