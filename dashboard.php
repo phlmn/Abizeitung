@@ -231,19 +231,18 @@
 	$suggestedNicknames = array();
 	
 	$stmt = $mysqli->prepare("
-		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname
+		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname, nicknames.accepted
 		FROM nicknames
 		LEFT JOIN users ON nicknames.`to` = users.id
 		WHERE
 		NOT nicknames.`from` = nicknames.`to`
-		AND nicknames.accepted = 0
 		AND nicknames.`from` = ?
 	");
 	
 	$stmt->bind_param("i", $data["id"]);
 	$stmt->execute();
 	
-	$stmt->bind_result($row["id"], $row["nickname"], $row["prename"], $row["lastname"]);
+	$stmt->bind_result($row["id"], $row["nickname"], $row["prename"], $row["lastname"], $row["accepted"]);
 	
 	while($stmt->fetch()) {
 		$suggestedNicknames[intval($row["id"])] = array(
@@ -252,6 +251,7 @@
 				"prename" 	=> $row["prename"],
 				"lastname" 	=> $row["lastname"]
 			),
+			"accepted" 	=> $row["accepted"]
 		);
 	}
 	
@@ -534,9 +534,13 @@
                             	<td><?php echo $nickname["nickname"] ?></td>
 								<td><?php echo $nickname["to"]["prename"] . " " . $nickname["to"]["lastname"]; ?></td>
                                 <td class="accept">
+                                <?php if($nickname["accepted"] == 0) : ?>
                                     <a class="button" href="./dashboard.php?withdraw=nickname&id=<?php echo $key; ?>">
                                     	<span class="icon-minus-circled"></span> Vorschlag zurückziehen
                                     </a>
+                                <?php else: ?>
+                                	Spitzname wurde akzeptiert
+                                <?php endif; ?>
                                 </td>
                     		</tr>
                 	<?php endforeach; ?>
