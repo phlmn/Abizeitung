@@ -416,7 +416,7 @@
 				die;
 			}
 			else {
-				header("Location: ./install.php?saved");
+				header("Location: ./install.php?error=exists");
 				
 				die;
 			}
@@ -452,6 +452,10 @@
 						case "database":
 							echo "<li>Error: database</li>";
 							echo "<li>Überprüfen sie den <strong>Host</strong>, den <strong>Nutzer</strong> und das <strong>Passwort</strong></li>";
+							break;
+						case "exists":
+							echo "<li>Error: Already installed</li>";
+							echo "<li>Die config Datei existiert bereits</li>";
 							break;
 					}
 				?>
