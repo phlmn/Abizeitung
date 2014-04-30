@@ -12,6 +12,20 @@
 	
 	global $mysqli;
 	
+	if(isset($_GET["withdraw"])) {
+		switch($_GET["withdraw"]) {
+			case "nickname":
+				if(Dashboard::delete_nickname($data, $_GET["id"])) {
+					db_close();
+			
+					header("Location: ./dashboard.php?saved");
+					
+					die;
+				}
+				break;
+		}
+	}
+	
 	if(isset($_GET["suggest"])) {
 		switch($_GET["suggest"]) {
 			// get modal for suggesting nickname
@@ -209,6 +223,35 @@
 				"lastname" 	=> $row["lastname"]
 			),
 			"accepted" 	=> $row["accepted"]
+		);
+	}
+	
+	$stmt->close();
+	
+	$suggestedNicknames = array();
+	
+	$stmt = $mysqli->prepare("
+		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname
+		FROM nicknames
+		LEFT JOIN users ON nicknames.`to` = users.id
+		WHERE
+		NOT nicknames.`from` = nicknames.`to`
+		AND nicknames.accepted = 0
+		AND nicknames.`from` = ?
+	");
+	
+	$stmt->bind_param("i", $data["id"]);
+	$stmt->execute();
+	
+	$stmt->bind_result($row["id"], $row["nickname"], $row["prename"], $row["lastname"]);
+	
+	while($stmt->fetch()) {
+		$suggestedNicknames[intval($row["id"])] = array(
+			"nickname" 	=> $row["nickname"],
+			"to" 		=> array(
+				"prename" 	=> $row["prename"],
+				"lastname" 	=> $row["lastname"]
+			),
 		);
 	}
 	
@@ -473,6 +516,32 @@
 						<a class="button" href="javascript:void(suggestNickname())"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
 					</div>
                     
+                </div>
+                <div class="nickname-list row">
+                <?php if(empty($suggestedNicknames)) : ?>
+                	Bisher hast du niemand einen Spitznamen vorgeschlagen.
+                <?php else: ?>
+                	<table class="table table-striped">
+                        <thead>
+                            <th>Spitzname</th>
+                            <th>Vergeben an</th>
+                            <th class="edit"></th>
+                        </thead>
+                        <tbody>
+                	<?php foreach($suggestedNicknames as $key => $nickname): ?>
+                			<tr>
+                            	<td><?php echo $nickname["nickname"] ?></td>
+								<td><?php echo $nickname["to"]["prename"] . " " . $nickname["to"]["lastname"]; ?></td>
+                                <td class="accept">
+                                    <a class="button" href="./dashboard.php?withdraw=nickname&id=<?php echo $key; ?>">
+                                    	<span class="icon-minus-circled"></span> Vorschlag zurückziehen
+                                    </a>
+                                </td>
+                    		</tr>
+                	<?php endforeach; ?>
+                		</tbody>
+                 	</table>
+                <?php endif; ?>
                 </div>
             </div>
 			

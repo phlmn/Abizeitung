@@ -321,6 +321,48 @@
 </div>
 <?php
 		}
+		
+		public static function delete_nickname($data, $id) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				SELECT id
+				FROM nicknames
+				WHERE `from` = ?
+				AND id = ?
+			");
+			
+			$stmt->bind_param("ii", $data["id"], $id);
+			$stmt->execute();
+			
+			$stmt->bind_result($id);
+			$stmt->store_result();
+			
+			if($stmt->fetch()) {
+				$stmt2 = $mysqli->prepare("
+					DELETE FROM nicknames
+					WHERE
+						id = ?
+					AND accepted = 0
+					LIMIT 1
+				");
+				
+				$stmt2->bind_param("i", $id);
+				$stmt2->execute();
+				
+				$stmt2->close();
+				
+				$stmt->free_result();
+				$stmt->close();
+				
+				return true;
+			}
+			
+			$stmt->free_result();
+			$stmt->close();
+			
+			return false;
+		}
 	}
 	
 	/*
