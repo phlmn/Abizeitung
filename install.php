@@ -3,84 +3,39 @@
 	
 	if(file_exists("config.php")) {
 		header("Location: ./");
-		
 		die;
 	}
 	
 	require_once("functions.php");
 	
 	if(isset($_GET["action"])) {
-		if($_GET["action"] == "install") {
-			if(isset($_GET["db"])) {
-				$db_host 		= mysql_real_escape_string($_GET['db-host']);
-				$db_user 		= mysql_real_escape_string($_GET['db-user']);
-				$db_name 		= mysql_real_escape_string($_GET['db-name']);
-				$db_password 	= mysql_real_escape_string($_GET['db-password']);
-				
-				$admin_prename 	= null_on_empty($_GET['admin-prename']);
-				$admin_name		= null_on_empty($_GET['admin-name']);
-				$admin_mail		= null_on_empty($_GET['admin-mail']);
-				$admin_pw = $_GET['admin-pw'];
-			}
-			else {
+		if($_GET["action"] == "install") { 
+			$db_host 		= $_POST['db-host'];
+			$db_user 		= $_POST['db-user'];
+			$db_name 		= $_POST['db-name'];
+			$db_password 	= $_POST['db-password'];
 			
-				$db_host 		= mysql_real_escape_string($_POST['db-host']);
-				$db_user 		= mysql_real_escape_string($_POST['db-user']);
-				$db_name 		= mysql_real_escape_string($_POST['db-name']);
-				$db_password 	= mysql_real_escape_string($_POST['db-password']);
-				
-				$admin_prename 	= null_on_empty($_POST['admin-prename']);
-				$admin_name		= null_on_empty($_POST['admin-name']);
-				$admin_mail		= null_on_empty($_POST['admin-mail']);
-				$admin_pw = $_POST['admin-pw'];
-				
-				$unlock_key = null_on_0($_POST['unlock-key']);
-				
-				if($unlock_key < 5) {
-					$unlock_key = 5;
-				}
-				
-				file_put_contents(
-					"config.php", 
-					"<?php
-	define('DB_HOST', '" . $db_host ."');
-	define('DB_USER', '" . $db_user . "');
-	define('DB_NAME', '" . $db_name . "');
-	define('DB_PASSWORD', '" 	. $db_password 	. "');
-	
-	define('UNLOCK_KEY', '" 	. $unlock_key 	. "');
-?>");
-				
+			$admin_prename 	= null_on_empty($_POST['admin-prename']);
+			$admin_name		= null_on_empty($_POST['admin-name']);
+			$admin_mail		= null_on_empty($_POST['admin-mail']);
+			$admin_pw = 	$_POST['admin-pw'];
+			
+			$unlock_key = null_on_0($_POST['unlock-key']);
+			
+			if($unlock_key < 5) {
+				$unlock_key = 5;
 			}
 			
-			if(db_connect() == -1) {
-				if(mysql_connect($db_host, $db_user, $db_password))
-					if(mysql_query("CREATE DATABASE IF NOT EXISTS `" . $db_name . "` DEFAULT CHARACTER SET utf8 ;")) {
-						
-						$db_host 		= "&db-host=" 		. $db_host;
-						$db_user 		= "&db-user=" 		. $db_user;
-						$db_name 		= "&db-name=" 		. $db_name;
-						$db_password 	= "&db-password=" 	. $db_password;
-						
-						$admin_prename 	= "&admin-prename=" . $admin_prename;
-						$admin_name 	= "&admin-name="	. $admin_name;
-						$admin_mail 	= "&admin-mail="	. $admin_mail;
-						$admin_pw = "&admin-pw=". $admin_pw;
-						
-						db_close();
-						
-						header("Location: ./install.php?action=install&db" . $db_host . $db_user . $db_name . $db_password . $admin_prename . $admin_name . $admin_mail . $admin_pw);
-						
-						die;
-					}
-					
-				db_close();
-					
-				header("Location: ./install.php?error=database");
-				
-				die;
-			}
+			// create config.php
+			file_put_contents("config.php", "<?php\n\tdefine('DB_HOST', '" . $db_host ."');\n\tdefine('DB_USER', '" . $db_user . "');\n\tdefine('DB_NAME', '" . $db_name . "');\n\tdefine('DB_PASSWORD', '" 	. $db_password 	. "');\n\tdefine('UNLOCK_KEY', '" 	. $unlock_key 	. "');\n?>");
 			
+			global $mysqli;
+			$mysqli = new mysqli($db_host, $db_user, $db_password);
+			
+			$mysqli->query("CREATE DATABASE IF NOT EXISTS `" . $db_name . "` DEFAULT CHARACTER SET utf8");
+			
+			$mysqli->select_db($db_name);
+						
 			$res = $mysqli->multi_query("
 				-- TABLE CATEGORIES --
 				
