@@ -416,7 +416,7 @@
 				die;
 			}
 			else {
-				header("Location: ./install.php?error=exists");
+				header("Location: ./");
 				
 				die;
 			}
@@ -452,11 +452,6 @@
 						case "database":
 							echo "<li>Error: database</li>";
 							echo "<li>Überprüfen sie den <strong>Host</strong>, den <strong>Nutzer</strong> und das <strong>Passwort</strong></li>";
-							break;
-						case "exists":
-							header("Location: ./");
-							
-							die;
 							break;
 					}
 				?>
