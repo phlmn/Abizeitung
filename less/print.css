@@ -33,7 +33,7 @@
 		padding: 25px 0;
 	}
 	
-	table { page-break-inside: auto }
-    tr { page-break-inside:avoid; page-break-after: auto }
-    thead { display: table-header-group }
+	table { page-break-inside: auto; }
+    tr { page-break-inside:avoid; page-break-after: auto; border-bottom: 2px solid #ddd; background: none; }
+    thead { display: table-header-group; }
 }
