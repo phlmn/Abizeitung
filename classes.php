@@ -10,6 +10,9 @@
 	$data = UserManager::get_userdata($_SESSION["user"]);	
 
 	if(isset($_GET["editclass"])) {
+		// edit class (alt + mouseclick)
+		// get modal dialog
+		
 		global $mysqli;
 ?>
 		<div class="modal-dialog">
@@ -23,6 +26,8 @@
                         <?php
 							$select["teacher"] = 0;
 							$select["name"] = "";
+							
+							// get class data from database
 							
 							if($_GET["editclass"]) {
 								$stmt = $mysqli->prepare("
@@ -45,6 +50,9 @@
                         <select name="teacher" form="modal-form">
                         	<option value="">-</option>
                             <?php
+								
+								// get all teachers
+								
 								$stmt = $mysqli->prepare("
 									SELECT teachers.id, users.lastname
 									FROM teachers
@@ -66,7 +74,7 @@
                     </div>
                     <div class="modal-footer">
                     <?php if($_GET["editclass"]) : ?>
-                    	<button type="button" class="btn btn-default delete" onclick="void(window.location='classes.php?action=delete&class=<?php echo $_GET["editclass"]; ?>')" data-dismiss="modal">Löschen</button>
+                    	<button type="button" class="btn btn-default delete" onClick="void(window.location='classes.php?action=delete&class=<?php echo $_GET["editclass"]; ?>')" data-dismiss="modal">Löschen</button>
                     <?php endif; ?>
                     	<button type="button" class="btn btn-default" form="modal-form" data-dismiss="modal">Schließen</button>
                     	<button type="submit" class="btn btn-default" form="modal-form">Speichern</button>
@@ -81,6 +89,8 @@
 
 if(isset($_GET["action"])) {
 	if($_GET["action"] == "new") {
+		// insert new class in database
+		
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
@@ -102,6 +112,8 @@ if(isset($_GET["action"])) {
 		die;
 	}
 	else if($_GET["action"] == "update") {
+		// edit class
+		
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
@@ -124,6 +136,8 @@ if(isset($_GET["action"])) {
 		die;
 	}
 	else if($_GET["action"] == "delete") {
+		// delete class
+		
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
@@ -143,6 +157,8 @@ if(isset($_GET["action"])) {
 		die;
 	}
 	else if($_GET["action"] == "addToGroup") {
+		// add user to class
+		
 		global $mysqli;
 		
 		$exists = false;
@@ -180,6 +196,8 @@ if(isset($_GET["action"])) {
 		die;
 	}
 	else if($_GET["action"] == "removeFromGroup") {
+		// delete user from group
+		
 		global $mysqli;
 		
 		$exists = false;
@@ -204,6 +222,8 @@ if(isset($_GET["action"])) {
 }
 
 if(isset($_GET["class"])) {
+	// show class
+	
 	global $mysqli;
 	
 	$classId = intval($_GET["class"]);
@@ -227,6 +247,9 @@ if(isset($_GET["class"])) {
 	$stmt->close();
 	
 	if($classId == -1) {
+		// no class is selected
+		// all users are displayed
+		
 		$stmt = $mysqli->prepare("
 			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
 			FROM students
@@ -238,6 +261,8 @@ if(isset($_GET["class"])) {
 		");	
 	}
 	else {
+		// select users from class
+		
 		$stmt = $mysqli->prepare("
 			SELECT users.id, users.prename, users.lastname, tutorials.name, tutor.lastname 
 			FROM students
@@ -257,6 +282,8 @@ if(isset($_GET["class"])) {
 	$stmt->execute();
 	
 	$stmt->bind_result($user["id"], $user["prename"], $user["lastname"], $user["class"], $user["tutor"]);
+	
+	// return a json file with selected users
 	
 	$json["users"] = array();
 	while($stmt->fetch()) {
@@ -289,6 +316,7 @@ if(isset($_GET["class"])) {
 			
 			$(document).ready(function() {
 				classes.initGroups();
+				// show all users
 				classes.showGroup(-1);
 				
 				classes.setAddHandler(function(actions) {
@@ -318,7 +346,11 @@ if(isset($_GET["class"])) {
 			<h1>Kursverwaltung</h1>
 			<form id="data_form" name="data" action="save.php"></form>
 			<?php
+			
+				// display all classes in circles
+				
 				global $mysqli;
+				
 				$stmt = $mysqli->prepare("
 					SELECT classes.id, classes.name, teachers.id, users.id, users.lastname
 					FROM classes

@@ -13,14 +13,20 @@
 		if(!file_exists("csv"))
 			mkdir("csv");
 			
+		// check filetype
+			
 		if(isset($_FILES["file"]["name"])) {
 			if($_FILES["file"]["type"] == "application/vnd.ms-excel" || $_FILES["file"]["type"] == "text/csv") {
+				// create filepath
 				$file = realpath(dirname(__FILE__)) . "/csv/" . time() . "_" . $_FILES["file"]["name"];
 				
+				// upload file in /csv/
 				if(move_uploaded_file($_FILES["file"]["tmp_name"], $file)) {
 					
+					// open file
 					if(($handle = fopen($file, "r")) !== false) {
 						
+						// get content
 						while(($data = fgetcsv($handle, 999, ";")) !== false) {
 							
 							// 	Required file format:
@@ -104,10 +110,12 @@
 							}
 						}
 						
+						// close file
 						fclose($handle);
 					}
 				}
 				
+				// delete file
 				unlink($file);
 			}
 		}

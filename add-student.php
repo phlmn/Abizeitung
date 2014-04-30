@@ -10,6 +10,8 @@
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
 	if(isset($_GET["create"])) {
+		// Save posted data in array
+		
 		$userdata["prename"] 	= $_POST["prename"];
 		$userdata["lastname"] 	= $_POST["lastname"];
 		$userdata["tutorial"] 	= $_POST["tutorial"];
@@ -26,12 +28,16 @@
 			$userdata["female"] = false;
 		}
 		
+		// add data to database
+		
 		$param = UserManager::add_user($userdata);
 		
 		if($param == 0) {
+			// data saved
 			header("Location: ./add-student.php?saved");
 		}
 		else {
+			// data failed
 			header("Location: ./add-student.php?error=" . $param);
 		}
 		
@@ -57,6 +63,9 @@
                 <div class="alert alert-danger">
                 	Speichern fehlgeschlagen.<br />
                 <?php
+				
+					// display error messages
+					
 					switch($_GET["error"]) {
 						case "-1":
 							echo "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben.";
@@ -103,6 +112,9 @@
                         	<select name="tutorial" form="data_form">
                             	<option value="0">-</option>
                                 <?php 
+									
+									// get all tutorials from database
+									
 									$stmt = $mysqli->prepare("
 										SELECT id, name
 										FROM tutorials
