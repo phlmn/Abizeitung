@@ -64,7 +64,11 @@
             <?php endif; ?>
             	
 			<div class="buttons">
-				<a class="button" href="add-user.php"><span class="icon-plus-circled"></span> Nutzer erstellen</a>
+            	<?php if($group == "students"): ?>
+				<a class="button" href="add-student.php"><span class="icon-plus-circled"></span> Schüler erstellen</a>
+                <?php else: if($group == "teachers"): ?>
+                <a class="button" href="add-teacher.php"><span class="icon-plus-circled"></span> Lehrer erstellen</a>
+                <?php endif; endif; ?>
 			</div>
 
 		</div>	

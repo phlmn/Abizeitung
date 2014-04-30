@@ -12,12 +12,12 @@
 	if(isset($_GET["create"])) {
 		$userdata["prename"] 	= $_POST["prename"];
 		$userdata["lastname"] 	= $_POST["lastname"];
-		$userdata["tutorial"] 	= $_POST["tutorial"];
+		$userdata["tutorial"] 	= NULL;
 		$userdata["birthday"] 	= $_POST["birthday"];
 		$userdata["nickname"] 	= $_POST["nickname"];
 		$userdata["email"] 		= $_POST["email"];
 		$userdata["password"] 	= $_POST["password"];
-		$userdata["teacher"] 	= isset($_POST["teacher"]);
+		$userdata["teacher"] 	= 1;
 		$userdata["admin"] 		= isset($_POST["admin"]);
 		if($_POST["gender"] == "f") {
 			$userdata["female"] = true;
@@ -29,10 +29,10 @@
 		$param = UserManager::add_user($userdata);
 		
 		if($param == 0) {
-			header("Location: ./add-user.php?saved");
+			header("Location: ./add-teacher.php?saved");
 		}
 		else {
-			header("Location: ./add-user.php?error=" . $param);
+			header("Location: ./add-teacher.php?error=" . $param);
 		}
 		
 		exit;
@@ -75,7 +75,7 @@
                 </div>
             <?php endif; endif; ?>
 			<h1>Nutzerverwaltung</h1>
-			<form id="data_form" name="data" method="post" action="add-user.php?create"></form>
+			<form id="data_form" name="data" method="post" action="add-teacher.php?create"></form>
 			<div class="add-user">
 				<h2>Nutzer erstellen</h2>
 				<table>
@@ -96,30 +96,6 @@
                             </select>
                         </td>
 					</tr>
-
-					<tr>
-						<td class="title">Tutorium</td>
-						<td>
-                        	<select name="tutorial" form="data_form">
-                            	<option value="0">-</option>
-                                <?php 
-									$stmt = $mysqli->prepare("
-										SELECT id, name
-										FROM tutorials
-									");
-									
-									$stmt->execute();
-									$stmt->bind_result($tutorial["id"], $tutorial["name"]);
-									
-									while($stmt->fetch()) : ?>
-										<option value="<?php echo $tutorial["id"] ?>"><?php echo $tutorial["name"] ?></option>
-									<?php endwhile;
-									
-									$stmt->close();
-								?>
-                            </select>
-                        </td>
-					</tr>
 					<tr>
 						<td class="title">Geburtsdatum</td>
 						<td><input name="birthday" type="text" form="data_form" /></td>
@@ -136,10 +112,6 @@
 						<td class="title">Passwort</td>
 						<td><input name="password" type="password" form="data_form" /></td>
 					</tr>
-                    <tr>
-						<td class="title">Lehrer</td>
-						<td><input name="teacher" type="checkbox" form="data_form" /></td>
-					</tr>
 					<tr>
 						<td class="title">Administrator</td>
 						<td><input name="admin" type="checkbox" form="data_form" /></td>
@@ -149,7 +121,7 @@
 						
 			<div class="buttons">
 				<input type="submit" value="Erstellen" form="data_form" />
-				<a class="button" href="users.php">Zurück</a>
+				<a class="button" href="users.php?group=teachers">Zurück</a>
 			</div>
 
 		</div>	
