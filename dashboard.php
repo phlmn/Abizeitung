@@ -311,7 +311,13 @@
 			
 			$(document).ready(function(){
 				change_bg_img('#photo-enrollment', '<?php echo $enrollment; ?>');
+				<?php if($enrollment): ?>
+				$('#photo-enrollment .upload a').addClass("alternate");
+				<?php endif; ?>
 				change_bg_img('#photo-current', '<?php echo $current; ?>');
+				<?php if($current): ?>
+				$('#photo-current .upload a').addClass("alternate");
+				<?php endif; ?>
 				$("div.common *").tooltip();
 				$("select").fancySelect();
 			});

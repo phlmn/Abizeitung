@@ -102,6 +102,7 @@ function uploadImage(user, categoryName, idForm, idState, idPhoto) {
 				default:
 					$(idState).html('<span class="icon-ok-circled"></span><br />Hochladen erfolgreich');
 					change_bg_img(idPhoto, data);
+					$(idState).parent().addClass("alternate");
 			}
 		},
 		error: function(a,b) {
