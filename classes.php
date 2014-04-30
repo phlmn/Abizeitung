@@ -162,9 +162,7 @@ if(isset($_GET["action"])) {
 		
 		$stmt->close();
 		
-		echo $_POST["user"] . "     " . $_POST["group"];
 		if(!$exists) {
-			echo "create";
 			$stmt = $mysqli->prepare("
 				INSERT INTO students_classes (student, class)
 				SELECT students.id, ?
@@ -178,6 +176,28 @@ if(isset($_GET["action"])) {
 			
 			$stmt->close();	
 		}		
+		db_close();
+		die;
+	}
+	else if($_GET["action"] == "removeFromGroup") {
+		global $mysqli;
+		
+		$exists = false;
+		
+		$stmt = $mysqli->prepare("
+			DELETE
+			FROM students_classes
+			WHERE
+				(SELECT students.id FROM students
+				LEFT JOIN users ON students.uid = users.id
+				WHERE users.id = ?)
+			AND students_classes.class = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("ii", $_POST["user"], $_POST["group"]);
+		$stmt->execute();
+				
 		db_close();
 		die;
 	}
@@ -274,6 +294,15 @@ if(isset($_GET["class"])) {
 				classes.setAddHandler(function(actions) {
 					actions.forEach(function(e) {
 						$.post("classes.php?action=addToGroup", {
+							group: e.group,
+							user: e.user	
+						});
+					});
+				});
+				
+				classes.setRemoveHandler(function(actions) {
+					actions.forEach(function(e) {
+						$.post("classes.php?action=removeFromGroup", {
 							group: e.group,
 							user: e.user	
 						});
