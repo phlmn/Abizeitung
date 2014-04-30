@@ -454,8 +454,9 @@
 							echo "<li>Überprüfen sie den <strong>Host</strong>, den <strong>Nutzer</strong> und das <strong>Passwort</strong></li>";
 							break;
 						case "exists":
-							echo "<li>Error: Already installed</li>";
-							echo "<li>Die config Datei existiert bereits</li>";
+							header("Location: ./");
+							
+							die;
 							break;
 					}
 				?>
