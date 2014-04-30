@@ -163,6 +163,51 @@
 				</table>
 <?php
 		}
+		
+		public static function display_unlock_code() {
+			global $mysqli;
+		?>
+        		<table class="table table-striped code">
+					<thead>
+						<th>Vorname</th>
+						<th>Nachname</th>
+						<th>Aktivierungscode</th>
+						<th>Tutorium</th>
+					</thead>
+                    <tbody>
+        <?php
+			
+			$stmt = $mysqli->prepare("
+				SELECT users.prename, users.lastname, users.unlock_key, tutorials.name
+				FROM users
+				LEFT JOIN students ON users.id = students.uid
+				LEFT JOIN tutorials ON students.tutorial = tutorials.id
+				WHERE users.activated = 0
+				ORDER BY students.tutorial ASC, users.lastname ASC
+			");
+			
+			$stmt->execute();
+			
+			$stmt->bind_result($row["prename"], $row["lastname"], $row["key"], $row["tutorial"]);
+			
+				while($stmt->fetch()):
+			?>
+            			<tr>
+                        	<td><?php echo $row["prename"] ?></td>
+                            <td><?php echo $row["lastname"] ?></td>
+                            <td><input class="key" type="text" value="<?php echo $row["key"] ?>" onclick="this.select()" readonly="readonly"/></td>
+                            <td><?php echo $row["tutorial"] ?></td>
+                        </tr>
+            <?php
+				endwhile;
+				
+			$stmt->close();
+			
+			?>
+					</tbody>
+                </table>
+            <?php
+		}
 	}
 
 ?>

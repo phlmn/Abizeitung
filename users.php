@@ -37,6 +37,7 @@
                 	<li<?php if($group == "students"): 	?> class="active"<?php endif; ?>><a href="users.php?group=students">Schüler</a></li>
                     <li<?php if($group == "teachers"): 	?> class="active"<?php endif; ?>><a href="users.php?group=teachers">Lehrer</a></li>
                     <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Status</a></li>
+                    <li<?php if($group == "code"): 		?> class="active"<?php endif; ?>><a href="users.php?group=code">Aktivierungscode</a></li>
                 </ul>
                 <?php 
 					switch($group) {
@@ -46,13 +47,18 @@
 						case "state":
 							Users::display_state();
 							break;
+						case "code":
+							Users::display_unlock_code();
+							break;
 						default:
 							Users::display_students();
 					}
 				?>
 			</div>
             
+            <?php if($group == "students") : ?>
 			<a class="link" href="csv-import.php">Aus *.csv importieren</a>
+            <?php endif; ?>
             	
 			<div class="buttons">
 				<a class="button" href="add-user.php"><span class="icon-plus-circled"></span> Nutzer erstellen</a>
