@@ -92,10 +92,10 @@
 			while(func_num_args() > $i + 1) {
 				
 				if(strpos(func_get_arg($i + 1), "NULL") !== false) {
-					$where .= mysql_real_escape_string(func_get_arg($i++)) . " IS " . mysql_real_escape_string(func_get_arg($i++)) . " ";
+					$where .= $mysqli->real_escape_string(func_get_arg($i++)) . " IS " . $mysqli->real_escape_string(func_get_arg($i++)) . " ";
 				}
 				else {
-					$where .= mysql_real_escape_string(func_get_arg($i++)) . " = " . mysql_real_escape_string(func_get_arg($i++)) . " ";
+					$where .= $mysqli->real_escape_string(func_get_arg($i++)) . " = " . $mysqli->real_escape_string(func_get_arg($i++)) . " ";
 				}
 			}
 		}
