@@ -192,20 +192,30 @@
 					<div class="col-sm-4">
 						<div id="photo-enrollment" class="photo" title="Einschulungsfoto" style="background-image: url('<?php echo $enrollment; ?>');">
                         	<div class="upload">
-                            	<a href="./<?php echo $enrollment; ?>" target="_blank">
+                            <?php if($enrollment): ?>
+                            	<a class="alternate" href="./<?php echo $enrollment; ?>" target="_blank">
                                 	<span class="icon-download"></span><br />
                                     Bild Downloaden
                                 </a>
+                            <?php else: ?>
+                            	Es ist noch kein<br />
+                                Bild vorhanden.
+                            <?php endif;?>
 		                    </div>
 						</div>
 					</div>
 					<div class="col-sm-4">
 		                <div id="photo-current" class="photo" title="Aktuelles Foto" style="background-image: url('<?php echo $current; ?>');">
 		                	<div class="upload">
-                            	<a href="./<?php echo $enrollment; ?>" target="_blank">
+                            <?php if($current): ?>
+                            	<a class="alternate" href="./<?php echo $current; ?>" target="_blank">
                                 	<span class="icon-download"></span><br />
                                     Bild Downloaden
                                 </a>
+                            <?php else: ?>
+                            	Es ist noch kein<br />
+                                Bild vorhanden.
+                            <?php endif;?>
 		                    </div>
 		                </div>
 					</div>
