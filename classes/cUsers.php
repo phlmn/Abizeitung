@@ -124,13 +124,13 @@
 						
 						$count["images"] 	= db_count("categories");
 						$count["questions"] = db_count("questions", "accepted", "1");
-						$count["surveys"] 	= db_count("surveys", "accepted", "1");
+						$count["surveys"] 	= db_count("surveys", "accepted", "1", "AND m", "! 0") + db_count("surveys", "accepted", "1", "AND w", "! 0");
 						
 						while($stmt->fetch()): 
 						
 							$row["images"] 		= db_count("images", "uid", $row["id"]);
 							$row["questions"] 	= db_count("users_questions", "user", $row["id"]);
-							$row["surveys"] 	= db_count("users_surveys", "user", $row["id"]);
+							$row["surveys"] 	= db_count("users_surveys", "user", $row["id"], "AND m ", "! 0") + db_count("users_surveys", "user", $row["id"], "AND w ", "! 0");
 							
 							$missing = (
 								$row["birthday"] && 

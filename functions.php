@@ -90,12 +90,16 @@
 			$i = 1;
 			
 			while(func_num_args() > $i + 1) {
-				
 				if(strpos(func_get_arg($i + 1), "NULL") !== false) {
 					$where .= $mysqli->real_escape_string(func_get_arg($i++)) . " IS " . $mysqli->real_escape_string(func_get_arg($i++)) . " ";
 				}
 				else {
-					$where .= $mysqli->real_escape_string(func_get_arg($i++)) . " = " . $mysqli->real_escape_string(func_get_arg($i++)) . " ";
+					if(strpos(func_get_arg($i + 1), "!") !== false) {
+						$where .= $mysqli->real_escape_string(func_get_arg($i++)) . " <> " . $mysqli->real_escape_string(str_replace("!", "", func_get_arg($i++))) . " ";
+					}
+					else {
+						$where .= $mysqli->real_escape_string(func_get_arg($i++)) . " = " . $mysqli->real_escape_string(func_get_arg($i++)) . " ";
+					}
 				}
 			}
 		}
