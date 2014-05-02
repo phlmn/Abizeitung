@@ -30,7 +30,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Abizeitung - Login</title>
+		<title>Abizeitung - MES 2014</title>
 		<?php head(); ?>
 	</head>
     <script type="text/javascript">
