@@ -14,8 +14,8 @@
 	</div>
 </div>
 
-<div id="admin-nav">
 <?php if($data["admin"] == 1): ?>
+<div id="admin-nav">
 	<h2>Administration</h2>
 	<ul>
 		<li><a href="users.php">Nutzer</a></li>
@@ -25,5 +25,5 @@
 		<li><a href="surveys.php">Umfragen</a></li>
 		<li><a href="results.php">Auswertung</a></li>
 	</ul>
-<?php endif; ?>
 </div>
+<?php endif; ?>
