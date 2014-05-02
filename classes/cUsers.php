@@ -211,6 +211,52 @@
                 </table>
             <?php
 		}
+		
+		public static function display_errors() {
+			global $mysqli;
+		?>
+        		<table class="table table-striped code">
+					<thead>
+						<th>Seite</th>
+						<th>Code</th>
+						<th>Funktion</th>
+                        <th>Nutzer</th>
+                        <th>Nachricht</th>
+                        <th>Datum</th>
+					</thead>
+                    <tbody>
+        <?php
+			$stmt = $mysqli->prepare("
+				SELECT error_report.page, error_report.code, error_report.function, error_report.user, error_report.message, error_report.time, users.prename, users.lastname
+				FROM error_report
+				LEFT JOIN users ON error_report.user = users.id
+			");
+			
+			$stmt->execute();
+			
+			$stmt->bind_result($report["page"], $report["code"], $report["function"], $report["user"], $report["message"], $report["time"], $report["prename"], $report["lastname"]);
+			$stmt->store_result();
+			
+			while($stmt->fetch()):
+				$user = "-";
+				if($report["user"]) {
+					$user = $report["prename"] . " " . $report["lastname"];
+				}
+		?>
+        				<tr>
+                        	<td><a href="<?php echo $report["page"]; ?>" target="_blank"><?php echo $report["page"]; ?></a></td>
+                            <td><?php echo $report["code"]; ?></td>
+                            <td><?php echo $report["function"]; ?></td>
+                            <td><a href="./edit-user.php?user=<?php echo $report["user"]; ?>" target="_blank"><?php echo $user ?></a></td>
+                            <td><?php echo $report["message"]; ?></td>
+                            <td><?php echo $report["time"]; ?></td>
+                        </tr>
+        <?php
+			endwhile;
+			
+			$stmt->free_result();
+			$stmt->close();
+		}
 	}
 
 ?>

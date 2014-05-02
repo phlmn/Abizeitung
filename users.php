@@ -41,6 +41,7 @@
                     <li<?php if($group == "teachers"): 	?> class="active"<?php endif; ?>><a href="users.php?group=teachers">Lehrer</a></li>
                     <li<?php if($group == "state"): 	?> class="active"<?php endif; ?>><a href="users.php?group=state">Status</a></li>
                     <li<?php if($group == "code"): 		?> class="active"<?php endif; ?>><a href="users.php?group=code">Aktivierungscode</a></li>
+                    <li<?php if($group == "errors"): 	?> class="active"<?php endif; ?>><a href="users.php?group=errors">Probleme</a></li>
                 </ul>
                 <?php 
 					switch($group) {
@@ -52,6 +53,9 @@
 							break;
 						case "code":
 							Users::display_unlock_code();
+							break;
+						case "errors":
+							Users::display_errors();
 							break;
 						default:
 							Users::display_students();
