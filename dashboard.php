@@ -76,8 +76,8 @@
 		
 		// insert data into database
 		Dashboard::insert_survey($suggest);
-	} else if(isset($_GET["change"])) {
-		error_report($_POST["category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
+	} else if(isset($_GET["error-report"])) {
+		error_report($_POST["error-category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
 		
 		db_close();
 			

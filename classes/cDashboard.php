@@ -324,7 +324,7 @@
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
-        <form method="post" action="dashboard.php?change">
+        <form method="post" action="dashboard.php?error-report">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4>Fehler melden</h4>
@@ -334,8 +334,8 @@
             </div>
             <div class="modal-body">
             	<h4>Kategorie</h4>
-                <input type="hidden" id="category" name="category" />
-                <div class="category">
+                <input type="hidden" id="error-category" name="error-category" />
+                <div class="error-category">
                 	<ul>
                     	<li value="1">
                         	Allgemeines
@@ -374,9 +374,9 @@
 </div>
 <script type="text/javascript">
 	$(function() {
-		$(".category").miller({
+		$(".error-category").miller({
 			returnValue: true,
-			inputId: "#category"
+			inputId: "#error-category"
 		});
 	});
 </script>
