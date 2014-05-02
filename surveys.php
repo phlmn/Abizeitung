@@ -164,7 +164,7 @@
     
     <body>
 		<?php require("nav-bar.php") ?>
-		<div id="surveys-management" class="container">
+		<div id="surveys-management" class="container-fluid admin-wrapper">
         	<h1>Umfragenverwaltung</h1>
         	<div class="box surveys">
 	            <h2>Umfragen</h2>

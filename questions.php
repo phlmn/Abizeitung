@@ -151,7 +151,7 @@
     
     <body>
 		<?php require("nav-bar.php") ?>
-		<div id="questions-management" class="container">
+		<div id="questions-management" class="container-fluid admin-wrapper">
         	<h1>Fragenverwaltung</h1>
         	<div class="box questions">
 	            <h2>Fragen</h2>

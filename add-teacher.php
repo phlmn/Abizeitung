@@ -56,7 +56,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management" class="container">
+		<div id="user-management" class="container-fluid admin-wrapper">
         	<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
             <?php else: if(isset($_GET["error"])): ?>

@@ -29,7 +29,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="results" class="container">
+		<div id="results" class="container-fluid admin-wrapper">
 			<h1>Auswertung</h1>
             <div class="box">
             	<h4>Geschlecht</h4>

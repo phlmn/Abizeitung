@@ -385,7 +385,10 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="dashboard" class="container">
+		<?php if($data["admin"] == 1): ?>
+		<div class="admin-wrapper">
+		<?php endif; ?>
+			<div id="dashboard" class="container">
 			<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
             <?php else: if(isset($_GET["failed"])): ?>
@@ -411,13 +414,13 @@
 			<?php endswitch; ?>
                 </div>
             <?php endif; endif; ?>
-			<div class="intro">
+				<div class="intro">
 				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
 				<p class="intro">Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.</p>
 				<p class="intro">Bitte achte auf Rechtschreibung und <b>vergiss das Speichern nicht</b> ;)</p>
 			</div>
-			<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
-			<div class="common box">
+				<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
+				<div class="common box">
 				<h2>Allgemeines</h2>
 				<div class="row">
 					<div class="col-sm-4 data">
@@ -492,8 +495,8 @@
 					</div>
 				</div>
 			</div>
-            
-            <div class="nicknames box">
+	            
+	            <div class="nicknames box">
             	<h2>Vorgeschlagene Spitznamen</h2>
                 <div class="nickname-list row">
                 <?php if(empty($nicknames)) : ?>
@@ -557,8 +560,8 @@
                 <?php endif; ?>
                 </div>
             </div>
-			
-			<div class="questions box">
+				
+				<div class="questions box">
 				<h2>Fragen</h2>
 				<div class="question-list row">
 				<?php foreach($questions as $key => $question): 
@@ -585,8 +588,8 @@
 				<?php endforeach; ?>
                 </div>
 			</div>
-			
-			<div class="surveys box">
+				
+				<div class="surveys box">
 				<h2>Umfragen</h2>
 				<div class="survey-list">
 				<?php foreach($surveys as $key => $survey): ?>
@@ -642,16 +645,18 @@
 				<?php endforeach; ?>
 				</div>
 			</div>
-			
-			<div class="buttons">
+				
+				<div class="buttons">
 				<input type="submit" value="Speichern" form="data_form" />
 				<input type="reset" value="Änderungen verwerfen" form="data_form" />
 			</div>
+			</div>
+		<?php if($data["admin"] == 1): ?>
+		</div>
+		<?php endif; ?>
             
-            <div class="modal fade" id="dashboardModal" tabindex="-1" role="dialog" aria-hidden="true">
-            </div>
-
-		</div>	
+		<div class="modal fade" id="dashboardModal" tabindex="-1" role="dialog" aria-hidden="true">
+		</div>
 	</body>
 </html>
 

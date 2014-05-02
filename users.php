@@ -44,7 +44,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management" class="container">
+		<div id="user-management" class="container-fluid admin-wrapper">
 			<h1>Nutzerverwaltung</h1>
 			<div class="users box">
 				<h2>Nutzer</h2>

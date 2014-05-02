@@ -3,14 +3,6 @@
 		<div class="left">
 			<ul>
 				<li><a href="dashboard.php" class="title">Abizeitung</a></li>
-				<?php if($data["admin"] == 1): ?>
-				<li><a href="users.php">Nutzer</a></li>
-                <li><a href="tutorial.php">Tutorien</a></li>
-				<li><a href="classes.php">Kurse</a></li>
-				<li><a href="questions.php">Fragen</a></li>
-				<li><a href="surveys.php">Umfragen</a></li>
-				<li><a href="results.php">Auswertung</a></li>
-				<?php endif; ?>
 			</ul>
 		</div>
 		<div class="right">
@@ -20,4 +12,18 @@
 			</ul>
 		</div>
 	</div>
+</div>
+
+<div id="admin-nav">
+<?php if($data["admin"] == 1): ?>
+	<h2>Administration</h2>
+	<ul>
+		<li><a href="users.php">Nutzer</a></li>
+	    <li><a href="tutorial.php">Tutorien</a></li>
+		<li><a href="classes.php">Kurse</a></li>
+		<li><a href="questions.php">Fragen</a></li>
+		<li><a href="surveys.php">Umfragen</a></li>
+		<li><a href="results.php">Auswertung</a></li>
+	</ul>
+<?php endif; ?>
 </div>

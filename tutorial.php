@@ -286,7 +286,7 @@ if(isset($_GET["tutorial"])) {
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="tutorial-management" class="container-fluid">
+		<div id="tutorial-management" class="container-fluid admin-wrapper">
 			<h1>Tutorienverwaltung</h1>
 			<form id="data_form" name="data" action="save.php"></form>
 			<?php
@@ -303,7 +303,7 @@ if(isset($_GET["tutorial"])) {
 				$stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["teacher"]["id"], $tutorial["teacher"]["userid"], $tutorial["teacher"]["lastname"]);
 			?>
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-9">
 					<div class="groups">
 						<div class="addGroup" onclick="void(tutorials.editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
@@ -317,7 +317,7 @@ if(isset($_GET["tutorial"])) {
 					</div>
 				</div>
 				<div class="col-sm-4">
-					<div class="sidebar affix col-sm-4">
+					<div class="sidebar affix col-sm-3">
 						<div class="head row">
 							<div class="col-sm-6">
 								<h3 class="title">Alle Nutzer</h3>

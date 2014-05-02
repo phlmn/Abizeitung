@@ -342,7 +342,7 @@ if(isset($_GET["class"])) {
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="class-management" class="container-fluid">
+		<div id="class-management" class="container-fluid admin-wrapper">
 			<h1>Kursverwaltung</h1>
 			<form id="data_form" name="data" action="save.php"></form>
 			<?php
@@ -363,7 +363,7 @@ if(isset($_GET["class"])) {
 				$stmt->bind_result($class["id"], $class["name"], $class["teacher"]["id"], $class["teacher"]["userid"], $class["teacher"]["lastname"]);
 			?>
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-9">
 					<div class="groups">					
 						<div class="addGroup" onclick="void(classes.editGroup(0))"></div>
 						<?php while($stmt->fetch()): ?>
@@ -377,7 +377,7 @@ if(isset($_GET["class"])) {
 					</div>
 				</div>
 				<div class="col-sm-4">
-					<div class="sidebar affix col-sm-4">
+					<div class="sidebar affix col-sm-3">
 						<div class="head row">
 							<div class="col-sm-6">
 								<h3 class="title">Alle Nutzer</h3>
