@@ -235,7 +235,7 @@
 			
 			db_close();
 			
-			//header("Location: ./dashboard.php?saved");
+			header("Location: ./dashboard.php?saved");
 			
 			die;
 		}
