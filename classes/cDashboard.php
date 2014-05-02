@@ -330,7 +330,7 @@
                 <h4>Fehler melden</h4>
             </div>
             <div class="modal-body">
-                <textarea name="text" placeholder="Verbesserung eingeben..."></textarea>
+                <textarea name="text" placeholder="Was ist los?"></textarea>
             </div>
             <div class="modal-body">
             	<h4>Kategorie</h4>
