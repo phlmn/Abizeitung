@@ -307,6 +307,7 @@
 					  `function` 	VARCHAR(100) NULL 		DEFAULT NULL,
 					  `user` 		INT(11) 	NULL 		DEFAULT NULL,
 					  `time` 		TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,
+					  `solved` 		TINYINT(1) 	NULL 		DEFAULT 0,
 					  PRIMARY KEY (`id`),
 					  
 					  INDEX `fk_error_report_users1_idx` (`user` ASC),
