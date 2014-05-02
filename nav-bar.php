@@ -15,7 +15,7 @@
 		</div>
 		<div class="right">
 			<ul>
-				<li><span>Angemeldet als <?php echo $data["prename"] ?> <?php echo $data["lastname"] ?>.</span></li>
+				<li class="hidden-xs"><span>Angemeldet als <?php echo $data["prename"] ?> <?php echo $data["lastname"] ?>.</span></li>
 				<li><a href="logout.php">Abmelden</a></li>
 			</ul>
 		</div>
