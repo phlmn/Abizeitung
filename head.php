@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta name="description" content="Hier kannst du deine Daten für die Abizeitung des Abiturjahrgangs 2014 der Max-Eyth-Schule Kassel angeben.">
 <meta name="viewport" content="width=device-width, maximum-scale=1">
 <script src="js/jquery.js" type="text/javascript"></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
