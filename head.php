@@ -6,7 +6,7 @@
 <link rel="stylesheet/less" href="less/style.less">
 <link rel="stylesheet" href="fontello/css/fontello.css">
 <!--[if IE 7]>
-<link rel="stylesheet" href="icons/css/fontello-ie7.css">
+<link rel="stylesheet" href="fontello/css/fontello-ie7.css">
 <![endif]-->
 <script src="js/jquery.js" type="text/javascript"></script>
 <script src="js/jquery-ui-1.10.4.min.js" type="text/javascript"></script>
