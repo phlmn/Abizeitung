@@ -12,6 +12,18 @@
 	
 	if(isset($_GET["group"])) {
 		$group = $_GET["group"];
+		if($group == "errors" && isset($_GET["action"]) && isset($_GET["id"])) {
+			if($_GET["action"] == "solved")
+				Users::error_solved($_GET["id"]);
+			if($_GET["action"] == "existing")
+				Users::error_still_existing($_GET["id"]);
+			
+			db_close();
+			
+			header("Location: ./users.php?group=errors");
+			
+			die;
+		}
 	}
 	else {
 		$group = "students";

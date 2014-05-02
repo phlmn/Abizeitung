@@ -774,7 +774,8 @@ td.edit a {
 		}	
 	}
 	
-	table.state {
+	table.state,
+	table.errors {
 		th,
 		td {
 			text-align: center;
@@ -786,8 +787,14 @@ td.edit a {
 					background: lighten(@color4, 25%);
 				}
 				
+				&.solved td,
 				td.existing {
 					background: lighten(@color3, 20%);
+				}
+				
+				td.edit a {
+					text-decoration: none;
+					border: none;
 				}
 			}
 			
@@ -796,6 +803,7 @@ td.edit a {
 					background: lighten(@color4, 20%);
 				}
 				
+				&.solved td,
 				td.existing {
 					background: lighten(@color3, 15%);
 				}
