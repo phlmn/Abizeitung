@@ -216,30 +216,6 @@
 			die;
 		}
 		
-		public static function insert_change($data) {
-			global $mysqli;
-			
-			$stmt = $mysqli->prepare("
-				INSERT INTO error_report (
-					code, message, function, page, user
-				) VALUES (
-					?, ?, 'dashboard.php', 'User Error Report', ?
-				)
-			");
-			
-			$stmt->bind_param("isi", $data["cat"], $data["text"], $data["id"]);
-			
-			$stmt->execute();
-			
-			$stmt->close();
-			
-			db_close();
-			
-			header("Location: ./dashboard.php?saved");
-			
-			die;
-		}
-		
 		public static function suggest_nickname($data) {
 			global $mysqli;
 ?>

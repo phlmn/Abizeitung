@@ -77,11 +77,13 @@
 		// insert data into database
 		Dashboard::insert_survey($suggest);
 	} else if(isset($_GET["change"])) {
-		$suggest["text"] 	= $_POST["text"];
-		$suggest["cat"] 	= $_POST["category"];
-		$suggest["id"] 		= $data["id"];
+		error_report($_POST["category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
 		
-		Dashboard::insert_change($suggest);
+		db_close();
+			
+		header("Location: ./dashboard.php?saved");
+		
+		die;
 	}
 		
 	if(isset($_GET["update"])) {
