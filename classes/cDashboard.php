@@ -320,7 +320,7 @@
 <?php
 		}
 		
-		public static function suggest_change() {
+		public static function suggest_error() {
 ?>
 <div class="modal-dialog">
     <div class="modal-content">

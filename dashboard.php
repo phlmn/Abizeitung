@@ -40,8 +40,8 @@
 			case "survey":
 				Dashboard::suggest_survey();
 				break;
-			case "change":
-				Dashboard::suggest_change();
+			case "error":
+				Dashboard::suggest_error();
 			default:
 		}
 		
@@ -451,7 +451,7 @@
 						</div>
                         
                         <div class="buttons">
-                            <a class="button" href="javascript:void(suggest('change'))"><span class="icon-plus-circled"></span> Hier stimmt etwas nicht</a>
+                            <a class="button" href="javascript:void(suggest('error'))"><span class="icon-plus-circled"></span> Hier stimmt etwas nicht</a>
                         </div>
 					</div>
 					
