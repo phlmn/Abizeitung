@@ -15,7 +15,8 @@ $.fn.miller = function(args) {
 
 	$(this).click(function(e) {
 		if(args.value) {
-			$(args.inputId).val($(e.target).attr(args.attribute));
+			if($(e.target).attr(args.attribute))
+				$(args.inputId).val($(e.target).attr(args.attribute));
 		}
 		
 		if(!$(e.target).is($(this).first())) {
