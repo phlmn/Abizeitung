@@ -145,14 +145,6 @@
 		public static function add_user($data) {
 			global $mysqli;
 			
-			// Überprüfen, ob Vor- und Nachname angegeben sind
-			// Falls mindestens einer leer ist, wird die Funktion verlassen
-			// Vor- und Nachname dienen zur eindeutigen identifikation des Nutzers
-			
-			if(empty($data["prename"]) || empty($data["lastname"])) {
-				return -1;
-			}
-			
 			// Überprüfen, ob Email oder Passwort leer sind
 			// Falls mindestens einer leer ist, kann sich der Nutzer nicht anmelden und wird deaktiviert
 			
