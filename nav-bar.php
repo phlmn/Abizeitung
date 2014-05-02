@@ -1,5 +1,5 @@
 <div id="nav-bar">
-	<div class="container inner">
+	<div class="container<?php if($data["admin"] == 1): ?>-fluid<?php endif; ?> inner">
 		<div class="left">
 			<ul>
 				<li><a href="dashboard.php" class="title">Abizeitung</a></li>
