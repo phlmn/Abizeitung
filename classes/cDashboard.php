@@ -375,7 +375,8 @@
 <script type="text/javascript">
 	$(function() {
 		$(".error-category").miller({
-			returnValue: true,
+			value: true,
+			attribute: "value",
 			inputId: "#error-category"
 		});
 	});

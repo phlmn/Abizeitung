@@ -4,21 +4,28 @@ function openImageSelector(id) {
 }
 
 $.fn.miller = function(args) {
+	if(!args.attribute)	
+		args.attribute = "value";
+	
 	$(args.inputId).val(
-		$(this).children().css({"display":"block", "marginLeft":"0"}).children().first().addClass("active").val()
+		$(this).children().css({"display":"block", "marginLeft":"0"}).children().first().addClass("active").attr(args.attribute)
 	);
 	
 	$(this).find("li ul").parent().addClass("parent");
 
 	$(this).click(function(e) {
-		$(args.inputId).val($(e.target).val());
+		if(args.value) {
+			$(args.inputId).val($(e.target).attr(args.attribute));
+		}
 		
 		if(!$(e.target).is($(this).first())) {
-			$(e.target).addClass("active").children().fadeIn(500);
+			$(e.target).addClass("active").children().fadeIn(500).find(".active").removeClass("active");
 			$(e.target).siblings().removeClass("active").find("ul").fadeOut(200);
 		}
 	});
 };
+
+
 
 
 
