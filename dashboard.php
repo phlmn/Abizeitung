@@ -451,7 +451,7 @@
 						</div>
                         
                         <div class="buttons">
-                            <a class="button" href="javascript:void(suggest('error'))"><span class="icon-plus-circled"></span> Hier stimmt etwas nicht</a>
+                            <a class="button" href="javascript:void(suggest('error'))">Hier stimmt etwas nicht...</a>
                         </div>
 					</div>
 					
