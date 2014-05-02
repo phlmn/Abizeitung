@@ -40,6 +40,8 @@
 			case "survey":
 				Dashboard::suggest_survey();
 				break;
+			case "change":
+				Dashboard::suggest_change();
 			default:
 		}
 		
@@ -74,6 +76,12 @@
 		
 		// insert data into database
 		Dashboard::insert_survey($suggest);
+	} else if(isset($_GET["change"])) {
+		$suggest["text"] 	= $_POST["text"];
+		$suggest["cat"] 	= $_POST["category"];
+		$suggest["id"] 		= $data["id"];
+		
+		Dashboard::insert_change($suggest);
 	}
 		
 	if(isset($_GET["update"])) {
@@ -318,6 +326,7 @@
 		<title>Abizeitung - Dashboard</title>
 		<?php head(); ?>
         <script src="js/dashboard.js" type="text/javascript"></script>
+        <?php Dashboard::script(); ?>
         <script type="text/javascript">
 			<?php 
 				$stmt = $mysqli->prepare("
@@ -356,13 +365,6 @@
 				
 				$stmt->close();
 			?>
-			
-			function suggestNickname() {
-				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?suggest=nickname", function() {
-					$("#dashboardModal select").fancySelect();
-				});		
-			}
 			
 			$(document).ready(function(){
 				change_bg_img('#photo-enrollment', '<?php echo $enrollment; ?>');
@@ -445,6 +447,10 @@
 							<div class="col-xs-5 title">Tutor</div>
 							<div class="col-xs-7"><?php if(isset($data["tutorial"]["tutor"]["lastname"])) echo $data["tutorial"]["tutor"]["lastname"] ?></div>
 						</div>
+                        
+                        <div class="buttons">
+                            <a class="button" href="javascript:void(suggest('change'))"><span class="icon-plus-circled"></span> Hier stimmt etwas nicht</a>
+                        </div>
 					</div>
 					
 					<div class="col-sm-4">
@@ -513,7 +519,7 @@
                 <?php endif; ?>
                     
                     <div class="buttons">
-						<a class="button" href="javascript:void(suggestNickname())"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
+						<a class="button" href="javascript:void(suggest('nickname'))"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
 					</div>
                     
                 </div>

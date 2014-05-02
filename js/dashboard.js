@@ -3,6 +3,23 @@ function openImageSelector(id) {
 	$(id).click();
 }
 
+$.fn.miller = function(args) {
+	$(args.inputId).val(
+		$(this).children().css({"display":"block", "marginLeft":"0"}).children().first().addClass("active").val()
+	);
+
+	$(this).click(function(e) {
+		$(args.inputId).val($(e.target).val());
+		
+		if(!$(e.target).is($(this).first())) {
+			$(e.target).addClass("active").children().fadeIn(500);
+			$(e.target).siblings().removeClass("active").find("ul").fadeOut(200);
+		}
+	});
+};
+
+
+
 function uploadImage(user, categoryName, idForm, idState, idPhoto) {
 	var formData = new FormData($(idForm)[0]);
 	$.ajax({

@@ -544,6 +544,14 @@ div.fancy-select {
 				display: none;
 			}
 		}
+		
+		.buttons {
+			margin: 0 0 10px;
+			
+			.button {
+				margin-top: 10px;
+			}
+		}
 	}
 	
 	div.classes {
@@ -673,6 +681,50 @@ div.fancy-select {
 	div.buttons {
 		margin-top: 60px;
 	}
+
+	.category {
+		position: relative;
+		margin: 20px 0;
+		width: 100%;
+		
+	}
+	
+	.category,
+	.category ul {
+		height: 220px;
+	}
+	
+	.category ul {
+		position: absolute;
+		top: 0;
+		width: 275px;
+		margin-left: 265px;
+		padding-left: 0;
+		list-style: none;
+		display: none;
+	}
+	
+	.category ul:hover {
+	}
+	
+	.category ul li {
+		width: auto;
+		padding: 10px;
+		border-bottom: 1px solid #333;
+		cursor: pointer;
+	}
+	
+	.category ul li:hover,
+	.category ul li.active {
+		background: lighten(@color3, 5%);
+		color: #FFF;
+	}
+	
+	.category ul li:hover ul,
+	.category ul li.active ul {
+		color: #333;
+	}
+
 }
 
 /* ===== Usermanagement ===== */

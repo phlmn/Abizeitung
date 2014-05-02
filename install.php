@@ -303,7 +303,7 @@
 					  `id` 			INT(11) 	NOT NULL 	AUTO_INCREMENT,
 					  `code` 		INT(11) 	NULL 		DEFAULT NULL,
 					  `message` 	VARCHAR(255) NULL 		DEFAULT NULL,
-					  `page`		VARCHAR(45) NOT NULL	
+					  `page`		VARCHAR(45) NOT NULL,	
 					  `function` 	VARCHAR(100) NULL 		DEFAULT NULL,
 					  `user` 		INT(11) 	NULL 		DEFAULT NULL,
 					  `time` 		TIMESTAMP 	NOT NULL 	DEFAULT CURRENT_TIMESTAMP,

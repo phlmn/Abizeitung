@@ -180,7 +180,7 @@
 					?, ?, 0
 				)");
 				
-			$stmt->bind_param("si", $mysqli->real_escape_string($data["question"]), intval($data["id"]));
+			$stmt->bind_param("si", $data["question"], intval($data["id"]));
 			
 			$stmt->execute();
 			
@@ -203,7 +203,7 @@
 					?, ?, ?, ?, 0
 				)");
 				
-			$stmt->bind_param("siii", $mysqli->real_escape_string($data["survey"]), intval(isset($data["male"])), intval(isset($data["female"])), intval($data["id"]));
+			$stmt->bind_param("siii", $data["survey"], intval(isset($data["male"])), intval(isset($data["female"])), intval($data["id"]));
 			
 			$stmt->execute();
 			
@@ -212,6 +212,30 @@
 			db_close();
 			
 			header("Location: ./dashboard.php?saved");
+			
+			die;
+		}
+		
+		public static function insert_change($data) {
+			global $mysqli;
+			
+			$stmt = $mysqli->prepare("
+				INSERT INTO error_report (
+					code, message, function, page, user
+				) VALUES (
+					?, ?, 'dashboard.php', 'User Error Report', ?
+				)
+			");
+			
+			$stmt->bind_param("isi", $data["cat"], $data["text"], $data["id"]);
+			
+			$stmt->execute();
+			
+			$stmt->close();
+			
+			db_close();
+			
+			//header("Location: ./dashboard.php?saved");
 			
 			die;
 		}
@@ -266,7 +290,6 @@
 		}
 		
 		public static function suggest_question() {
-			global $mysqli;
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -289,7 +312,6 @@
 		}
 		
 		public static function suggest_survey() {
-			global $mysqli;
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -319,6 +341,69 @@
         </form>
     </div>
 </div>
+<?php
+		}
+		
+		public static function suggest_change() {
+?>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form method="post" action="dashboard.php?change">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Fehler melden</h4>
+            </div>
+            <div class="modal-body">
+                <textarea name="text" placeholder="Verbesserung eingeben..."></textarea>
+            </div>
+            <div class="modal-body">
+            	<h4>Kategorie</h4>
+                <input type="hidden" id="category" name="category" />
+                <div class="category">
+                	<ul>
+                    	<li value="1">
+                        	Allgemeines
+                            <ul>
+                            	<li value="11">Vorname</li>
+                                <li value="12">Nachname</li>
+                                <li value="13">Geschlecht</li>
+                                <li value="14">Tutorium</li>
+                                <li value="15">Tutor</li>
+                                <li value="16">Bilder</li>
+                            </ul>
+                        </li>
+                        <li value="2">
+                        	Spitznamen
+                            <ul>
+                            	<li value="21">Spitzname vorschlagen</li>
+                            	<li value="22">Vorgeschlagene Spitznamen</li>
+                                <li value="23">Versendete Spitznamen</li>
+                            </ul>
+                        </li>
+                        <li value="3">
+                        	Fragen
+                        </li>
+                        <li value="4">
+                        	Umfragen
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                <button type="submit" class="btn btn-default">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$(".category").miller({
+			returnValue: true,
+			inputId: "#category"
+		});
+	});
+</script>
 <?php
 		}
 		
@@ -363,6 +448,18 @@
 			
 			return false;
 		}
+		
+		public static function script($nojstag = NULL) {
+			if(!$nojstag): ?><script type="text/javascript"><?php endif; ?>
+            function suggest(name) {
+				$('#dashboardModal').modal();
+				$('#dashboardModal').load("dashboard.php?suggest=" + name, function() {
+					$("#dashboardModal select").fancySelect();
+				});
+			}
+		<?php if(!$nojstag): ?></script><?php endif; ?>
+<?php
+		}
 	}
 	
 	/*
@@ -372,27 +469,12 @@
 		### JavaScript modal
 		###
 	
+		<?php Dashboard::script(); ?>
+		
+		-- or --
+		
 		<script type="text/javascript">
-			function suggestNickname() {
-				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?suggest=nickname", function() {
-					$("#dashboardModal select").fancySelect();
-				});		
-			}
-			
-			function suggestQuestion() {
-				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?suggest=question", function() {
-					$("#dashboardModal select").fancySelect();
-				});
-			}
-			
-			function suggestSurvey() {
-				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?suggest=survey", function() {
-					$("#dashboardModal select").fancySelect();
-				});
-			}
+			<?php Dashboard::script(true); ?>
 		</script>
 		
 		###
@@ -400,15 +482,15 @@
 		###
 		
 		<div class="buttons">
-			<a class="button" href="javascript:void(suggestNickname())"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
+			<a class="button" href="javascript:void(suggest('nickname'))"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
 		</div>
 		
 		<div class="buttons">
-			<a class="button" href="javascript:void(suggestQuestion())"><span class="icon-plus-circled"></span> Frage vorschlagen</a>
+			<a class="button" href="javascript:void(suggest('question'))"><span class="icon-plus-circled"></span> Frage vorschlagen</a>
 		</div>
 		
 		<div class="buttons">
-			<a class="button" href="javascript:void(suggestSurvey())"><span class="icon-plus-circled"></span>Frage vorschlagen</a>
+			<a class="button" href="javascript:void(suggest('survey'))"><span class="icon-plus-circled"></span>Frage vorschlagen</a>
 		</div>
 	*/
 	
