@@ -7,6 +7,8 @@ $.fn.miller = function(args) {
 	$(args.inputId).val(
 		$(this).children().css({"display":"block", "marginLeft":"0"}).children().first().addClass("active").val()
 	);
+	
+	$(this).find("li ul").parent().addClass("parent");
 
 	$(this).click(function(e) {
 		$(args.inputId).val($(e.target).val());
