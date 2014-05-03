@@ -362,35 +362,29 @@ if(isset($_GET["class"])) {
 				$stmt->execute();
 				$stmt->bind_result($class["id"], $class["name"], $class["teacher"]["id"], $class["teacher"]["userid"], $class["teacher"]["lastname"]);
 			?>
-			<div class="row">
-				<div class="col-sm-9">
-					<div class="groups">					
-						<div class="addGroup" onclick="void(classes.editGroup(0))"></div>
-						<?php while($stmt->fetch()): ?>
-						<div data-classid="<?php echo $class["id"] ?>" onclick="classes.showGroup(<?php echo $class["id"] ?>)">
-							<div class="info">
-								<div class="name"><?php echo $class["name"] ?></div>
-								<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
-							</div>
-						</div>
-						<?php endwhile; ?>
+			<div class="groups">					
+				<div class="addGroup" onclick="void(classes.editGroup(0))"></div>
+				<?php while($stmt->fetch()): ?>
+				<div data-classid="<?php echo $class["id"] ?>" onclick="classes.showGroup(<?php echo $class["id"] ?>)">
+					<div class="info">
+						<div class="name"><?php echo $class["name"] ?></div>
+						<div class="teacher"><?php echo $class["teacher"]["lastname"] ?></div>
 					</div>
 				</div>
-				<div class="col-sm-4">
-					<div class="sidebar affix col-sm-3">
-						<div class="head row">
-							<div class="col-sm-6">
-								<h3 class="title">Alle Nutzer</h3>
-							</div>
-							<div class="col-sm-6">
-								<input class="form-control filter" onkeyup="classes.filter()" type="search" placeholder="Suchen..." />
-							</div>
-						</div>
-						<div class="users">
-							<ul>
-							</ul>
-						</div>
+				<?php endwhile; ?>
+			</div>
+			<div class="sidebar affix">
+				<div class="head clearfix">
+					<div class="col-sm-6">
+						<h3 class="title">Alle Nutzer</h3>
 					</div>
+					<div class="col-sm-6">
+						<input class="form-control filter" onkeyup="classes.filter()" type="search" placeholder="Suchen..." />
+					</div>
+				</div>
+				<div class="users">
+					<ul>
+					</ul>
 				</div>
 			</div>
 			<?php $stmt->close(); ?>

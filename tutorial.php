@@ -302,34 +302,29 @@ if(isset($_GET["tutorial"])) {
 				$stmt->execute();
 				$stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["teacher"]["id"], $tutorial["teacher"]["userid"], $tutorial["teacher"]["lastname"]);
 			?>
-			<div class="row">
-				<div class="col-sm-9">
-					<div class="groups">
-						<div class="addGroup" onclick="void(tutorials.editGroup(0))"></div>
-						<?php while($stmt->fetch()): ?>
-						<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="void(tutorials.showGroup(<?php echo $tutorial["id"] ?>))">
-							<div class="info">
-								<div class="name"><?php echo $tutorial["name"] ?></div>
-								<div class="teacher"><?php echo $tutorial["teacher"]["lastname"] ?></div>
-							</div>
+				<div class="groups">
+					<div class="addGroup" onclick="void(tutorials.editGroup(0))"></div>
+					<?php while($stmt->fetch()): ?>
+					<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="void(tutorials.showGroup(<?php echo $tutorial["id"] ?>))">
+						<div class="info">
+							<div class="name"><?php echo $tutorial["name"] ?></div>
+							<div class="teacher"><?php echo $tutorial["teacher"]["lastname"] ?></div>
 						</div>
-						<?php endwhile; ?>
 					</div>
+					<?php endwhile; ?>
 				</div>
-				<div class="col-sm-4">
-					<div class="sidebar affix col-sm-3">
-						<div class="head row">
-							<div class="col-sm-6">
-								<h3 class="title">Alle Nutzer</h3>
-							</div>
-							<div class="col-sm-6">
-								<input class="form-control filter" onkeyup="tutorials.filter()" type="search" placeholder="Suchen..." />
-							</div>
+				<div class="sidebar affix">
+					<div class="head clearfix">
+						<div class="col-sm-6">
+							<h3 class="title">Alle Nutzer</h3>
 						</div>
-						<div class="users">
-							<ul>
-							</ul>
+						<div class="col-sm-6">
+							<input class="form-control filter" onkeyup="tutorials.filter()" type="search" placeholder="Suchen..." />
 						</div>
+					</div>
+					<div class="users">
+						<ul>
+						</ul>
 					</div>
 				</div>
 			</div>
