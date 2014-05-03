@@ -18,7 +18,16 @@
 <div id="admin-nav">
 	<h2>Administration</h2>
 	<ul>
-		<li><a href="users.php">Nutzer</a></li>
+		<li>
+        	<a href="users.php">Nutzer</a>
+        	<ul>
+        		<li><a href="users.php?group=students">Schüler</a></li>
+        		<li><a href="users.php?group=teachers">Lehrer</a></li>
+        		<li><a href="users.php?group=state">Status</a></li>
+        		<li><a href="users.php?group=code">Aktivierungscode</a></li>
+        		<li><a href="users.php?group=errors">Probleme</a></li>
+        	</ul>
+        </li>
 	    <li><a href="tutorial.php">Tutorien</a></li>
 		<li><a href="classes.php">Kurse</a></li>
 		<li><a href="questions.php">Fragen</a></li>

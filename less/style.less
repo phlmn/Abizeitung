@@ -352,14 +352,46 @@ div.fancy-select {
 		list-style: none;
 		padding: 0;
 		
-		li a {
-			display: block;
-			padding: 10px 18px;
-			color: #fff;
-			text-decoration: none;
+		li {
+			position: relative;
 			
-			&:hover {
-				background: darken(@color1, 5%);
+			a {
+				display: block;
+				padding: 10px 18px;
+				color: #fff;
+				text-decoration: none;
+				
+				&:hover {
+					background: darken(@color1, 5%);
+				}
+			}
+			
+			ul {
+				position: absolute;
+				top: 0;
+				margin-left: 180px;
+				background: darken(@color1, 15%);
+				z-index: 999;
+				visibility: hidden;
+				opacity: 0;
+				transition: opacity .6s;
+				
+				li {
+					border-left: 1px solid @color3;
+					
+					a {
+						padding-right: 30px;
+					}
+				}
+				
+				li:first-child {
+					border: none;
+				}
+			}
+			
+			&:hover ul {
+				visibility: visible;
+				opacity: 1;
 			}
 		}
 	}
