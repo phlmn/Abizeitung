@@ -25,7 +25,6 @@
         		<li><a href="users.php?group=teachers">Lehrer</a></li>
         		<li><a href="users.php?group=state">Status</a></li>
         		<li><a href="users.php?group=code">Aktivierungscode</a></li>
-        		<li><a href="users.php?group=errors">Probleme</a></li>
         	</ul>
         </li>
 	    <li><a href="tutorial.php">Tutorien</a></li>
