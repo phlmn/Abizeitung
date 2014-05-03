@@ -33,6 +33,7 @@
 		<li><a href="questions.php">Fragen</a></li>
 		<li><a href="surveys.php">Umfragen</a></li>
 		<li><a href="results.php">Auswertung</a></li>
+		<li><a href="errors.php">Fehlermeldungen</a></li>
 	</ul>
 </div>
 <?php endif; ?>
