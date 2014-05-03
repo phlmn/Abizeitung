@@ -31,9 +31,6 @@
 	<head>
 		<title>Abizeitung - Fehlermeldungen</title>
 		<?php head(); ?>
-        <?php if($group == "code"): ?>
-        <link rel="stylesheet" href="less/print.css" type="text/css" media="print">
-        <?php endif; ?>
 	</head>
 	
 	<body>
