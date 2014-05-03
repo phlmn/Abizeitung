@@ -212,6 +212,23 @@
 		return str_rand(UNLOCK_KEY);
 	}
 	
+	function get_uri_param() {
+		$params = "";
+		$i = 0;
+		
+		foreach($_GET as $key => $value) {
+			if($i++) 
+				$params .= "&";
+				
+			$params .=  $key;
+			
+			if(!empty($value)) 
+				$params .= "=" . $value;
+		}
+		
+		return $params;
+	}
+	
 	// converting php.ini file sizes to bytes (32M)
 	
 	function return_ini_bytes($val) {
