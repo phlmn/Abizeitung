@@ -25,6 +25,7 @@
         		<li><a href="users.php?group=teachers">Lehrer</a></li>
         		<li><a href="users.php?group=state">Status</a></li>
         		<li><a href="users.php?group=code">Aktivierungscode</a></li>
+        		<li><a href="csv-import.php">Nutzer importieren</a>
         	</ul>
         </li>
 	    <li><a href="tutorial.php">Tutorien</a></li>

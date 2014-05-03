@@ -1197,12 +1197,13 @@ div.surveys {
 			color: #EEE;
 			border: 2px solid lighten(@color1, 5%);
 			background-color: lighten(@color1, 10%);
-			z-index: 999;
+			cursor: pointer;
+			z-index: 100;
 		}
 	}
 	
 	#column-fields {
-		margin-bottom: 50px;
+		margin-bottom: 20px;
 			
 		.column-field {
 			border: 2px dashed #DDD;
@@ -1227,6 +1228,24 @@ div.surveys {
 			color: #EEE;
 			border: 2px solid lighten(@color1, 5%);
 			background-color: lighten(@color1, 10%);
+		}
+	}
+	
+	.upload {
+		margin-bottom: 10px;
+	}
+	
+	.option {
+		width: 100%;
+		padding: 5px 0;
+		
+		input[type="checkbox"] {
+			float: left;
+			margin: 3px 5px 0;
+		}
+		
+		label {
+			font-weight: normal;
 		}
 	}
 	
