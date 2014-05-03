@@ -9,6 +9,8 @@
 
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
+	$errors = array();
+	
 	if(isset($_GET["import"])) {
 		if(!file_exists("csv"))
 			mkdir("csv");
@@ -16,108 +18,187 @@
 		// check filetype
 			
 		if(isset($_FILES["file"]["name"])) {
-			if($_FILES["file"]["type"] == "application/vnd.ms-excel" || $_FILES["file"]["type"] == "text/csv") {
-				// create filepath
-				$file = realpath(dirname(__FILE__)) . "/csv/" . time() . "_" . $_FILES["file"]["name"];
-				
-				// upload file in /csv/
-				if(move_uploaded_file($_FILES["file"]["tmp_name"], $file)) {
+			if(!empty($_FILES["file"]["name"])) {
+				if($_FILES["file"]["type"] == "application/vnd.ms-excel" || $_FILES["file"]["type"] == "text/csv") {
 					
-					// open file
-					if(($handle = fopen($file, "r")) !== false) {
+					// create filepath
+					
+					$file = realpath(dirname(__FILE__)) . "/csv/" . time() . "_" . $_FILES["file"]["name"];
+					
+					// upload file in /csv/
+					
+					if(move_uploaded_file($_FILES["file"]["tmp_name"], $file)) {
 						
-						// get content
-						while(($data = fgetcsv($handle, 999, ";")) !== false) {
+						// open file
+						
+						if(($handle = fopen($file, "r")) !== false) {
 							
-							// 	Required file format:
-							//
-							// 	prename, lastname, is female, tutorial, tutor
-							//
-							// 	check tutorial names
+							// get columns order
 							
-							if(count($data) == 5) {
-								$user["unlock_code"] = get_unlock_code();
+							$cols = array();
+							$seperated = array(
+								"tutorial" => NULL,
+								"tutor" => NULL
+							);
 								
-								global $mysqli;
+							if(isset($_GET["columns"])) {
+								for($i = 0; $i < $_GET["columns"]; $i++) {
+									$field = $_POST["column-field-" . ($i + 1)];
+									
+									if(!empty($field)) {
+										if($field == "tutorial") {
+											$seperated["tutorial"] = $i;
+										} 
+										else if($field == "tutor") {
+											$seperated["tutor"] = $i;
+										}
+										else {
+											array_push($cols, array(
+												"name" => $mysqli->real_escape_string($field),
+												"index" => $i
+											));
+										}
+									}
+								}
+							} else {
+								array_unshift($errors, "Formularfehler<br />Dieser Fehler muss in der Software gelöst werden");
+								error_report("1", 'Fehler im Formularfeld. In dem action-link fehlt "&columns=integer"', "csv-import.php", NULL, $data["id"]);
+							}
+							
+							// get content
+							
+							$columns_fail = false;
+							$form_fail = false;
+							
+							while(($csv = fgetcsv($handle, 999, ";")) !== false) {
 								
-								// Insert user
+								$col = "";
+								$val = "";
 								
-								$stmt = $mysqli->prepare("
-									INSERT INTO users (
-										prename, lastname, female, activated, unlock_key
-									) VALUES (
-										?, ?, ?, 0, ?
-									)
-								");
-								
-								$stmt->bind_param("ssis", null_on_empty($data[0]), null_on_empty($data[1]), intval($data[2]), $user["unlock_code"]);
-								$stmt->execute();
-								
-								$stmt->close();
-								
-								// Get id from user
-								
-								$stmt = $mysqli->prepare("
-									SELECT id
-									FROM users
-									WHERE unlock_key = ?
-									LIMIT 1
-								");
-								
-								$stmt->bind_param("s", $user["unlock_code"]);
-								$stmt->execute();
-								
-								$stmt->bind_result($user["id"]);
-								$stmt->fetch();
-								
-								$stmt->close();
-								
-								// Search for tutorial
-								
-								$stmt = $mysqli->prepare("
-									SELECT id
-									FROM tutorials
-									WHERE name = ?
-									LIMIT 1
-								");
-								
-								$stmt->bind_param("s", null_on_empty($data[3]));
-								$stmt->execute();
-								
-								$stmt->bind_result($user["tutorial"]["id"]);
-								$res = $stmt->fetch();
-								
-								$stmt->close();
-								
-								if(!$res) {
-									die;
+								foreach($cols as $c) {
+									$col .= $c["name"] . ", ";
+									$val .= "'" .$csv[$c["index"]] . "', ";
 								}
 								
-								// Insert student
+								// 	Required columns:
+								// 		prename, lastname, female
 								
-								$stmt = $mysqli->prepare("
-									INSERT INTO students (
-										uid, tutorial
-									) VALUES (
-										?, ?
-									)
-								");
+								$tutorial_fail = false;
 								
-								$stmt->bind_param("ii", $user["id"], $user["tutorial"]["id"]);
-								$stmt->execute();
-								
-								$stmt->close();
+								if(strpos($col, "prename") >= 0 && strpos($col, "lastname") >= 0 && strpos($col, "female") >= 0) {
+									$user["unlock_code"] = get_unlock_code();
+									$user["tutorial"]["id"] = NULL;
+									
+									global $mysqli;
+									
+									// Insert user
+									
+									$stmt = $mysqli->prepare("
+										INSERT INTO users (
+											" . $col . " activated, unlock_key
+										) VALUES (
+											" . $val . " '0', ?
+										)
+									");
+									
+									$stmt->bind_param("s", $user["unlock_code"]);
+									
+									$stmt->execute();
+									
+									$stmt->close();
+									
+									// Get id from user
+									
+									$stmt = $mysqli->prepare("
+										SELECT id
+										FROM users
+										WHERE unlock_key = ?
+										LIMIT 1
+									");
+									
+									$stmt->bind_param("s", $user["unlock_code"]);
+									$stmt->execute();
+									
+									$stmt->bind_result($user["id"]);
+									$stmt->fetch();
+									
+									$stmt->close();
+									
+									// Search for tutorial
+									
+									if($seperated["tutorial"] != NULL) {
+										$stmt = $mysqli->prepare("
+											SELECT id
+											FROM tutorials
+											WHERE name = ?
+											LIMIT 1
+										");
+										
+										$stmt->bind_param("s", null_on_empty($csv[$seperated["tutorial"]]));
+										$stmt->execute();
+										
+										$stmt->bind_result($user["tutorial"]["id"]);
+										$res = $stmt->fetch();
+										
+										$stmt->close();
+										
+										if(!$res) {
+											if(!$tutorial_fail) {
+												$tutorial_fail = true;
+												array_unshift($errors, "Fehler beim Eintragen des Tutoriums<br />Bitte überprüfen Sie, ob Sie die Tutorien eingetragen haben");
+											}
+										}
+									}
+									
+									// Insert student
+									
+									$stmt = $mysqli->prepare("
+										INSERT INTO students (
+											uid, tutorial
+										) VALUES (
+											?, ?
+										)
+									");
+									
+									$stmt->bind_param("ii", $user["id"], $user["tutorial"]["id"]);
+									$stmt->execute();
+									
+									$stmt->close();
+									
+								} else {
+									if(!$columns_fail) {
+										$columns_fail = true;
+										array_unshift($errors, 
+											"Es fehlen benötigte Spalten.<br />" . 
+											"Überprpfen Sie, ob die Spalten <strong>prename</strong>, <strong>lastname</strong> und <strong>female</strong> gesetzt sind"
+										);
+									}
+								}
 							}
+							
+							// close file
+							fclose($handle);
 						}
-						
-						// close file
-						fclose($handle);
+					} else {
+						array_unshift($errors, "Die Datei konnte nicht hochgeladen werden");
 					}
+					
+					// delete file
+					unlink($file);
+				} else {
+					array_unshift($errors, "Die Datei hat nicht das richtige Format.<br />Bitte wählen Sie eine <strong>*.csv</strong> Datei aus");
 				}
-				
-				// delete file
-				unlink($file);
+			} else {
+				array_unshift($errors, "Es wurde keine Datei ausgewählt");
 			}
+		}
+		
+		if(!count($errors)) {
+			db_close();
+			
+			header("Location: ./csv-import.php?saved");
+			
+			die;
 		}
 	}
 	
@@ -130,13 +211,20 @@
 		<title>Abizeitung - CSV Import</title>
 		<?php head(); ?>
         <script type="text/javascript">
-			var tables = new Array(
-				"prename", 
-				"lastname", 
-				"female", 
-				"tutorial", 
-				"tutor"
-			);
+			var columns = new Array(<?php
+				$columns = array(
+					"prename", 
+					"lastname", 
+					"female", 
+					"tutorial", 
+					"tutor"
+				);
+				$i = 0;
+				foreach($columns as $column) {
+					if($i++) echo ',';
+					echo '"' . $column . '"';
+				}
+			?>);
 			
 			function reset_field(id) {
 				$(id).val("");
@@ -144,23 +232,27 @@
 			}
 			
 			$(document).ready(function() {
-				for(i = 0; i < tables.length; i++) {
-					div1 = $('<div class="item draggable col-md-2">' + tables[i] + '</div>');
-					div2 = $('<input id="table-field-' + i +'" type="text" class="table-field droppable col-md-2" placeholder="Reihe ' + (i + 1) + '" onfocus="this.blur()" readonly />' + 
-								'<label for="table-field-' + i + '" class="reset" onclick="reset_field(\'#table-field-' + i + '\')"><span class="icon-minus-circled"></span></lable>');
+				for(i = 1; i <= columns.length; i++) {
+					div1 = $('<div class="item draggable col-md-2">' + columns[i - 1] + '</div>');
+					div2 = $('<input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + '" onfocus="this.blur()" readonly />' + 
+								'<label for="column-field-' + i + '" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable>');
 					
 					$("#items").append(div1);
 					$(div1).draggable({
 						revert: true
-					}).data("name", tables[i]);
+					}).data("name", columns[i - 1]);
 					
-					$("#table-fields").append(div2);
+					$("#column-fields").append(div2);
 				}
 			});
 			
 			$(function() {
-				$(".droppable").droppable({
+				$(".column-field").droppable({
 					drop: function( event, ui ) {
+						$(".column-field").each(function(i, e) {
+							if($(this).val() == ui.draggable.data("name"))
+								$(this).val("").removeClass("alternate");
+						});
 						$(this).val(ui.draggable.data("name"))
 						$(this).addClass("alternate");
 					}
@@ -178,15 +270,28 @@
 	<body>
 		<?php require("nav-bar.php") ?>
 		<div id="csv-import" class="container">
+        	<?php if(count($errors)) : ?>
+            <div class="alert alert-danger">
+            	<ul>
+            	<?php foreach($errors as $error): ?>
+					<li><?php echo $error ?></li>
+				<?php endforeach; ?>
+                </ul>
+            </div>
+            <?php else: if(isset($_GET["saved"])) : ?>
+            <div class="alert alert-success">
+            	Importieren erfolgreich abgeschlossen
+            </div>
+            <?php endif; endif; ?>
 			<h1>CSV Nutzer Import</h1>
             
-            <form method="post" name="data" action="csv-import.php?import" enctype="multipart/form-data">
+            <form method="post" name="data" action="csv-import.php?import&columns=<?php echo count($columns); ?>" enctype="multipart/form-data">
             <div class="users box">
             	<h4>Vorhandene Spalten</h4>
             	<div id="items" class="row">
                 </div>
                 <h4>Reihenfolge der .csv Spalten</h4>
-                <div id="table-fields" class="row">
+                <div id="column-fields" class="row">
                 </div>
             	<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get("upload_max_filesize")); ?>" />
                 <input id="file" name="file" type="file" />
