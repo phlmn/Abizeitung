@@ -45,7 +45,7 @@
 			header("Location: ./add-student.php?saved");
 		}
 		
-		exit;
+		die;
 	}
 	
 ?>

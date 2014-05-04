@@ -32,18 +32,18 @@
 		
 		// add data to database
 		
-		$param = UserManager::add_user($userdata);
+		$errorHandler->add_error(UserManager::add_user($userdata));
 		
-		if($param == 0) {
+		if($errorHandler->is_error()) {
+			// data failed
+			header("Location: ./add-teacher.php?error" . $errorHandler->export_url_param(true));
+		}
+		else {
 			// data saved
 			header("Location: ./add-teacher.php?saved");
 		}
-		else {
-			// data failed
-			header("Location: ./add-teacher.php?error=" . $param);
-		}
 		
-		exit;
+		die;
 	}
 	
 ?>
@@ -73,24 +73,13 @@
 				
 					// display error messages
 					
-					echo '<div class="alert alert-danger">Speichern fehlgeschlagen: ';
+					echo '<div class="alert alert-danger">Speichern fehlgeschlagen:<ul>';
 
-					switch($_GET["error"]) {
-						case "-1":
-							echo "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben.";
-							break;
-						case "-2":
-							echo "Die Emailadresse existiert bereits.";
-							break;
-						case "1":
-							echo "Der Benutzer konnte nicht hinzugefügt werden.";
-							break;
-						case "2":
-							echo "Der Benutzer konnte nicht als Lehrer hinzugefügt werden.";
-							break;
-					}
+					$errorHandler->import_url_param($_GET);
 					
-					echo '</div>';
+					echo $errorHandler->get_errors("li");
+					
+					echo '</ul></div>';
 				}
 			?>
 			
