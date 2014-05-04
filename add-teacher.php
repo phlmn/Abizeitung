@@ -9,6 +9,8 @@
 	
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
+	// handle form data
+	
 	if(isset($_GET["create"])) {
 		// Save posted data in array
 		
@@ -55,17 +57,24 @@
 	</head>
 	
 	<body>
+	
 		<?php require("nav-bar.php") ?>
+		
 		<div id="user-management" class="container-fluid admin-wrapper">
-        	<?php if(isset($_GET["saved"])): ?>
-				<div class="alert alert-success">Änderungen gespeichert.</div>
-            <?php else: if(isset($_GET["error"])): ?>
-                <div class="alert alert-danger">
-                	Speichern fehlgeschlagen.<br />
-                <?php
-					
+			
+			<?php
+			
+				// handle notifications
+				
+				if(isset($_GET["saved"])) {
+					echo '<div class="alert alert-success">Änderungen gespeichert.</div>';
+				}
+				else if(isset($_GET["error"])) {
+				
 					// display error messages
 					
+					echo '<div class="alert alert-danger">Speichern fehlgeschlagen: ';
+
 					switch($_GET["error"]) {
 						case "-1":
 							echo "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben.";
@@ -80,60 +89,72 @@
 							echo "Der Benutzer konnte nicht als Lehrer hinzugefügt werden.";
 							break;
 					}
-				?>
-                </div>
-            <?php endif; endif; ?>
+					
+					echo '</div>';
+				}
+			?>
+			
 			<h1>Nutzerverwaltung</h1>
-			<form id="data_form" name="data" method="post" action="add-teacher.php?create"></form>
-			<div class="add-user">
-				<h2>Nutzer erstellen</h2>
-				<table>
-					<tr>
-						<td class="title">Vorname</td>
-						<td><input name="prename" type="text" form="data_form" /></td>
-					</tr>
-					<tr>
-						<td class="title">Nachname</td>
-						<td><input name="lastname" type="text" form="data_form" /></td>
-					</tr>
-					<tr>
-						<td class="title">Geschlecht</td>
-						<td>
-                        	<select name="gender" form="data_form">
-                            	<option value="m">Männlich</option>
-                                <option value="f">Weiblich</option>
-                            </select>
-                        </td>
-					</tr>
-					<tr>
-						<td class="title">Geburtsdatum</td>
-						<td><input name="birthday" type="text" form="data_form" /></td>
-					</tr>
-					<tr>
-						<td class="title">Spitzname</td>
-						<td><input name="nickname" type="text" form="data_form" /></td>
-					</tr>
-					<tr>
-						<td class="title">E-Mail</td>
-						<td><input name="email" type="text" form="data_form" /></td>
-					</tr>
-					<tr>
-						<td class="title">Passwort</td>
-						<td><input name="password" type="password" form="data_form" /></td>
-					</tr>
-					<tr>
-						<td class="title">Administrator</td>
-						<td><input name="admin" type="checkbox" form="data_form" /></td>
-					</tr>
-				</table>
-			</div>
-						
-			<div class="buttons">
-				<input type="submit" value="Erstellen" form="data_form" />
-				<a class="button" href="users.php?group=teachers">Zurück</a>
-			</div>
-
-		</div>	
+			
+			<div class="box">
+			
+				<h2>Lehrer erstellen</h2>
+				
+				<form id="data_form" name="data" method="post" action="./add-teacher.php?create"></form>
+				
+				<div class="add-user">
+							
+					<table>
+						<tr>
+							<td class="title">Vorname</td>
+							<td><input name="prename" type="text" form="data_form"></td>
+						</tr>
+						<tr>
+							<td class="title">Nachname</td>
+							<td><input name="lastname" type="text" form="data_form"></td>
+						</tr>
+						<tr>
+							<td class="title">Geschlecht</td>
+							<td>
+	                        	<select name="gender" form="data_form">
+	                            	<option value="m">Männlich</option>
+	                                <option value="f">Weiblich</option>
+	                            </select>
+	                        </td>
+						</tr>
+						<tr>
+							<td class="title">Geburtsdatum</td>
+							<td><input name="birthday" type="text" form="data_form"></td>
+						</tr>
+						<tr>
+							<td class="title">Spitzname</td>
+							<td><input name="nickname" type="text" form="data_form"></td>
+						</tr>
+						<tr>
+							<td class="title">E-Mail</td>
+							<td><input name="email" type="text" form="data_form"></td>
+						</tr>
+						<tr>
+							<td class="title">Passwort</td>
+							<td><input name="password" type="password" form="data_form"></td>
+						</tr>
+						<tr>
+							<td class="title">Administrator</td>
+							<td><input name="admin" type="checkbox" form="data_form"></td>
+						</tr>
+					</table>
+					
+				</div><!-- .add-user -->
+							
+				<div class="buttons">
+					<input type="submit" value="Erstellen" form="data_form">
+					<a class="button" href="./users.php?group=teachers">Zurück</a>
+				</div><!-- .buttons -->
+			
+			</div><!-- .box -->
+			
+		</div><!-- #user-management -->
+		
 	</body>
 </html>
 
