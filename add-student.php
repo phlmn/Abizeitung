@@ -64,24 +64,24 @@
 		
 		<div id="user-management" class="container-fluid admin-wrapper">
 		
-        	<?php
-        		// handle notifications
-        		
-        		if(isset($_GET["saved"])) {
-	        		echo '<div class="alert alert-success">Änderungen gespeichert.</div>';	
-        		}
-        		
-        		else if(isset($_GET["error"])) {
-	        		echo '<div class="alert alert-danger">Speichern fehlgeschlagen:<ul>';
+			<?php
+				// handle notifications
+				
+				if(isset($_GET["saved"])) {
+			 		echo '<div class="alert alert-success">Änderungen gespeichert.</div>';	
+				}
+				
+				else if(isset($_GET["error"])) {
+			 		echo '<div class="alert alert-danger">Speichern fehlgeschlagen:<ul>';
 					
 					$errorHandler->import_url_param($_GET);
 					
 					echo $errorHandler->get_errors("li");
-	        		
-	        		echo '</ul></div>';	
-        		}
-            ?>   
-                     
+			 		
+			 		echo '</ul></div>';	
+				}
+			?>	 
+					 
 			<h1>Nutzerverwaltung</h1>
 			
 			<div class="box">
@@ -104,19 +104,19 @@
 						<tr>
 							<td class="title">Geschlecht</td>
 							<td>
-	                        	<select name="gender" form="data_form">
-	                            	<option value="m">Männlich</option>
-	                                <option value="f">Weiblich</option>
-	                            </select>
-	                        </td>
+							 	<select name="gender" form="data_form">
+								 	<option value="m">Männlich</option>
+									 <option value="f">Weiblich</option>
+								 </select>
+							 </td>
 						</tr>
 	
 						<tr>
 							<td class="title">Tutorium</td>
 							<td>
-	                        	<select name="tutorial" form="data_form">
-	                            	<option value="0">-</option>
-	                                <?php 
+							 	<select name="tutorial" form="data_form">
+								 	<option value="0">-</option>
+									 <?php 
 										
 										// get all tutorials from database
 										
@@ -134,8 +134,8 @@
 										
 										$stmt->close();
 									?>
-	                            </select>
-	                        </td>
+								 </select>
+							 </td>
 						</tr>
 						<tr>
 							<td class="title">Geburtsdatum</td>

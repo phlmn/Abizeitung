@@ -105,11 +105,11 @@
 						<tr>
 							<td class="title">Geschlecht</td>
 							<td>
-	                        	<select name="gender" form="data_form">
-	                            	<option value="m">Männlich</option>
-	                                <option value="f">Weiblich</option>
-	                            </select>
-	                        </td>
+							 	<select name="gender" form="data_form">
+								 	<option value="m">Männlich</option>
+									 <option value="f">Weiblich</option>
+								 </select>
+							 </td>
 						</tr>
 						<tr>
 							<td class="title">Geburtsdatum</td>
