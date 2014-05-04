@@ -69,7 +69,7 @@
 				if(isset($_GET["saved"])) {
 					echo '<div class="alert alert-success">Änderungen gespeichert.</div>';
 				}
-				else if(isset($_GET["error"])) {
+				elseif(isset($_GET["error"])) {
 				
 					// display error messages
 					

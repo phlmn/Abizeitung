@@ -71,7 +71,7 @@
 			 		echo '<div class="alert alert-success">Änderungen gespeichert.</div>';	
 				}
 				
-				else if(isset($_GET["error"])) {
+				elseif(isset($_GET["error"])) {
 			 		echo '<div class="alert alert-danger">Speichern fehlgeschlagen:<ul>';
 					
 					$errorHandler->import_url_param($_GET);

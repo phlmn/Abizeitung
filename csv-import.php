@@ -41,7 +41,7 @@
 							if($field == "tutorial") {
 								$seperated["tutorial"] = $i;
 							} 
-							else if($field == "tutor") {
+							elseif($field == "tutor") {
 								$seperated["tutor"] = $i;
 							}
 							else {
