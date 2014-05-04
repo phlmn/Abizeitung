@@ -114,16 +114,13 @@
             <?php else: if(isset($_GET["error"])): ?>
                 <div class="alert alert-danger">
                 	Speichern fehlgeschlagen.<br />
+                    <ul>
                 <?php
-					switch($_GET["error"]) {
-						case "-1":
-							echo "Die Daten konnten nicht geändert werden";
-							break;
-						case "-2":
-							echo "Das Passwort konnte nicht geändert werden.";
-							break;
-					}
+					$errorHandler->import_url_param($_GET);
+					
+					echo $errorHandler->get_errors("li");
 				?>
+                	</ul>
                 </div>
             <?php endif; endif; ?>
 			<h1>Nutzerverwaltung</h1>

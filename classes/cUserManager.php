@@ -304,7 +304,7 @@
 			// Falls mindestens einer leer ist, wird die Funktion verlassen
 			
 			if(empty($data["prename"]) || empty($data["lastname"])) {
-				return -1;
+				return "cannot-change-data";
 			}
 			
 			$stmt = $mysqli->prepare("
@@ -337,7 +337,7 @@
 			$stmt->close();
 			
 			if($res == 0) {
-				return -1;
+				return "cannot-change-data";
 			}
 			
 			if($data["teacher"]) {
@@ -557,7 +557,7 @@
 							// Die Passwörter sind nicht identisch
 							// Passwort konnte nicht geändert werden
 							
-							return -2;
+							return "cannot-change-password";
 						}
 					}
 				}

@@ -56,6 +56,8 @@
 				case "too-little-columns": 		$save = 15; break;
 				case "required-columns": 		$save = 16; break;
 				case "no-nickname": 			$save = 17; break;
+				case "cannot-change-data": 		$save = 18; break;
+				case "cannot-change-password": 	$save = 19; break;
 				case 0: return false; break;
 				default: $save = intval($error);
 			}
@@ -88,6 +90,8 @@
 				case 15: 	case "too-little-columns": 		$message = "Die Datei hat zu wenig spalten.<br />Es werden mindestens # benötigt."; break;
 				case 16: 	case "required-columns": 		$message = "Es fehlen benötigte Spalten.<br />Überprüfen Sie, ob die Spalten # gesetzt sind"; break;
 				case 17: 	case "no-nickname": 			$message = "Das Feld Spitzname darf nicht leer sein."; break;
+				case 18: 	case "cannot-change-data": 		$message = "Die Daten konnten nicht geändert werden."; break;
+				case 19: 	case "cannot-change-password": 	$message = "Das Passwort konnte nicht geändert werden."; break;
 			}
 			
 			for($i = 1; $i < func_num_args() && $i - 1 < substr_count($message, '#'); $i++) {
