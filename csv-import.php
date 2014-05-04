@@ -223,12 +223,17 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
+<<<<<<< HEAD
 		<div id="csv-import" class="container">
         	<?php 
 				if(isset($_GET["error"])): 
 					
 					$errorHandler->import_url_param($_GET);
 			?>
+=======
+		<div id="csv-import" class="container-fluid admin-wrapper">
+        	<?php if(isset($_GET["error"])): ?>
+>>>>>>> 7240935f4ed51d8f81c860a9ea15c12b6edcfb1f
             <div class="alert alert-danger">
             	<ul>
 					<?php $errorHandler->get_errors("li", 3); ?>

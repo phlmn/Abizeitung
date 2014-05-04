@@ -361,6 +361,7 @@ div.fancy-select {
 				padding: 10px 18px;
 				color: #fff;
 				text-decoration: none;
+				white-space: nowrap;
 				
 				&:hover {
 					background: darken(@color1, 5%);
@@ -854,6 +855,10 @@ td.edit a {
 		
 		tbody {
 			tr {
+				td.name {
+					text-align: left;
+				}
+				
 				td.missing {
 					background: lighten(@color4, 25%);
 				}

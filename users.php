@@ -58,10 +58,6 @@
 					}
 				?>
 			</div>
-            
-            <?php if($group == "students") : ?>
-			<a class="link" href="csv-import.php">Aus *.csv importieren</a>
-            <?php endif; ?>
             	
 			<div class="buttons">
             	<?php if($group == "students"): ?>
