@@ -199,7 +199,7 @@
 		db_close();
 		
 		if($errorHandler->is_error())	{
-			header("Location: ./csv-import.php?error" . $errorHandler->export_url_param());
+			header("Location: ./csv-import.php?error" . $errorHandler->export_url_param(true));
 		}
 		else {
 			header("Location: ./csv-import.php?saved");
