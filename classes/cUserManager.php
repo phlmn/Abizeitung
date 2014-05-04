@@ -170,7 +170,7 @@
 			$stmt->close();
 			
 			if($res > 0) {
-				return -2;
+				return "email-existing";
 			}
 			
 			$female = $data["female"] ? true : false;
@@ -203,7 +203,7 @@
 			$stmt->close();
 			
 			if($res <= 0) {
-				return 1;
+				return "cannot-add-user";
 			}
 			
 			
@@ -226,7 +226,7 @@
 			$stmt->close();
 			
 			if($res <= 0) {
-				return 1;
+				return "cannot-add-user";
 			}
 			
 			if($data["teacher"]) {
@@ -291,7 +291,7 @@
 			}
 			
 			if($res == 0) {
-				return 2;
+				return "cannot-add-teacher";
 			}
 			
 			return 0;

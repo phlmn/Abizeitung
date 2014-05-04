@@ -32,15 +32,17 @@
 		
 		// add data to database
 		
-		$param = UserManager::add_user($userdata);
 		
-		if($param == 0) {
-			// data saved
-			header("Location: ./add-student.php?saved");
+		
+		$errorHandler->add_error(UserManager::add_user($userdata));
+		
+		if($errorHandler->is_error()) {
+			// data failed
+			header("Location: ./add-student.php?error" . $errorHandler->export_url_param(true));
 		}
 		else {
-			// data failed
-			header("Location: ./add-student.php?error=" . $param);
+			// data saved
+			header("Location: ./add-student.php?saved");
 		}
 		
 		exit;
@@ -70,24 +72,13 @@
         		}
         		
         		else if(isset($_GET["error"])) {
-	        		echo '<div class="alert alert-danger">Speichern fehlgeschlagen: ';
+	        		echo '<div class="alert alert-danger">Speichern fehlgeschlagen:<ul>';
+					
+					$errorHandler->import_url_param($_GET);
+					
+					echo $errorHandler->get_errors("li");
 	        		
-	        		switch($_GET["error"]) {
-						case "-1":
-							echo "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben.";
-							break;
-						case "-2":
-							echo "Die Emailadresse existiert bereits.";
-							break;
-						case "1":
-							echo "Der Benutzer konnte nicht hinzugefügt werden.";
-							break;
-						case "2":
-							echo "Der Benutzer konnte nicht als Lehrer hinzugefügt werden.";
-							break;
-					}
-	        		
-	        		echo '</div>';	
+	        		echo '</ul></div>';	
         		}
             ?>   
                      

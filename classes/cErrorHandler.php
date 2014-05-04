@@ -43,7 +43,7 @@
 				case "cannot-save-n": 			$save = 2; break;
 				case "email-password-missing": 	$save = 3; break;
 				case "email-existing": 			$save = 4; break;
-				case "cannot-find-user": 		$save = 5; break;
+				case "cannot-add-user": 		$save = 5; break;
 				case "cannot-add-teacher": 		$save = 6; break;
 				case "cannot-add-student": 		$save = 7; break;
 				case "cannot-add-tutorial": 	$save = 8; break;
@@ -56,6 +56,7 @@
 				case "too-little-columns": 		$save = 15; break;
 				case "required-columns": 		$save = 16; break;
 				case "no-nickname": 			$save = 17; break;
+				case 0: return false; break;
 				default: $save = intval($error);
 			}
 			
@@ -74,7 +75,7 @@
 				case 2: 	case "cannot-save-n": 			$message = "# Anfragen konnten nicht gespeichert werden."; break;
 				case 3: 	case "email-password-missing": 	$message = "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben"; break;
 				case 4: 	case "email-existing": 			$message = "Die Emailadresse existiert bereits."; break;
-				case 5: 	case "cannot-find-user": 		$message = "Der Benutzer konnte nicht hinzugefügt werden."; break;
+				case 5: 	case "cannot-add-user": 		$message = "Der Benutzer konnte nicht hinzugefügt werden."; break;
 				case 6: 	case "cannot-add-teacher": 		$message = "Der Benutzer konnte nicht als Lehrer hinzugefügt werden"; break;
 				case 7: 	case "cannot-add-student": 		$message = "Der Benutzer konnte nicht als Schüler hinzugefügt werden"; break;
 				case 8: 	case "cannot-add-tutorial": 	$message = "Fehler beim Eintragen des Tutoriums<br />Bitte überprüfen Sie, ob Sie die Tutorien eingetragen haben."; break;
