@@ -35,7 +35,7 @@
 				);
 					
 				if(isset($_GET["columns"])) {
-					echo intval($_GET["columns"]);
+					
 					for($i = 0; $i < intval($_GET["columns"]); $i++) {
 						$field = $_POST["column-field-" . ($i + 1)];
 						
@@ -70,6 +70,11 @@
 				$columns_fail = false;
 				$form_fail = false;
 				
+				$headline = false;
+				
+				if(isset($_GET["caption"]))
+					$headline = true;
+				
 				while(($csv = fgetcsv($handle, 999, ";")) !== false) {
 					
 					$col = "";
@@ -84,10 +89,6 @@
 					// 		prename, lastname, female
 					
 					$tutorial_fail = false;
-					$headline = false;
-					
-					if(isset($_GET["caption"]))
-						$headline = true;
 					
 					if(strpos($col, "prename") >= 0 && strpos($col, "lastname") >= 0 && strpos($col, "female") >= 0) {
 						if($headline) {
@@ -187,9 +188,11 @@
 				// close file
 				fclose($handle);
 				
+				// delete file
 				if(isset($_GET["delete_file"])) {
 					if($_GET["delete_file"] == 1) {
-						unlink($handle);
+						if(!unlink($file))
+							$error = "file-delete";
 					}
 				}
 			}
