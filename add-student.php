@@ -19,7 +19,7 @@
 		$userdata["tutorial"] 	= $_POST["tutorial"];
 		$userdata["birthday"] 	= $_POST["birthday"];
 		$userdata["nickname"] 	= $_POST["nickname"];
-		$userdata["email"] 		= $_POST["email"];
+		$userdata["email"]		= $_POST["email"];
 		$userdata["password"] 	= $_POST["password"];
 		$userdata["teacher"] 	= 0;
 		$userdata["admin"] 		= isset($_POST["admin"]);
@@ -88,7 +88,7 @@
 			
 				<h2>Nutzer erstellen</h2>
 				
-				<form id="data_form" name="data" method="post" action="add-student.php?create"></form>
+				<form id="data_form" name="data" method="post" action="./add-student.php?create"></form>
 				
 				<div class="add-user">
 				
@@ -128,9 +128,9 @@
 										$stmt->execute();
 										$stmt->bind_result($tutorial["id"], $tutorial["name"]);
 										
-										while($stmt->fetch()) : ?>
-											<option value="<?php echo $tutorial["id"] ?>"><?php echo $tutorial["name"] ?></option>
-										<?php endwhile;
+										while($stmt->fetch()) {
+											echo "<option value='{$tutorial['id']}'>{$tutorial['name']}</option>";
+										}	
 										
 										$stmt->close();
 									?>
@@ -163,7 +163,7 @@
 						
 				<div class="buttons">
 					<input type="submit" value="Erstellen" form="data_form">
-					<a class="button" href="users.php?group=students">Zurück</a>
+					<a class="button" href="./users.php?group=students">Zurück</a>
 				</div><!-- .buttons -->
 				
 			</div><!-- .box -->
