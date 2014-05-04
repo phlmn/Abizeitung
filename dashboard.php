@@ -112,16 +112,14 @@
 		$stmt->bind_result($n["id"]);
 		$stmt->store_result();
 		
-		$fails = 0;
-		
 		while($stmt->fetch()) {
 			if(isset($_POST["accept_" . $n["id"]])) {
 				if(Dashboard::update_user_nicknames($data["id"], $n["id"], 1))
-					$fails++;
+					$errorHandler->add_error("cannot-accept-nickname");
 			}
 			else {
 				if(Dashboard::update_user_nicknames($data["id"], $n["id"], 0))
-					$fails++;
+					$errorHandler->add_error("cannot-insert-nickname");
 			}
 		}
 		
@@ -140,11 +138,17 @@
 		$stmt->bind_result($q["id"]);
 		$stmt->store_result();
 		
+		$fails = 0;
+		
 		while($stmt->fetch()) {
 			if(isset($_POST["question_" . $q["id"]])) {
 				if(Dashboard::update_user_questions($data["id"], $q["id"], $mysqli->real_escape_string($_POST["question_" . $q["id"]])))
 					$fails++;
 			}
+		}
+		
+		if($fails) {
+			$errorHandler->add_error("cannot-update-answers");
 		}
 		
 		$stmt->free_result();
@@ -161,6 +165,8 @@
 		$stmt->execute();
 		$stmt->bind_result($s["id"]);
 		$stmt->store_result();
+		
+		$fails = 0;
 		
 		while($stmt->fetch()) {
 			$answer = array(
@@ -180,14 +186,18 @@
 				$fails++;
 		}
 		
+		if($fails) {
+			$errorHandler->add_error("cannot-update-surveys");
+		}
+		
 		$stmt->free_result();
 		$stmt->close();
 		
-		if(!$fails)
-			header("Location: ./dashboard.php?saved");
+		if($errorHandler->is_error())
+			header("Location: ./dashboard.php?error" . $errorHandler->export_url_param(true));
 		else
-			header("Location: ./dashboard.php?failed=" . $fails);
-		exit;
+			header("Location: ./dashboard.php?saved");
+		die;
 	}
 
 	$students = array();
@@ -391,27 +401,14 @@
 			<div id="dashboard" class="container">
 			<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
-            <?php else: if(isset($_GET["failed"])): ?>
+            <?php else: if(isset($_GET["error"])): 
+				$errorHandler->import_url_param($_GET);
+			?>
                 <div class="alert alert-danger">
                 	Speichern fehlgeschlagen: 
-			<?php 
-				switch($_GET["failed"]):
-					case "nickname": 
-				?>
-                    Das Feld Spitzname darf nicht leer sein.
-				<?php
-						break;
-					case 1:
-				?>
-                	1 Anfrage konnte nicht gespeichert werden.
-				<?php 
-                    	break;
-					case NULL:
-						break;
-                    default:
-                ?>
-                	Anfragen konnten nicht gespeichert werden.
-			<?php endswitch; ?>
+                    <ul>
+                    	<?php $errorHandler->get_errors("li"); ?>
+                    </ul>
                 </div>
             <?php endif; endif; ?>
 				<div class="intro">

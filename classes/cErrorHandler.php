@@ -58,6 +58,10 @@
 				case "no-nickname": 			$save = 17; break;
 				case "cannot-change-data": 		$save = 18; break;
 				case "cannot-change-password": 	$save = 19; break;
+				case "cannot-insert-nickname": 	$save = 20; break;
+				case "cannot-accept-nickname": 	$save = 21; break;
+				case "cannot-update-answers": 	$save = 22; break;
+				case "cannot-update-surveys": 	$save = 23; break;
 				case 0: return false; break;
 				default: $save = intval($error);
 			}
@@ -92,6 +96,10 @@
 				case 17: 	case "no-nickname": 			$message = "Das Feld Spitzname darf nicht leer sein."; break;
 				case 18: 	case "cannot-change-data": 		$message = "Die Daten konnten nicht geändert werden."; break;
 				case 19: 	case "cannot-change-password": 	$message = "Das Passwort konnte nicht geändert werden."; break;
+				case 20: 	case "cannot-insert-nickname": 	$message = "Der Spitzname konnte nicht eingefügt werden"; break;
+				case 21: 	case "cannot-accept-nickname": 	$message = "Der Spitzname konnte nicht akzeptiert werden"; break;
+				case 22: 	case "cannot-update-answers": 	$message = "Die Antworten konnten nicht gespeichert werden"; break;
+				case 23: 	case "cannot-update-surveys": 	$message = "Die Umfrageergebnisse konnten nicht gespeichert werden"; break;
 			}
 			
 			for($i = 1; $i < func_num_args() && $i - 1 < substr_count($message, '#'); $i++) {
