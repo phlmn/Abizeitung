@@ -222,29 +222,38 @@
 	</head>
 	
 	<body>
+	
 		<?php require("nav-bar.php") ?>
+		
 		<div id="csv-import" class="container-fluid admin-wrapper">
-        	<?php if(isset($_GET["error"])): ?>
-            <div class="alert alert-danger">
-            	<ul>
-					<?php $errorHandler->get_errors("li", 3); ?>
-                </ul>
-            </div>
-            <?php else: if(isset($_GET["saved"])) : ?>
-            <div class="alert alert-success">
-            	Importieren erfolgreich abgeschlossen
-            </div>
-            <?php endif; endif; ?>
-			<h1>CSV Nutzer Import</h1>
-            
-            <?php
+		
+			<?php if(isset($_GET["error"])): ?>
 			
-            if(isset($_GET["upload"])) {
+				<div class="alert alert-danger">
+					<ul>
+						<?php $errorHandler->get_errors("li", 3); ?>
+					</ul>
+				</div>
+			
+			<?php else if(isset($_GET["saved"])) : ?>
+			
+				<div class="alert alert-success">Importieren erfolgreich abgeschlossen.</div>
+			
+			<?php endif; ?>
+			
+			<h1>CSV Nutzer Import</h1>
+			
+			<?php
+			
+			if(isset($_GET["upload"])) {
+			
 				if(!file_exists("csv"))
 					mkdir("csv");
 				
 				if(isset($_FILES["file"]["name"])) {
+				
 					if(!empty($_FILES["file"]["name"])) {
+					
 						if($_FILES["file"]["type"] == "application/vnd.ms-excel" || $_FILES["file"]["type"] == "text/csv") {
 							
 							// create filepath
@@ -273,116 +282,148 @@
 								if($count_column >= 3) {
 								
 									if(($handle = fopen($file, "r")) !== false) {
-			?>
-            <script type="text/javascript">
-				var columns = new Array(<?php
-					$i = 0;
-					
-					foreach($columns as $column) {
-						if($i++) echo ',';
-						echo '"' . $column . '"';
-					}
-				?>);
-				
-				function reset_field(id) {
-					$(id).val("");
-					$(id).removeClass("alternate");
-				}
-				
-				$(document).ready(function() {
-					for(i = 1; i <= <?php echo $count_column; ?>; i++) {
-						div = 	$('<td><input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
-									'" onfocus="this.blur()" readonly />' + '<label for="column-field-' + i + 
-									'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable></td>'
-								);
-						
-						$("#column-fields").append(div);
-					}
-					
-					var width = $("#column-field-1").outerWidth();
-					
-					for(i = 1; i <= columns.length; i++) {
-						div = $('<div class="item draggable" style="width: ' + width + 'px">' + columns[i - 1] + '</div>');
-						
-						$("#items").append(div);
-						$(div).draggable({
-							revert: true
-						}).data("name", columns[i - 1]);
-					}
-				});
-				
-				$(function() {
-					$(".column-field").droppable({
-						drop: function( event, ui ) {
-							$(".column-field").each(function(i, e) {
-								if($(this).val() == ui.draggable.data("name"))
-									$(this).val("").removeClass("alternate");
-							});
-							$(this).val(ui.draggable.data("name"))
-							$(this).addClass("alternate");
-						}
-					});
-					
-					$("form").bind("reset", function() {
-						$(".droppable").each(function(index, e) {
-							$(e).removeClass("alternate");
-						});
-					});
-				});
-			</script>
-            <?php
-				$param = "&columns=" . $count_column;
-				
-				if(isset($_POST["caption"]))
-					$param .= "&caption=" . $_POST["caption"];
-				
-				if(isset($_POST["delete_file"]))
-					$param .= "&delete_file=" . $_POST["delete_file"];
-				
-			?>
-            <form method="post" name="upload" action="csv-import.php?import<?php echo $param; ?>">
-            <div class="users box">
-            	<input type="hidden" name="file" value="<?php echo $file ?>">
-            	<h4>Datenbankspalten:</h4>
-                <div id="items" class="row">
-                </div>
-                <h4>Die <em>*.csv</em> - Datei hat <?php echo $count_column; ?> Spalten:</h4>
-                <div class="option">Bitte ordnen Sie der <em>*.csv</em> - Datei die entsprechenden Datenbankspalten via <span style="cursor: help" title="ziehen und loslassen">"drag'n'drop"</span> zu</div>
-                <h4><em>*.csv</em> - Tabelle:</h4>
-                <table class="table table-striped">
-                <?php if(isset($_POST["caption"])): ?>
-                	<thead>
-                    <?php for($i = 0; $i < $count_column; $i++): ?>
-                    	<th><?php echo $first[$i]; ?></th>
-                    <?php endfor; ?>
-                    </thead>
-                <?php endif; ?>
-                    <tbody>
-                    	<tr id="column-fields">
-                        </tr>
-					<?php 
-						$first_continue = false;
-						if(isset($_POST["caption"]))
-							$first_continue = true;
-						
-						while(($csv = fgetcsv($handle, 999, ";")) !== false):
-							if($first_continue) {
-								$first_continue = false;
-							} else {
-					?>
-            			<tr>
-            			<?php foreach($csv as $c) : ?>
-            				<td><?php echo $c ?></td>
-           				<?php endforeach; ?>
-                        </tr>
-            		<?php } endwhile ?>
-            		</tbody>
-            	</table>
-            	<button type="submit">Importieren</button>
-                <button type="reset">Zurücksetzen</button>
-            </div>
-            </form>
-            <?php
+										?>
+										
+										<script type="text/javascript">
+											var columns = new Array(<?php
+												$i = 0;
+												
+												foreach($columns as $column) {
+													if($i++) echo ',';
+													echo '"' . $column . '"';
+												}
+											?>);
+											
+											function reset_field(id) {
+												$(id).val("");
+												$(id).removeClass("alternate");
+											}
+											
+											$(document).ready(function() {
+												for(i = 1; i <= <?php echo $count_column; ?>; i++) {
+													div = 	$('<td><input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
+																'" onfocus="this.blur()" readonly />' + '<label for="column-field-' + i + 
+																'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable></td>'
+															);
+													
+													$("#column-fields").append(div);
+												}
+												
+												var width = $("#column-field-1").outerWidth();
+												
+												for(i = 1; i <= columns.length; i++) {
+													div = $('<div class="item draggable" style="width: ' + width + 'px">' + columns[i - 1] + '</div>');
+													
+													$("#items").append(div);
+													$(div).draggable({
+														revert: true
+													}).data("name", columns[i - 1]);
+												}
+											});
+											
+											$(function() {
+												$(".column-field").droppable({
+													drop: function( event, ui ) {
+														$(".column-field").each(function(i, e) {
+															if($(this).val() == ui.draggable.data("name"))
+																$(this).val("").removeClass("alternate");
+														});
+														$(this).val(ui.draggable.data("name"))
+														$(this).addClass("alternate");
+													}
+												});
+												
+												$("form").bind("reset", function() {
+													$(".droppable").each(function(index, e) {
+														$(e).removeClass("alternate");
+													});
+												});
+											});
+										</script>
+										
+										<?php
+											$param = "&columns=" . $count_column;
+											
+											if(isset($_POST["caption"]))
+												$param .= "&caption=" . $_POST["caption"];
+											
+											if(isset($_POST["delete_file"]))
+												$param .= "&delete_file=" . $_POST["delete_file"];
+											
+										?>
+										
+										<form method="post" name="upload" action="csv-import.php?import<?php echo $param; ?>">
+										
+											<div class="users box">
+											
+												<input type="hidden" name="file" value="<?php echo $file ?>">
+												
+												<h4>Datenbankspalten</h4>
+												
+												<div id="items" class="row"></div>
+												
+												<h4>Die <em>*.csv</em> - Datei hat <?php echo $count_column; ?> Spalten:</h4>
+												
+												<div class="option">Bitte ordnen Sie der <em>*.csv</em> - Datei die entsprechenden Datenbankspalten via <span style="cursor: help" title="ziehen und loslassen">"drag'n'drop"</span> zu</div>
+												
+												<h4><em>*.csv</em> - Tabelle</h4>
+												
+												<table class="table table-striped">
+												
+												<?php
+												
+													// display captions
+													
+													if(isset($_POST["caption"])) {
+													
+														echo "<thead>";
+														
+														for($i = 0; $i < $count_column; $i++) {
+															echo "<th>{$first[$i]}</th>";	
+														}
+														
+														echo "</thead>";	
+													} 
+												?>
+												
+													<tbody>
+														
+														<tr id="column-fields"></tr>
+														
+													<?php 
+														$first_continue = false;
+														if(isset($_POST["caption"]))
+															$first_continue = true;
+														
+														while(($csv = fgetcsv($handle, 999, ";")) !== false) {
+														
+															if($first_continue) {
+																$first_continue = false;
+															}
+															else {
+																echo "<tr>":
+																
+																foreach($csv as $c) {
+																	echo "<td>$c</td>";
+																}
+																
+																echo "</tr>";
+															}
+														}
+													?>
+													
+													</tbody>
+												
+												</table>
+												
+												<button type="submit">Importieren</button>
+												<button type="reset">Zurücksetzen</button>
+												
+											</div><!-- .users .box -->
+											
+										</form>
+										<?php
+										
 										fclose($handle);
 									}
 								}
@@ -400,9 +441,7 @@
 							}
 						}
 						else {
-							$errorHandler->add_error("format-csv");
-							
-							
+							$errorHandler->add_error("format-csv");		
 						}
 					}
 				}
@@ -417,29 +456,43 @@
 					
 					die;
 				}
+				
 			}
 			else {
-    		?>
-            <form method="post" name="data" action="csv-import.php?upload" enctype="multipart/form-data">
-            <div class="users box">
-            	<h4><em>*.csv</em> - Datei auswählen:</h4>
-                <div class="upload">
-                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get("upload_max_filesize")); ?>" />
-                    <input id="file" name="file" type="file" />
-                </div>
-                <div class="option">
-                    <input id="delete_file" name="delete_file" type="checkbox" value="1" checked>
-                    <label for="delete_file">Datei nach Bearbeitung löschen</label>
-                </div>
-                <div class="option">
-                    <input id="caption" name="caption" type="checkbox" value="1" />
-                    <label for="caption">Erste Reihe ist Überschrift</label>
-                </div>
-                <button type="submit">Hochladen</button>
-            </div>
-            </form>
-            <?php } ?>
-		</div>	
+			
+			?>	
+			
+			<form method="post" name="data" action="csv-import.php?upload" enctype="multipart/form-data">
+			
+				<div class="users box">
+				
+					<h4><em>*.csv</em> - Datei auswählen:</h4>
+					
+					<div class="upload">
+						<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get("upload_max_filesize")) ?>">
+						<input id="file" name="file" type="file">
+					</div><!-- .upload -->
+					
+					<div class="option">
+						<input id="delete_file" name="delete_file" type="checkbox" value="1" checked>
+						<label for="delete_file">Datei nach Bearbeitung löschen</label>
+					</div><!-- .option -->
+					
+					<div class="option">
+						<input id="caption" name="caption" type="checkbox" value="1">
+						<label for="caption">Erste Reihe ist Überschrift</label>
+					</div><!-- .option -->
+					
+					<button type="submit">Hochladen</button>
+					
+				</div><!-- .users .box -->
+			
+			</form>
+			
+			<?php } ?>
+			
+		</div><!-- #csv-report -->
+			
 	</body>
 </html>
 
