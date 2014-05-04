@@ -113,7 +113,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-result" class="container">
+		<div id="user-result" class="container admin-wrapper">
 			<h1>Auswertung</h1>
             <div class="common box">
             	<h2>Allgemeines</h2>
