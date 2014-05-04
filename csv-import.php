@@ -225,7 +225,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="csv-import" class="container">
+		<div id="csv-import" class="container-fluid admin-wrapper">
         	<?php if(isset($_GET["error"])): ?>
             <div class="alert alert-danger">
             	<ul>
