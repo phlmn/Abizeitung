@@ -1,4 +1,5 @@
 <?php 
+	
 	class Errors {
 		
 		public static function display_errors() {

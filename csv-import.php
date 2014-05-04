@@ -9,8 +9,6 @@
 
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
-	$error = NULL;
-	
 	$columns = array(
 		"prename", 
 		"lastname", 
@@ -155,7 +153,7 @@
 									if(!$tutorial_fail) {
 										$tutorial_fail = true;
 										
-										$error = "tutorial";
+										$errorHandler->add_error("cannot-add-tutorial");
 									}
 								}
 							}
@@ -180,34 +178,34 @@
 						if(!$columns_fail) {
 							$columns_fail = true;
 							
-							$error = "required-columns";
+							$errorHandler->add_error("required-columns");
 						}
 					}
 				}
 				
 				// close file
 				fclose($handle);
-				
-				// delete file
-				if(isset($_GET["delete_file"])) {
-					if($_GET["delete_file"] == 1) {
-						if(!unlink($file))
-							$error = "file-delete";
-					}
-				}
 			}
 		}
 		else {
-			$error = "file-access";
+			$errorHandler->add_error("file-access");
+		}
+		
+		// delete file
+		if(isset($_GET["delete_file"])) {
+			if($_GET["delete_file"] == 1) {
+				if(!unlink($file))
+					$errorHandler->add_error("cannot-delete-file");
+			}
 		}
 		
 		db_close();
 		
-		if(!$error)	{
-			header("Location: ./csv-import.php?saved");
+		if($errorHandler->is_error())	{
+			header("Location: ./csv-import.php?error" . $errorHandler->export_url_param());
 		}
 		else {
-			header("Location: ./csv-import.php?error=" . $error);
+			header("Location: ./csv-import.php?saved");
 		}
 		
 		die;
@@ -226,42 +224,14 @@
 	<body>
 		<?php require("nav-bar.php") ?>
 		<div id="csv-import" class="container">
-        	<?php if(isset($_GET["error"])): ?>
+        	<?php 
+				if(isset($_GET["error"])): 
+					
+					$errorHandler->import_url_param($_GET);
+			?>
             <div class="alert alert-danger">
             	<ul>
-                	<li><?php
-						switch($_GET["error"]) {
-							case "no-file":
-								echo "Es wurde keine Datei ausgewählt";
-								break;
-							case "format":
-								echo "Die Datei hat nicht das richtige Format.<br />Bitte wählen Sie eine <strong>*.csv</strong> Datei aus.";
-								break;
-							case "upload":
-								echo "Die Datei konnte nicht hochgeladen werden.";
-								break;
-							case "file-access":
-								echo "Fehler beim Dateizugriff.<br />Bitte überprüfen Sie, ob die Datei hochgeladen worden ist.";
-								break;
-							case "form":
-								echo "Formularfehler";
-								break;
-							case "too-little-columns":
-								echo "Die Datei hat zu wenig " . ((isset($_GET["count-column"])) ? "(" . $_GET["count-column"] .")" : "") . " spalten.<br />" . 
-									 "Es werden mindestens 3 benötigt.";
-								break;
-							case "required-columns":
-								echo "Es fehlen benötigte Spalten.<br />" . 
-									 "Überprüfen Sie, ob die Spalten <strong>prename</strong>, <strong>lastname</strong> und <strong>female</strong> gesetzt sind";
-								break;
-							case "tutorial":
-								echo "Fehler beim Eintragen des Tutoriums<br />Bitte überprüfen Sie, ob Sie die Tutorien eingetragen haben";
-								break;
-							
-							
-							
-						}
-					?></li>
+					<?php $errorHandler->get_errors("li", 3); ?>
                 </ul>
             </div>
             <?php else: if(isset($_GET["saved"])) : ?>
@@ -419,26 +389,33 @@
 									}
 								}
 								else {
-									$error = "too-little-columns&count-column=" . $count_column;
+									$errorHandler->add_error("too-little-columns");
+									
+									if(isset($_POST["delete_file"])) {
+										if($_POST["delete_file"] == 1)
+											unlink($file);
+									}
 								}
 							}
 							else {
-								$error = "upload";
+								$errorHandler->add_error("cannot-upload");
 							}
 						}
 						else {
-							$error = "format";
+							$errorHandler->add_error("format-csv");
+							
+							
 						}
 					}
 				}
 				else {
-					$error = "no-file";
+					$errorHandler->add_error("no-selected-file");
 				}
 				
-				if($error) {
+				if($errorHandler->is_error()) {
 					db_close();
 					
-					header("Location: ./csv-import.php?error=" . $error);
+					header("Location: ./csv-import.php?error" . $errorHandler->export_url_param(true));
 					
 					die;
 				}

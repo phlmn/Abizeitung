@@ -17,7 +17,7 @@
 		
 		if($userID >= 0) {
 			$_SESSION["user"] = $userID;
-			header("Location: dashboard.php");
+			header("Location: ./dashboard.php");
 			die;
 		}
 		else {

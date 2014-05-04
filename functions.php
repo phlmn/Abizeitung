@@ -1,6 +1,9 @@
 <?php
 
 	require_once("./classes/cUserManager.php");
+	require_once("./classes/cErrorHandler.php");
+	
+	$errorHandler = new ErrorHandler();
 	
 	function head() {
 		require_once("head.php");
