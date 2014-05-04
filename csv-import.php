@@ -235,7 +235,7 @@
 					</ul>
 				</div>
 			
-			<?php else if(isset($_GET["saved"])) : ?>
+			<?php elseif(isset($_GET["saved"])) : ?>
 			
 				<div class="alert alert-success">Importieren erfolgreich abgeschlossen.</div>
 			
@@ -401,7 +401,7 @@
 																$first_continue = false;
 															}
 															else {
-																echo "<tr>":
+																echo "<tr>";
 																
 																foreach($csv as $c) {
 																	echo "<td>$c</td>";
