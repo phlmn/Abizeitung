@@ -65,30 +65,31 @@
 				
 				// get content
 				
-				$columns_fail = false;
-				$form_fail = false;
+				$col = "";
+				
+				foreach($cols as $c) {
+					$col .= $c["name"] . ", ";
+				}
 				
 				$headline = false;
 				
 				if(isset($_GET["caption"]))
 					$headline = true;
+					
+				// 	Required columns:
+				// 		prename, lastname, female
+					
+				if(substr_count($col, "prename") && substr_count($col, "lastname") && substr_count($col, "female")) {
 				
-				while(($csv = fgetcsv($handle, 999, ";")) !== false) {
-					
-					$col = "";
-					$val = "";
-					
-					foreach($cols as $c) {
-						$col .= $c["name"] . ", ";
-						$val .= "'" .$csv[$c["index"]] . "', ";
-					}
-					
-					// 	Required columns:
-					// 		prename, lastname, female
-					
-					$tutorial_fail = false;
-					
-					if(strpos($col, "prename") >= 0 && strpos($col, "lastname") >= 0 && strpos($col, "female") >= 0) {
+					while(($csv = fgetcsv($handle, 999, ";")) !== false) {
+						
+						$tutorial_fail = false;
+						$val = "";
+						
+						foreach($cols as $c) {
+							$val .= "'" .$csv[$c["index"]] . "', ";
+						}
+						
 						if($headline) {
 							$headline = false;
 						}
@@ -173,14 +174,10 @@
 							
 							$stmt->close();
 							
-						}	
-					} else {
-						if(!$columns_fail) {
-							$columns_fail = true;
-							
-							$errorHandler->add_error("required-columns");
 						}
 					}
+				} else {
+					$errorHandler->add_error("required-columns");
 				}
 				
 				// close file

@@ -119,7 +119,7 @@
 			$errors = array();
 			
 			foreach($this->storage as $error) {
-				array_push($errors, $error);
+				array_push($errors, __get_error($error));
 			}
 			
 			return $errors;
