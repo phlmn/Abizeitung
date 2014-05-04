@@ -290,22 +290,24 @@
 				}
 				
 				$(document).ready(function() {
-					for(i = 1; i <= columns.length; i++) {
-						div1 = $('<div class="item draggable col-md-2">' + columns[i - 1] + '</div>');
-						
-						$("#items").append(div1);
-						$(div1).draggable({
-							revert: true
-						}).data("name", columns[i - 1]);
-					}
-					
 					for(i = 1; i <= <?php echo $count_column; ?>; i++) {
-						div2 = 	$('<td><input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
+						div = 	$('<td><input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
 									'" onfocus="this.blur()" readonly />' + '<label for="column-field-' + i + 
 									'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable></td>'
 								);
 						
-						$("#column-fields").append(div2);
+						$("#column-fields").append(div);
+					}
+					
+					var width = $("#column-field-1").outerWidth();
+					
+					for(i = 1; i <= columns.length; i++) {
+						div = $('<div class="item draggable" style="width: ' + width + 'px">' + columns[i - 1] + '</div>');
+						
+						$("#items").append(div);
+						$(div).draggable({
+							revert: true
+						}).data("name", columns[i - 1]);
 					}
 				});
 				
