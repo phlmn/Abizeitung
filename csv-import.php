@@ -334,9 +334,9 @@
 					}
 					
 					for(i = 1; i <= <?php echo $count_column; ?>; i++) {
-						div2 = 	$('<input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
+						div2 = 	$('<td><input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
 									'" onfocus="this.blur()" readonly />' + '<label for="column-field-' + i + 
-									'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable>'
+									'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable></td>'
 								);
 						
 						$("#column-fields").append(div2);
@@ -379,12 +379,10 @@
                 <div id="items" class="row">
                 </div>
                 <h4>Die <em>*.csv</em> - Datei hat <?php echo $count_column; ?> Spalten:</h4>
-                <div id="column-fields" class="row">
-                </div>
                 <div class="option">Bitte ordnen Sie der <em>*.csv</em> - Datei die entsprechenden Datenbankspalten via <span style="cursor: help" title="ziehen und loslassen">"drag'n'drop"</span> zu</div>
                 <h4><em>*.csv</em> - Tabelle:</h4>
                 <table class="table table-striped">
-                <?php if(isset($_GET["caption"])): ?>
+                <?php if(isset($_POST["caption"])): ?>
                 	<thead>
                     <?php for($i = 0; $i < $count_column; $i++): ?>
                     	<th><?php echo $first[$i]; ?></th>
@@ -392,9 +390,11 @@
                     </thead>
                 <?php endif; ?>
                     <tbody>
+                    	<tr id="column-fields">
+                        </tr>
 					<?php 
 						$first_continue = false;
-						if(isset($_GET["caption"]))
+						if(isset($_POST["caption"]))
 							$first_continue = true;
 						
 						while(($csv = fgetcsv($handle, 999, ";")) !== false):
