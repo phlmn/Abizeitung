@@ -94,7 +94,7 @@
 		$userdata["birthday"] = $_POST["birthday"];
 		$userdata["nickname"] = $_POST["nickname"];
 		
-		UserManager::update_userdata($userdata);
+		$errorHandler->add_error(UserManager::update_userdata($userdata));
 		
 		// Update Nicknames
 		

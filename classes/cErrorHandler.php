@@ -39,6 +39,7 @@
 			$save = 0;
 			
 			switch($error) {
+				case 0: return false; break;
 				case "cannot-save-1": 			$save = 1; break;
 				case "cannot-save-n": 			$save = 2; break;
 				case "email-password-missing": 	$save = 3; break;
@@ -62,7 +63,8 @@
 				case "cannot-accept-nickname": 	$save = 21; break;
 				case "cannot-update-answers": 	$save = 22; break;
 				case "cannot-update-surveys": 	$save = 23; break;
-				case 0: return false; break;
+				case "cannot-find-user": 		$save = 24; break;
+				case "cannot-update-birthday": 	$save = 25; break;
 				default: $save = intval($error);
 			}
 			
@@ -77,6 +79,7 @@
 			$message = "";
 			
 			switch($error) {
+				case 0: 	return false; break;
 				case 1: 	case "cannot-save-1": 			$message = "1 Anfrage konnte nicht gespeichert werden."; break;
 				case 2: 	case "cannot-save-n": 			$message = "# Anfragen konnten nicht gespeichert werden."; break;
 				case 3: 	case "email-password-missing": 	$message = "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben"; break;
@@ -100,6 +103,9 @@
 				case 21: 	case "cannot-accept-nickname": 	$message = "Der Spitzname konnte nicht akzeptiert werden"; break;
 				case 22: 	case "cannot-update-answers": 	$message = "Die Antworten konnten nicht gespeichert werden"; break;
 				case 23: 	case "cannot-update-surveys": 	$message = "Die Umfrageergebnisse konnten nicht gespeichert werden"; break;
+				case 24: 	case "cannot-find-user": 		$message = "Der Nutzer wurde nicht gefunden"; break;
+				case 25: 	case "cannot-update-birthday": 	$message = "Das Geburtsdatum konnte nicht gespeichert werden"; break;
+				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten";
 			}
 			
 			for($i = 1; $i < func_num_args() && $i - 1 < substr_count($message, '#'); $i++) {

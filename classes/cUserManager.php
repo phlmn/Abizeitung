@@ -588,7 +588,7 @@
 			if(!$res) {
 				// Nutzer ist nicht vorhanden
 				
-				return -2;
+				return "cannot-find-user";
 			}
 			
 			if(empty($data["nickname"])) {
@@ -667,23 +667,25 @@
 				}
 			}
 			
-			$stmt = $mysqli->prepare("
-				UPDATE users
-				SET
-					birthday = ?
-				WHERE id = ?
-			");
+			if(!empty($data["birthday"])) {
+				$stmt = $mysqli->prepare("
+					UPDATE users
+					SET
+						birthday = ?
+					WHERE id = ?
+				");
+				
+				$stmt->bind_param("si", null_on_empty($data["birthday"]), intval($data["id"]));
+				$stmt->execute();
+				
+				$res = $stmt->num_rows;
+				$stmt->close();
+				
+				if($res > 0)
+					return "cannot-update-birthday";
+			}
 			
-			$stmt->bind_param("si", null_on_empty($data["birthday"]), intval($data["id"]));
-			$stmt->execute();
-			
-			$res = $stmt->num_rows;
-			$stmt->close();
-			
-			if($res > 0)
-				return -1;
-			else
-				return 0;
+			return 0;
 		}
 			
 	}
