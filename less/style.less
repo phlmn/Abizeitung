@@ -910,6 +910,10 @@ td.edit a {
 #error-reports {
 	tbody {
 		tr {
+			td {
+				transition: background .2s;
+			}
+			
 			td.edit a {
 				text-decoration: none;
 				border: none;
@@ -920,6 +924,14 @@ td.edit a {
 		tr.error {
 			border-left: 4px solid darken(@color4, 25%);
 			
+			&:nth-child(2n+1):hover td {
+				background: lighten(@color4, 23%);
+			}
+			
+			&:nth-child(2n+2):hover td {
+				background: lighten(@color4, 25%);
+			}
+			
 			td.edit a:hover {
 				color: darken(@color3, 20%);
 			}
@@ -927,6 +939,14 @@ td.edit a {
 		
 		tr.solved {
 			border-left: 4px solid darken(@color3, 20%);
+			
+			&:nth-child(2n+1):hover td {
+				background: lighten(@color3, 23%);
+			}
+			
+			&:nth-child(2n+2):hover td {
+				background: lighten(@color3, 25%);
+			}
 			
 			td.edit a:hover {
 				color: darken(@color4, 25%);
