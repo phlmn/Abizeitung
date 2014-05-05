@@ -296,26 +296,45 @@
 												$(id).removeClass("alternate");
 											}
 											
+											function set_col_size() {
+												var width = $("#column-field-1").innerWidth() + 4;
+												
+												for(i = 1; i <= columns.length; i++) {
+													$(".item").each(function() {
+														$(this).css("width", width + "px");
+													});
+												}
+											}
+											
+											$(window).resize(function() {
+												set_col_size();
+											});
+											
 											$(document).ready(function() {
 												for(i = 1; i <= <?php echo $count_column; ?>; i++) {
-													div = 	$('<td><input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable col-md-2" placeholder="Reihe ' + i + 
-																'" onfocus="this.blur()" readonly />' + '<label for="column-field-' + i + 
-																'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span></lable></td>'
-															);
+													div = $(
+														'<td>' + 
+															'<input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable" ' +
+																'placeholder="Reihe ' + i + '" onfocus="this.blur()" readonly />' + 
+															'<label for="column-field-' + i + 
+																'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span>' +
+															'</lable>' +
+														'</td>'
+													);
 													
 													$("#column-fields").append(div);
 												}
 												
-												var width = $("#column-field-1").outerWidth();
-												
 												for(i = 1; i <= columns.length; i++) {
-													div = $('<div class="item draggable" style="width: ' + width + 'px">' + columns[i - 1] + '</div>');
+													div = $('<div class="item draggable">' + columns[i - 1] + '</div>');
 													
 													$("#items").append(div);
 													$(div).draggable({
 														revert: true
 													}).data("name", columns[i - 1]);
 												}
+												
+												set_col_size();
 											});
 											
 											$(function() {
