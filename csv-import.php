@@ -14,7 +14,8 @@
 		"lastname", 
 		"female", 
 		"tutorial",
-		"tutor"
+		"tutor_lastname",
+		"tutor_prename"
 	);
 	
 	if(isset($_GET["import"])) {
@@ -30,7 +31,8 @@
 				$cols = array();
 				$seperated = array(
 					"tutorial" => NULL,
-					"tutor" => NULL
+					"tutor_prename" => NULL,
+					"tutor_lastname" => NULL
 				);
 					
 				if(isset($_GET["columns"])) {
@@ -41,9 +43,12 @@
 						if(!empty($field)) {
 							if($field == "tutorial") {
 								$seperated["tutorial"] = $i;
-							} 
-							elseif($field == "tutor") {
-								$seperated["tutor"] = $i;
+							}
+							elseif($field == "tutor_prename") {
+								$seperated["tutor_prename"] = $i;
+							}
+							elseif($field == "tutor_lastname") {
+								$seperated["tutor_lastname"] = $i;
 							}
 							else {
 								array_push($cols, array(
@@ -151,11 +156,186 @@
 								
 								$stmt->close();
 								
+								// tutorial doesnt exists
+								
 								if(!$res) {
-									if(!$tutorial_fail) {
-										$tutorial_fail = true;
+									
+									// insert tutorial
+									
+									$stmt = $mysqli->prepare("
+										INSERT INTO tutorials (
+											name
+										) VALUES (
+											?
+										)
+									");
+									
+									$stmt->bind_param("s", $csv[$seperated["tutorial"]]);
+									$stmt->execute();
+									
+									$stmt->close();
+									
+									// get tutorial id
+									
+									$stmt = $mysqli->prepare("
+										SELECT id
+										FROM tutorials
+										WHERE name = ?
+										LIMIT 1
+									");
+									
+									$stmt->bind_param("s", $csv[$seperated["tutorial"]]);
+									$stmt->execute();
+									
+									$stmt->bind_result($user["tutorial"]["id"]);
+									$res = $stmt->fetch();
+									
+									$stmt->close();
+									
+									if($res) {
+										if($seperated["tutor_prename"] != NULL || $seperated["tutor_lastname"] != NULL) {
+											
+											// search teacher
+											
+											$teacherid = 0;
+											$res = 0;
+											
+											if($seperated["tutor_prename"] != NULL && $seperated["tutor_lastname"] != NULL) {
+												$stmt = $mysqli->prepare("
+													SELECT id
+													FROM users
+													WHERE
+														prename = ?
+													AND lastname = ?
+													LIMIT 1
+												");
+												
+												$stmt->bind_param("ss", $csv[$seperated["tutor_prename"]], $csv[$seperated["tutor_lastname"]]);
+												$stmt->execute();
+												
+												$stmt->bind_result($teacherid);
+												$res = $stmt->fetch();
+												
+												$stmt->close();
+											}
+											elseif($seperated["tutor_lastname"] != NULL) {
+												$stmt = $mysqli->prepare("
+													SELECT id
+													FROM users
+													WHERE lastname = ?
+													LIMIT 1
+												");
+												
+												$stmt->bind_param("s", $csv[$seperated["tutor_lastname"]]);
+												$stmt->execute();
+												
+												$stmt->bind_result($teacherid);
+												$res = $stmt->fetch();
+												
+												$stmt->close();
+											}
+											else {
+												$stmt = $mysqli->prepare("
+													SELECT id
+													FROM users
+													WHERE prename = ?
+													LIMIT 1
+												");
+												
+												$stmt->bind_param("s", $csv[$seperated["tutor_prename"]]);
+												$stmt->execute();
+												
+												$stmt->bind_result($teacherid);
+												$res = $stmt->fetch();
+												
+												$stmt->close();
+											}
+											
+											// teacher doesnt exists
+											
+											if(!$res) {
+											
+												// insert teacher
+												
+												$tutor["prename"] 		= $csv[$seperated["tutor_prename"]];
+												$tutor["lastname"] 		= $csv[$seperated["tutor_lastname"]];
+												$tutor["tutorial"] 		= $csv[$seperated["tutorial"]];
+												$tutor["unlock_key"] 	= get_unlock_code();
+												
+												$stmt = $mysqli->prepare("
+													INSERT INTO users (
+														prename, lastname, activated, unlock_key
+													) VALUES (
+														?, ?, 0, ?
+													)
+												");
+												
+												$stmt->bind_param("sss", null_on_empty($tutor["prename"]), null_on_empty($tutor["lastname"]), $tutor["unlock_key"]);
+												$stmt->execute();
+												
+												$stmt->close();
+												
+												// get teacher id
+												
+												$stmt = $mysqli->prepare("
+													SELECT id
+													FROM users
+													WHERE unlock_key = ?
+												");
+												
+												$stmt->bind_param("s", $tutor["unlock_key"]);
+												$stmt->execute();
+												
+												$stmt->bind_result($teacherid);
+												$res = $stmt->fetch();
+												
+												$stmt->close();
+												
+												if(!$res) {
+													$errorHandler->add_error("cannot-add-user");
+												}
+												
+												// insert user as teacher
+												
+												$stmt = $mysqli->prepare("
+													INSERT INTO teachers (
+														uid
+													) VALUES (
+														?
+													)
+												");
+												
+												$stmt->bind_param("i", $teacherid);
+												$stmt->execute();
+												
+												$stmt->close();
+											}
+											
+											// refer teacher to tutorial
+											
+											$stmt = $mysqli->prepare("
+												UPDATE tutorials
+												SET tutor = (
+													SELECT teachers.id 
+													FROM teachers
+													WHERE teachers.uid = ?
+												)
+												WHERE tutorials.id = ?
+											");
+											
+											$stmt->bind_param("ii", $teacherid, $user["tutorial"]["id"]);
+											
+											$stmt->execute();
+											
+											$stmt->close();
+										}
+										else {
+											$errorHandler->add_error("cannot-add-tutorial");
+										}
 										
-										$errorHandler->add_error("cannot-add-tutorial");
+									}
+									else {
+										$errorHandler->add_error("cannot-add-tutorial", true, "csv-import", "insert", $data["id"]);
 									}
 								}
 							}
@@ -397,14 +577,13 @@
 												
 												<div id="items" class="row"></div>
 												
-												<h4>Die <em>*.csv</em> - Datei hat <?php echo $count_column; ?> Spalten:</h4>
 												
 												<div class="option">
                                                 	Bitte ordnen Sie der <em>*.csv</em> - Datei die entsprechenden Datenbankspalten via 
                                                     <span style="cursor: help" title="ziehen und loslassen">"drag'n'drop"</span> zu.
                                                 </div>
 												
-												<h4><em>*.csv</em> - Tabelle</h4>
+												<h4>Die <em>*.csv</em> - Datei hat <?php echo $count_column; ?> Spalten:</h4>
 												
 												<table class="table table-striped">
 												
@@ -481,6 +660,9 @@
 						else {
 							$errorHandler->add_error("format-csv");		
 						}
+					}
+					else {
+						$errorHandler->add_error("no-selected-file");
 					}
 				}
 				else {

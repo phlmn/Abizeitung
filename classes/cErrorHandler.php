@@ -71,7 +71,8 @@
 				default: $save = intval($error);
 			}
 			
-			array_push($this->storage, $save);
+			if(!array_search($save, $this->storage))
+				array_push($this->storage, $save);
 				
 			if($store) {
 				error_report($save, $this->get_error($error), $page, $function, $user);
