@@ -215,13 +215,17 @@
 		return str_rand(UNLOCK_KEY);
 	}
 	
-	function get_uri_param() {
+	function get_uri_param($get, $attach = false) {
 		$params = "";
-		$i = 0;
 		
-		foreach($_GET as $key => $value) {
-			if($i++) 
+		foreach($get as $key => $value) {
+			if(!$attach) {
+				$attach = true;
+				$params .= "?";
+			}
+			else {
 				$params .= "&";
+			}
 				
 			$params .=  $key;
 			

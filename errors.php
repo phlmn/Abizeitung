@@ -17,8 +17,9 @@
 			Errors::error_still_existing($_GET["id"]);
 		
 		db_close();
+
 		
-		header("Location: ./errors.php");
+		header("Location: ./errors.php" . ((isset($_GET["solved"])) ? "?solved" : ""));
 		
 		die;
 	}

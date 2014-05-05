@@ -363,8 +363,28 @@ div.fancy-select {
 				text-decoration: none;
 				white-space: nowrap;
 				
+				.activity {
+					position: absolute;
+					width: 26px;
+					height: 18px;
+					margin: 2px 0 0 15px;
+					background-color: @color1;
+					font-size: 12px;
+					text-align: center;
+					
+					moz-border-radius: 9px; 
+				   -webkit-border-radius: 9px; 
+				   border-radius: 9px;
+				   
+				   transition: background .2s;
+				}
+				
 				&:hover {
 					background: darken(@color1, 5%);
+					
+					.activity {
+						background-color: lighten(@color1, 20%);
+					}
 				}
 			}
 			
@@ -844,8 +864,7 @@ td.edit a {
 		}	
 	}
 	
-	table.state,
-	table.errors {
+	table.state {
 		th,
 		td {
 			text-align: center;
@@ -861,14 +880,8 @@ td.edit a {
 					background: lighten(@color4, 25%);
 				}
 				
-				&.solved td,
 				td.existing {
 					background: lighten(@color3, 20%);
-				}
-				
-				td.edit a {
-					text-decoration: none;
-					border: none;
 				}
 			}
 			
@@ -890,6 +903,34 @@ td.edit a {
 			background: none;
 			border: none;
 			text-align: center;
+		}
+	}
+}
+
+#error-reports {
+	tbody {
+		tr {
+			td.edit a {
+				text-decoration: none;
+				border: none;
+				transition: color .2s;
+			}
+		}
+		
+		tr.error {
+			border-left: 4px solid darken(@color4, 25%);
+			
+			td.edit a:hover {
+				color: darken(@color3, 20%);
+			}
+		}
+		
+		tr.solved {
+			border-left: 4px solid darken(@color3, 20%);
+			
+			td.edit a:hover {
+				color: darken(@color4, 25%);
+			}
 		}
 	}
 }

@@ -37,7 +37,7 @@
 					$user = $report["prename"] . " " . $report["lastname"];
 				}
 			?>
-        				<tr>
+        				<tr class="error">
                         	<td><a href="<?php echo $report["page"]; ?>" target="_blank"><?php echo $report["page"]; ?></a></td>
                             <td><?php echo $report["code"]; ?></td>
                             <td><?php echo $report["function"]; ?></td>
@@ -48,7 +48,7 @@
                             <td><?php echo $report["message"]; ?></td>
                             <td><?php echo $report["time"]; ?></td>
                             <td class="edit">
-                            	<a href="./errors.php?action=solved&id=<?php echo $report["id"] ?>" class="icon-ok-circled" title="Gelöst"></a>
+                            	<a href="./errors.php?action=solved&id=<?php echo $report["id"] . get_uri_param($_GET, true); ?>" class="icon-ok-circled" title="Gelöst"></a>
                             </td>
                         </tr>
         <?php
@@ -59,8 +59,11 @@
 			if(!isset($_GET["solved"])):
 				if(!$res):
 		?>
-        				<tr class="solved">
-                        	<td colspan="7"><strong>Es liegen aktuell keine Probleme vor</strong> - Gelöste Probleme <a href="./users.php?<?php echo get_uri_param() ?>&solved">anzeigen</a></td>
+        				<tr>
+                        	<td colspan="7">
+                            	<strong>Es liegen aktuell keine Probleme vor</strong> - Gelöste Probleme 
+                                <a href="./errors.php?solved<?php echo get_uri_param($_GET, true) ?>">anzeigen</a>
+                            </td>
                         </tr>
         <?php
 				else:
@@ -101,13 +104,19 @@
                             <td><?php echo $report["message"]; ?></td>
                             <td><?php echo $report["time"]; ?></td>
                             <td class="edit">
-                            	<a href="./errors.php?action=existing&id=<?php echo $report["id"] ?>" class="icon-cancel-circled" title="Ungelöst"></a>
+                            	<a href="./errors.php?action=existing&id=<?php echo $report["id"] . get_uri_param($_GET, true); ?>" class="icon-cancel-circled" title="Ungelöst"></a>
                             </td>
                         </tr>
         <?php
 				endwhile;
 				
 				$stmt->close();
+				
+		?>
+        				<tr>
+                        	<td colspan="7">Gelöste Probleme <a href="./errors.php">ausblenden</a></td>
+                        </tr>
+        <?php
 				
 			endif;
 		?>
