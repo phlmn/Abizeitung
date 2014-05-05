@@ -13,7 +13,8 @@
 		"prename", 
 		"lastname", 
 		"female", 
-		"tutorial"
+		"tutorial",
+		"tutor"
 	);
 	
 	if(isset($_GET["import"])) {
@@ -292,84 +293,88 @@
 										?>
 										
 										<script type="text/javascript">
-											var columns = new Array(<?php
-												$i = 0;
-												
-												foreach($columns as $column) {
-													if($i++) echo ',';
-													echo '"' . $column . '"';
-												}
-											?>);
-											
-											function reset_field(id) {
-												$(id).val("");
-												$(id).removeClass("alternate");
-											}
-											
-											function set_col_size() {
-												var width = 160;
-												
-												if(<?php echo $count_column; ?> >= 3) {
-													width = $("#column-field-1").innerWidth() + 4;
-												}
-												
-												for(i = 1; i <= columns.length; i++) {
-													$(".item").each(function() {
-														$(this).css("width", width + "px");
-													});
-												}
-											}
-											
-											$(window).resize(function() {
-												set_col_size();
-											});
-											
-											$(document).ready(function() {
-												for(i = 1; i <= <?php echo $count_column; ?>; i++) {
-													div = $(
-														'<td>' + 
-															'<input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable" ' +
-																'placeholder="Reihe ' + i + '" onfocus="this.blur()" readonly />' + 
-															'<label for="column-field-' + i + 
-																'" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span>' +
-															'</lable>' +
-														'</td>'
-													);
-													
-													$("#column-fields").append(div);
-												}
-												
-												for(i = 1; i <= columns.length; i++) {
-													div = $('<div class="item draggable">' + columns[i - 1] + '</div>');
-													
-													$("#items").append(div);
-													$(div).draggable({
-														revert: true
-													}).data("name", columns[i - 1]);
-												}
-												
-												set_col_size();
-											});
-											
-											$(function() {
-												$(".column-field").droppable({
-													drop: function( event, ui ) {
-														$(".column-field").each(function(i, e) {
-															if($(this).val() == ui.draggable.data("name"))
-																$(this).val("").removeClass("alternate");
-														});
-														$(this).val(ui.draggable.data("name"))
-														$(this).addClass("alternate");
-													}
-												});
-												
-												$("form").bind("reset", function() {
-													$(".droppable").each(function(index, e) {
-														$(e).removeClass("alternate");
-													});
-												});
-											});
-										</script>
+                                            var columns = new Array(<?php
+                                                $i = 0;
+                                                
+                                                foreach($columns as $column) {
+                                                    if($i++) echo ',';
+                                                    echo '"' . $column . '"';
+                                                }
+                                            ?>);
+                                            
+                                            var items = 0;
+                                            
+                                            function reset_field(id) {
+                                                $(id).val("");
+                                                $(id).removeClass("alternate");
+                                            }
+                                            
+                                            function set_col_size() {
+                                                var width = 160;
+                                                
+                                                if(<?php echo $count_column; ?> >= items) {
+                                                    width = $("#column-field-1").innerWidth() + 4;
+                                                }
+                                                
+                                                for(i = 1; i <= columns.length; i++) {
+                                                    $(".item").each(function() {
+                                                        $(this).css("width", width + "px");
+                                                    });
+                                                }
+                                            }
+                                            
+                                            $(window).resize(function() {
+                                                set_col_size();
+                                            });
+                                            
+                                            $(document).ready(function() {
+                                                for(i = 1; i <= <?php echo $count_column; ?>; i++) {
+                                                    div = $(
+                                                        '<td>' + 
+                                                            '<input id="column-field-' + i +'" name="column-field-' + i +'" type="text" class="column-field droppable" ' +
+                                                                'placeholder="Reihe ' + i + '" onfocus="this.blur()" readonly />' + 
+                                                            '<label for="column-field-' + i + 
+                                                                '" class="reset" onclick="reset_field(\'#column-field-' + i + '\')"><span class="icon-minus-circled"></span>' +
+                                                            '</lable>' +
+                                                        '</td>'
+                                                    );
+                                                    
+                                                    $("#column-fields").append(div);
+                                                }
+                                                
+                                                for(i = 1; i <= columns.length; i++) {
+                                                    div = $('<div class="item draggable">' + columns[i - 1] + '</div>');
+                                                    
+                                                    $("#items").append(div);
+                                                    $(div).draggable({
+                                                        revert: true
+                                                    }).data("name", columns[i - 1]);
+                                                }
+                                                
+                                                items = i - 1;
+                                                
+                                                set_col_size();
+                                            });
+                                            
+                                            $(function() {
+                                                $(".column-field").droppable({
+                                                    drop: function( event, ui ) {
+                                                        $(".column-field").each(function(i, e) {
+                                                            if($(this).val() == ui.draggable.data("name"))
+                                                                $(this).val("").removeClass("alternate");
+                                                        });
+                                                        $(this).val(ui.draggable.data("name"))
+                                                        $(this).addClass("alternate");
+                                                    }
+                                                });
+                                                
+                                                $("form").bind("reset", function() {
+                                                    $(".droppable").each(function(index, e) {
+                                                        $(e).removeClass("alternate");
+                                                    });
+                                                });
+                                            });
+                                        </script>
 										
 										<?php
 											$param = "&columns=" . $count_column;
