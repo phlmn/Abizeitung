@@ -337,31 +337,37 @@
                 <input type="hidden" id="error-category" name="error-category" />
                 <div class="error-category">
                 	<ul>
-                    	<li value="1">
-                        	Allgemeines
-                            <ul>
-                            	<li value="11">Vorname</li>
-                                <li value="12">Nachname</li>
-                                <li value="13">Geschlecht</li>
-                                <li value="14">Tutorium</li>
-                                <li value="15">Tutor</li>
-                                <li value="16">Bilder</li>
-                            </ul>
-                        </li>
-                        <li value="2">
-                        	Spitznamen
-                            <ul>
-                            	<li value="21">Spitzname vorschlagen</li>
-                            	<li value="22">Vorgeschlagene Spitznamen</li>
-                                <li value="23">Versendete Spitznamen</li>
-                            </ul>
-                        </li>
-                        <li value="3">
-                        	Fragen
-                        </li>
-                        <li value="4">
-                        	Umfragen
-                        </li>
+                    	<div class="scroll">
+                            <li value="1">
+                                Allgemeines
+                                <ul>
+                                    <div class="scroll">
+                                        <li value="11">Vorname</li>
+                                        <li value="12">Nachname</li>
+                                        <li value="13">Geschlecht</li>
+                                        <li value="14">Tutorium</li>
+                                        <li value="15">Tutor</li>
+                                        <li value="16">Bilder</li>
+                                    </div>
+                                </ul>
+                            </li>
+                            <li value="2">
+                                Spitznamen
+                                <ul>
+                                	<div class="scroll">
+                                        <li value="21">Spitzname vorschlagen</li>
+                                        <li value="22">Vorgeschlagene Spitznamen</li>
+                                        <li value="23">Versendete Spitznamen</li>
+                                    </div>
+                                </ul>
+                            </li>
+                            <li value="3">
+                                Fragen
+                            </li>
+                            <li value="4">
+                                Umfragen
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </div>
