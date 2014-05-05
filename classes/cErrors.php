@@ -48,7 +48,7 @@
                             <td><?php echo $report["message"]; ?></td>
                             <td><?php echo $report["time"]; ?></td>
                             <td class="edit">
-                            	<a href="./error.php?action=solved&id=<?php echo $report["id"] ?>" class="icon-ok-circled" title="Gelöst"></a>
+                            	<a href="./errors.php?action=solved&id=<?php echo $report["id"] ?>" class="icon-ok-circled" title="Gelöst"></a>
                             </td>
                         </tr>
         <?php
