@@ -15,7 +15,7 @@
 </div>
 
 <?php if($data["admin"] == 1): ?>
-<div id="admin-nav">
+<div id="admin-nav" class="hidden-xs">
 	<h2>Administration</h2>
 	<ul>
 		<li>

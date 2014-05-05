@@ -1,4 +1,4 @@
-@import "../bootstrap/less/mixins.less";
+@import "../bootstrap/less/bootstrap.less";
 @import "colors.less";
 @import "mixins.less";
 
@@ -345,6 +345,9 @@ div.fancy-select {
 
 .admin-wrapper {
 	margin-left: 180px;
+	@media (max-width: @screen-xs-max) {
+		margin-left: 0;	
+	}
 }
 
 #admin-nav {
