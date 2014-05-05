@@ -406,9 +406,7 @@
 				echo '<div class="admin-wrapper">';
 		?>
 		
-		<?php endif; ?>
-		
-			<div id="dashboard" class="container">
+		<div id="dashboard" class="container">
 			<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
 			<?php else: if(isset($_GET["error"])): 
