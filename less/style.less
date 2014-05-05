@@ -924,14 +924,6 @@ td.edit a {
 		tr.error {
 			border-left: 4px solid darken(@color4, 25%);
 			
-			&:nth-child(2n+1):hover td {
-				background: lighten(@color4, 23%);
-			}
-			
-			&:nth-child(2n+2):hover td {
-				background: lighten(@color4, 25%);
-			}
-			
 			td.edit a:hover {
 				color: darken(@color3, 20%);
 			}
@@ -939,14 +931,6 @@ td.edit a {
 		
 		tr.solved {
 			border-left: 4px solid darken(@color3, 20%);
-			
-			&:nth-child(2n+1):hover td {
-				background: lighten(@color3, 23%);
-			}
-			
-			&:nth-child(2n+2):hover td {
-				background: lighten(@color3, 25%);
-			}
 			
 			td.edit a:hover {
 				color: darken(@color4, 25%);
@@ -1271,7 +1255,7 @@ div.surveys {
 		.column-field {
 			width: 100%;
 			min-width: 80px;
-			border: 2px dashed #DDD;
+			border: 2px dashed #eee;
 			text-align: center;
 			cursor: default;
 		}
@@ -1292,7 +1276,7 @@ div.surveys {
 		}
 		
 		.alternate {
-			color: #EEE;
+			color: #eee;
 			border: 2px solid lighten(@color1, 5%);
 			background-color: lighten(@color1, 10%);
 		}
