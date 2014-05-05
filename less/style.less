@@ -443,13 +443,16 @@ div.fancy-select {
 
 
 #login {
-	width: 640px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin: -120px 0 0 -320px;
+	margin: 0 20px;
+	@media (min-width: @screen-sm-min) {
+		width: 640px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin: -120px 0 0 -320px;
+	}
 	background: #fff;
-	padding: 20px 10px 30px;
+	padding: 20px 10px 30px 10px;
 	
 	&.login-failed {
 		
@@ -469,12 +472,6 @@ div.fancy-select {
 	input[type="submit"] {
 		width: 100%;
 		display: block;
-		.transition(all .4s);
-	}
-	
-	input[type="submit"]:hover {
-		background: #ddd;
-		color: #333;
 	}
 	
 	h1 {
@@ -489,7 +486,9 @@ div.fancy-select {
 	.registration {
 		
 		margin-top: 30px;
-		border-left: 1px solid #eee;
+		@media (min-width: @screen-sm-min) {
+			border-left: 1px solid #eee;
+		}
 		
 		> div {
 			font-size: 22px;
