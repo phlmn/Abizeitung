@@ -108,7 +108,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management" class="container">
+		<div id="user-management" class="container-fluid admin-wrapper">
         	<?php if(isset($_GET["saved"])): ?>
 				<div class="alert alert-success">Änderungen gespeichert.</div>
             <?php else: if(isset($_GET["error"])): ?>
@@ -124,90 +124,96 @@
                 </div>
             <?php endif; endif; ?>
 			<h1>Nutzerverwaltung</h1>
+			
 			<form id="data_form" name="data" action="edit-user.php?user=<?php echo $_GET["user"] ?>&edit" method="post"></form>
-			<div class="add-user">
-				<h2>Nutzer bearbeiten</h2>
-				<table>
-					<tr>
-						<td class="title">Vorname</td>
-						<td><input name="prename" type="text" form="data_form" value="<?php echo $edit["prename"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">Nachname</td>
-						<td><input name="lastname" type="text" form="data_form" value="<?php echo $edit["lastname"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">Geschlecht</td>
-						<td>
-                        	<select name="gender" form="data_form">
-                                <option value="m" <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option>
-                                <option value="f" <?php if($edit["female"] == 1) echo "selected" ?>>Weiblich</option>
-                            </select>
-                        </td>
-					</tr>
-
-					<tr>
-						<td class="title">Tutorium</td>
-						<td>
-                        	<select name="tutorial" form="data_form">
-                        		<option>-</option>
-                                <?php 
-								
-									$stmt = $mysqli->prepare("
-										SELECT id, name
-										FROM tutorials
-									");
+			
+			<div class="box">
+			
+				<div class="add-user">
+					<h2>Nutzer bearbeiten</h2>
+					<table>
+						<tr>
+							<td class="title">Vorname</td>
+							<td><input name="prename" type="text" form="data_form" value="<?php echo $edit["prename"] ?>" /></td>
+						</tr>
+						<tr>
+							<td class="title">Nachname</td>
+							<td><input name="lastname" type="text" form="data_form" value="<?php echo $edit["lastname"] ?>" /></td>
+						</tr>
+						<tr>
+							<td class="title">Geschlecht</td>
+							<td>
+	                        	<select name="gender" form="data_form">
+	                                <option value="m" <?php if($edit["female"] == 0) echo "selected" ?>>Männlich</option>
+	                                <option value="f" <?php if($edit["female"] == 1) echo "selected" ?>>Weiblich</option>
+	                            </select>
+	                        </td>
+						</tr>
+	
+						<tr>
+							<td class="title">Tutorium</td>
+							<td>
+	                        	<select name="tutorial" form="data_form">
+	                        		<option>-</option>
+	                                <?php 
 									
-									$stmt->execute();
-									$stmt->bind_result($tutorial["id"], $tutorial["name"]);
-									
-									$select = 0;
-									if(isset($edit["tutorial"]["id"]))
-										$select = $edit["tutorial"]["id"];
-									
-									while($stmt->fetch()) {
-										if($select == $tutorial["id"])
-											echo '<option value="' . $tutorial["id"] . '" selected>' . $tutorial["name"] . "</option>";
-										else
-											echo '<option value="' . $tutorial["id"] . '">' . $tutorial["name"] . "</option>";
-									}
-									
-									$stmt->close();
-								?>
-                            </select>
-                        </td>
-					</tr>
-					<tr>
-						<td class="title">Geburtsdatum</td>
-						<td><input name="birthday" type="text" form="data_form" value="<?php echo $edit["birthday"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">Spitzname</td>
-						<td><input name="nickname" type="text" form="data_form" value="<?php echo $edit["nickname"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">E-Mail</td>
-						<td><input name="email" type="text" form="data_form" value="<?php echo $edit["email"] ?>" /></td>
-					</tr>
-					<tr>
-						<td class="title">Passwort</td>
-						<td><input name="password" type="password" form="data_form" placeholder="Unverändert" /></td>
-					</tr>
-                    <tr>
-						<td class="title">Lehrer</td>
-						<td><input name="teacher" type="checkbox" form="data_form" <?php if($edit["isteacher"] == true) echo "checked" ?> /></td>
-					</tr>
-					<tr>
-						<td class="title">Administrator</td>
-						<td><input name="admin" type="checkbox" form="data_form" <?php if($edit["admin"] == true) echo "checked" ?> /></td>
-					</tr>
-				</table>
-			</div>
-						
-			<div class="buttons">
-				<input type="submit" value="Speichern" form="data_form" />
-				<a class="button" href="users.php">Zurück</a>
-                <a class="button delete" href="edit-user.php?user=<?php echo $_GET["user"] ?>&delete">Löschen</a>
+										$stmt = $mysqli->prepare("
+											SELECT id, name
+											FROM tutorials
+										");
+										
+										$stmt->execute();
+										$stmt->bind_result($tutorial["id"], $tutorial["name"]);
+										
+										$select = 0;
+										if(isset($edit["tutorial"]["id"]))
+											$select = $edit["tutorial"]["id"];
+										
+										while($stmt->fetch()) {
+											if($select == $tutorial["id"])
+												echo '<option value="' . $tutorial["id"] . '" selected>' . $tutorial["name"] . "</option>";
+											else
+												echo '<option value="' . $tutorial["id"] . '">' . $tutorial["name"] . "</option>";
+										}
+										
+										$stmt->close();
+									?>
+	                            </select>
+	                        </td>
+						</tr>
+						<tr>
+							<td class="title">Geburtsdatum</td>
+							<td><input name="birthday" type="text" form="data_form" value="<?php echo $edit["birthday"] ?>" /></td>
+						</tr>
+						<tr>
+							<td class="title">Spitzname</td>
+							<td><input name="nickname" type="text" form="data_form" value="<?php echo $edit["nickname"] ?>" /></td>
+						</tr>
+						<tr>
+							<td class="title">E-Mail</td>
+							<td><input name="email" type="text" form="data_form" value="<?php echo $edit["email"] ?>" /></td>
+						</tr>
+						<tr>
+							<td class="title">Passwort</td>
+							<td><input name="password" type="password" form="data_form" placeholder="Unverändert" /></td>
+						</tr>
+	                    <tr>
+							<td class="title">Lehrer</td>
+							<td><input name="teacher" type="checkbox" form="data_form" <?php if($edit["isteacher"] == true) echo "checked" ?> /></td>
+						</tr>
+						<tr>
+							<td class="title">Administrator</td>
+							<td><input name="admin" type="checkbox" form="data_form" <?php if($edit["admin"] == true) echo "checked" ?> /></td>
+						</tr>
+					</table>
+				</div>
+							
+				<div class="buttons">
+					<input type="submit" value="Speichern" form="data_form" />
+					<a class="button" href="users.php<?php if($edit["isteacher"]) echo "?group=teachers"; ?>">Zurück</a>
+	                <a class="button delete" href="edit-user.php?user=<?php echo $_GET["user"] ?>&delete">Löschen</a>
+				</div>
+				
 			</div>
 
 		</div>
