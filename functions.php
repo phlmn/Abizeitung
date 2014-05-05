@@ -151,7 +151,7 @@
 		else {
 			$res["all"] = intval($all);
 			$res["absolute"] = intval($args);
-			$res["percent"] = round($res["absolute"] * 100 / $res["all"], intval($precision));
+			$res["percent"] = floor($res["absolute"] * 100 / $res["all"], intval($precision));
 		}
 		
 		return $res;
