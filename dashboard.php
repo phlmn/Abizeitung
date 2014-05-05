@@ -344,10 +344,11 @@
 				$stmt = $mysqli->prepare("
 					SELECT file
 					FROM images
+					LEFT JOIN categories ON images.category = categories.id
 					WHERE 
-						uid = ? AND
-						category = 1
-					ORDER BY id DESC
+						images.uid = ? AND
+						categories.name = 'enrollment'
+					ORDER BY images.uploadtime DESC
 					LIMIT 1
 				");
 				
@@ -362,10 +363,11 @@
 				$stmt = $mysqli->prepare("
 					SELECT file
 					FROM images
+					LEFT JOIN categories ON images.category = categories.id
 					WHERE 
-						uid = ? AND
-						category = 2
-					ORDER BY id DESC
+						images.uid = ? AND
+						categories.name = 'current'
+					ORDER BY images.uploadtime DESC
 					LIMIT 1
 				");
 				
@@ -456,7 +458,7 @@
 					</div>
 					
 					<div class="col-sm-4">
-						<div id="photo-enrollment" class="photo" data-toggle="tooltip" data-placement="bottom" title="Einschulungsfoto">
+						<div id="photo-enrollment" class="photo" data-toggle="tooltip" data-placement="bottom" title="Kinderfoto">
 							<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data"></form>
 		                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
 							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 'enrollment', '#image-form-enrollment', '#photo-upload-state-enrollment', '#photo-enrollment')" />
@@ -464,7 +466,7 @@
 								<a href="javascript: openImageSelector('#photo-upload-enrollment')">
 		                        	<span id="photo-upload-state-enrollment">
 										<span class="icon-upload"></span>
-										<br>Einschulungsfoto
+										<br>Kinderfoto
 										<br>hochladen...
 		                            </span>
 								</a>

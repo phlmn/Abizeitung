@@ -10,7 +10,7 @@ if(!isset($_GET["user"]) || !isset($_GET["category-name"])) {
 }
 
 $user["id"] 		= intval($_GET["user"]);
-$category["name"] 	= mysql_real_escape_string($_GET["category-name"]);
+$category["name"] 	= $_GET["category-name"];
 $category["id"]		= -1;
 	
 if(!file_exists("photos/" . $category["name"]))
