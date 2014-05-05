@@ -224,11 +224,21 @@
 		
 		<div id="csv-import" class="container-fluid admin-wrapper">
 		
-			<?php if(isset($_GET["error"])): ?>
+			<?php 
+				
+				if(isset($_GET["error"])): 
+				
+					$errorHandler->import_url_param($_GET);
+			?>
 			
 				<div class="alert alert-danger">
 					<ul>
-						<?php $errorHandler->get_errors("li", 3); ?>
+						<?php 
+							$errorHandler->get_errors("li", 
+								"#count_cols#", 3, 
+								"#require_cols#", "<strong>prename</strong>, <strong>lastname</strong> und <strong>female</strong>"
+							); 
+						?>
 					</ul>
 				</div>
 			
@@ -297,7 +307,11 @@
 											}
 											
 											function set_col_size() {
-												var width = $("#column-field-1").innerWidth() + 4;
+												var width = 160;
+												
+												if(<?php echo $count_column; ?> >= 3) {
+													width = $("#column-field-1").innerWidth() + 4;
+												}
 												
 												for(i = 1; i <= columns.length; i++) {
 													$(".item").each(function() {
@@ -380,7 +394,10 @@
 												
 												<h4>Die <em>*.csv</em> - Datei hat <?php echo $count_column; ?> Spalten:</h4>
 												
-												<div class="option">Bitte ordnen Sie der <em>*.csv</em> - Datei die entsprechenden Datenbankspalten via <span style="cursor: help" title="ziehen und loslassen">"drag'n'drop"</span> zu</div>
+												<div class="option">
+                                                	Bitte ordnen Sie der <em>*.csv</em> - Datei die entsprechenden Datenbankspalten via 
+                                                    <span style="cursor: help" title="ziehen und loslassen">"drag'n'drop"</span> zu.
+                                                </div>
 												
 												<h4><em>*.csv</em> - Tabelle</h4>
 												

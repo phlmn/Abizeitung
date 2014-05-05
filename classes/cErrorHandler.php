@@ -8,7 +8,10 @@
 		}
 		
 		public function is_error() {
-			return (count($this->storage) > 0);
+			if(count($this->storage) > 0)
+				return true;
+			else
+				return false;
 		}
 		
 		public function export_url_param($attach = false) {
@@ -39,7 +42,6 @@
 			$save = 0;
 			
 			switch($error) {
-				case 0: return false; break;
 				case "cannot-save-1": 			$save = 1; break;
 				case "cannot-save-n": 			$save = 2; break;
 				case "email-password-missing": 	$save = 3; break;
@@ -65,6 +67,7 @@
 				case "cannot-update-surveys": 	$save = 23; break;
 				case "cannot-find-user": 		$save = 24; break;
 				case "cannot-update-birthday": 	$save = 25; break;
+				case "0": return false; break;
 				default: $save = intval($error);
 			}
 			
@@ -81,7 +84,7 @@
 			switch($error) {
 				case 0: 	return false; break;
 				case 1: 	case "cannot-save-1": 			$message = "1 Anfrage konnte nicht gespeichert werden."; break;
-				case 2: 	case "cannot-save-n": 			$message = "# Anfragen konnten nicht gespeichert werden."; break;
+				case 2: 	case "cannot-save-n": 			$message = "#n# Anfragen konnten nicht gespeichert werden."; break;
 				case 3: 	case "email-password-missing": 	$message = "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben"; break;
 				case 4: 	case "email-existing": 			$message = "Die Emailadresse existiert bereits."; break;
 				case 5: 	case "cannot-add-user": 		$message = "Der Benutzer konnte nicht hinzugefügt werden."; break;
@@ -94,8 +97,8 @@
 				case 12: 	case "format-csv": 				$message = "Die Datei hat nicht das richtige Format.<br />Bitte wählen Sie eine <strong>*.csv</strong> Datei aus."; break;
 				case 13: 	case "cannot-upload": 			$message = "Die Datei konnte nicht hochgeladen werden."; break;
 				case 14: 	case "file-access": 			$message = "Fehler beim Dateizugriff.<br />Bitte überprüfen Sie, ob die Datei hochgeladen worden ist."; break;
-				case 15: 	case "too-little-columns": 		$message = "Die Datei hat zu wenig spalten.<br />Es werden mindestens # benötigt."; break;
-				case 16: 	case "required-columns": 		$message = "Es fehlen benötigte Spalten.<br />Überprüfen Sie, ob die Spalten # gesetzt sind"; break;
+				case 15: 	case "too-little-columns": 		$message = "Die Datei hat zu wenig spalten.<br />Es werden mindestens #count_cols# benötigt."; break;
+				case 16: 	case "required-columns": 		$message = "Es fehlen benötigte Spalten.<br />Überprüfen Sie, ob die Spalten #require_cols# gesetzt sind"; break;
 				case 17: 	case "no-nickname": 			$message = "Das Feld Spitzname darf nicht leer sein."; break;
 				case 18: 	case "cannot-change-data": 		$message = "Die Daten konnten nicht geändert werden."; break;
 				case 19: 	case "cannot-change-password": 	$message = "Das Passwort konnte nicht geändert werden."; break;
@@ -108,8 +111,8 @@
 				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten";
 			}
 			
-			for($i = 1; $i < func_num_args() && $i - 1 < substr_count($message, '#'); $i++) {
-				$message = preg_replace("/#/", func_get_arg($i), $message, 1);
+			for($i = 1; $i + 1 < func_num_args() && $i - 1 < substr_count($message, '#'); $i++) {
+				$message = preg_replace("/" . func_get_arg($i++) . "/", func_get_arg($i), $message, 1);
 			}
 			
 			return $message;
@@ -135,8 +138,8 @@
 			
 			$message = $this->__get_error($error);
 			
-			for($i = 2; $i < func_num_args() && $i - 2 < substr_count($message, '#'); $i++) {
-				$message = preg_replace("/#/", func_get_arg($i), $message, 1);
+			for($i = 2; $i + 1 < func_num_args() && $i - 2 < substr_count($message, '#'); $i++) {
+				$message = preg_replace("/" . func_get_arg($i++) . "/", func_get_arg($i + 1), $message, 1);
 			}
 			
 			echo $begin . $message . $end;
@@ -156,12 +159,19 @@
 				$message = $this->__get_error($error);
 				
 				for($i = 0; $i < substr_count($message, '#'); $i++) {
-					if($param < func_num_args()) {
-						$message = preg_replace("/#/", func_get_arg($param), $message, 1);
+					if($param + 1 < func_num_args()) {
+						$message = preg_replace("/" . func_get_arg($param++) . "/", func_get_arg($param), $message, 1);
 						$param++;
 					}
 					else {
-						$message = preg_replace("/#/", "", $message, 1);
+						while(substr_count($message, '#') > 0) {
+							$first = strpos($message, '#');
+							$count = strpos($message, '#', $first + 1) - $first;
+							
+							$search = substr($message, $first, $count + 1);
+							
+							$message = str_replace($search, "", $message);
+						}
 					}
 				}
 				
