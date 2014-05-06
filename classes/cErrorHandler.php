@@ -72,6 +72,7 @@
 				case "cannot-find-user": 		$save = 24; break;
 				case "cannot-update-birthday": 	$save = 25; break;
 				case "empty-input": 			$save = 26; break;
+				case "nickname-already-exists": $save = 27; break;
 				default: $save = intval($error);
 			}
 			
@@ -90,11 +91,11 @@
 				case 0: 	return false; break;
 				case 1: 	case "cannot-save-1": 			$message = "1 Anfrage konnte nicht gespeichert werden."; break;
 				case 2: 	case "cannot-save-n": 			$message = "#n# Anfragen konnten nicht gespeichert werden."; break;
-				case 3: 	case "email-password-missing": 	$message = "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben"; break;
+				case 3: 	case "email-password-missing": 	$message = "Die Emailadresse oder das Passwort wurde(n) nicht eingegeben."; break;
 				case 4: 	case "email-existing": 			$message = "Die Emailadresse existiert bereits."; break;
 				case 5: 	case "cannot-add-user": 		$message = "Der Benutzer konnte nicht hinzugefügt werden."; break;
-				case 6: 	case "cannot-add-teacher": 		$message = "Der Benutzer konnte nicht als Lehrer hinzugefügt werden"; break;
-				case 7: 	case "cannot-add-student": 		$message = "Der Benutzer konnte nicht als Schüler hinzugefügt werden"; break;
+				case 6: 	case "cannot-add-teacher": 		$message = "Der Benutzer konnte nicht als Lehrer hinzugefügt werden."; break;
+				case 7: 	case "cannot-add-student": 		$message = "Der Benutzer konnte nicht als Schüler hinzugefügt werden."; break;
 				case 8: 	case "cannot-add-tutorial": 	$message = "Fehler beim Eintragen des Tutoriums<br />Bitte überprüfen Sie, ob Sie die Tutorien eingetragen haben."; break;
 				case 9: 	case "no-selected-file": 		$message = "Es wurde keine Datei ausgewählt."; break;
 				case 10: 	case "cannot-delete-file": 		$message = "Die Datei konnte nicht gelöscht werden."; break;
@@ -103,18 +104,19 @@
 				case 13: 	case "cannot-upload": 			$message = "Die Datei konnte nicht hochgeladen werden."; break;
 				case 14: 	case "file-access": 			$message = "Fehler beim Dateizugriff.<br />Bitte überprüfen Sie, ob die Datei hochgeladen worden ist."; break;
 				case 15: 	case "too-little-columns": 		$message = "Die Datei hat zu wenig spalten.<br />Es werden mindestens #count_cols# benötigt."; break;
-				case 16: 	case "required-columns": 		$message = "Es fehlen benötigte Spalten.<br />Überprüfen Sie, ob die Spalten #require_cols# gesetzt sind"; break;
+				case 16: 	case "required-columns": 		$message = "Es fehlen benötigte Spalten.<br />Überprüfen Sie, ob die Spalten #require_cols# gesetzt sind."; break;
 				case 17: 	case "no-nickname": 			$message = "Das Feld Spitzname darf nicht leer sein."; break;
 				case 18: 	case "cannot-change-data": 		$message = "Die Daten konnten nicht geändert werden."; break;
 				case 19: 	case "cannot-change-password": 	$message = "Das Passwort konnte nicht geändert werden."; break;
-				case 20: 	case "cannot-insert-nickname": 	$message = "Der Spitzname konnte nicht eingefügt werden"; break;
-				case 21: 	case "cannot-accept-nickname": 	$message = "Der Spitzname konnte nicht akzeptiert werden"; break;
-				case 22: 	case "cannot-update-answers": 	$message = "Die Antworten konnten nicht gespeichert werden"; break;
-				case 23: 	case "cannot-update-surveys": 	$message = "Die Umfrageergebnisse konnten nicht gespeichert werden"; break;
-				case 24: 	case "cannot-find-user": 		$message = "Der Nutzer wurde nicht gefunden"; break;
-				case 25: 	case "cannot-update-birthday": 	$message = "Das Geburtsdatum konnte nicht gespeichert werden"; break;
+				case 20: 	case "cannot-insert-nickname": 	$message = "Der Spitzname konnte nicht eingefügt werden."; break;
+				case 21: 	case "cannot-accept-nickname": 	$message = "Der Spitzname konnte nicht akzeptiert werden."; break;
+				case 22: 	case "cannot-update-answers": 	$message = "Die Antworten konnten nicht gespeichert werden."; break;
+				case 23: 	case "cannot-update-surveys": 	$message = "Die Umfrageergebnisse konnten nicht gespeichert werden."; break;
+				case 24: 	case "cannot-find-user": 		$message = "Der Nutzer wurde nicht gefunden."; break;
+				case 25: 	case "cannot-update-birthday": 	$message = "Das Geburtsdatum konnte nicht gespeichert werden."; break;
 				case 26: 	case "empty-input": 			$message = "Das Textfeld darf nicht leer bleiben."; break;
-				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten";
+				case 27: 	case "nickname-already-exists": $message = "Dieser Spitzname wurde der Person bereits vorgeschlagen."; break;
+				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten.";
 			}
 			
 			for($i = 1; $i + 1 < func_num_args() && $i - 1 < substr_count($message, '#'); $i++) {

@@ -50,42 +50,60 @@
 		die;
 	}
 	
-	if(isset($_GET["nickname"])) {
-		// save post data
-		$suggest["nickname"] 	= $_POST["nickname"];
-		$suggest["user"] 		= $_POST["user"];
-		$suggest["id"] 			= $data["id"];
-		
-		// insert data into database
-		Dashboard::insert_nickname($suggest);
-	}
-	else if(isset($_GET["question"])) {
-		// save post data
-		$suggest["question"] 	= $_POST["question"];
-		$suggest["id"] 			= $data["id"];
-		
-		// insert data into database
-		Dashboard::insert_question($suggest);
-	}
-	else if(isset($_GET["survey"])) {
-		// save post data
-		$suggest["survey"] 	= $_POST["survey"];
-		$suggest["male"] 	= $_POST["m"];
-		$suggest["female"] 	= $_POST["w"];
-		$suggest["id"] 		= $data["id"];
-		
-		// insert data into database
-		Dashboard::insert_survey($suggest);
-	} else if(isset($_GET["error-report"])) {
-		if(!empty($_POST["text"])) {
-			error_report($_POST["error-category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
+	if(isset($_GET["nickname"]) || isset($_GET["question"]) || isset($_GET["survey"]) || isset($_GET["error-report"])) {
+		if(isset($_GET["nickname"])) {
+			if(empty($_POST["nickname"])) {
+				$errorHandler->add_error("empty-input");
+			}
+			else {
+				// save post data
+				
+				$suggest["nickname"] 	= $_POST["nickname"];
+				$suggest["user"] 		= $_POST["user"];
+				$suggest["id"] 			= $data["id"];
+				
+				// insert data into database
+				$errorHandler->add_error(Dashboard::insert_nickname($suggest));
+			}
 		}
-		else {
-			$errorHandler->add_error("empty-input");
+		else if(isset($_GET["question"])) {
+			if(empty($_POST["question"])) {
+				$errorHandler->add_error("empty-input");
+			}
+			else {
+				// save post data
+				$suggest["question"] 	= $_POST["question"];
+				$suggest["id"] 			= $data["id"];
+				
+				// insert data into database
+				$errorHandler->add_error(Dashboard::insert_question($suggest));
+			}
+		}
+		else if(isset($_GET["survey"])) {
+			if(empty($_POST["survey"])) {
+				$errorHandler->add_error("empty-input");
+			}
+			else {
+				// save post data
+				$suggest["survey"] 	= $_POST["survey"];
+				$suggest["male"] 	= $_POST["m"];
+				$suggest["female"] 	= $_POST["w"];
+				$suggest["id"] 		= $data["id"];
+				
+				// insert data into database
+				Dashboard::insert_survey($suggest);
+			}
+		} else if(isset($_GET["error-report"])) {
+			if(empty($_POST["text"])) {
+				$errorHandler->add_error("empty-input");
+			}
+			else {
+				error_report($_POST["error-category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
+			}
 		}
 		
 		db_close();
-		
+			
 		if($errorHandler->is_error()) {
 			header("Location: ./dashboard.php?error" . $errorHandler->export_url_param(true));
 		}

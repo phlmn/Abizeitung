@@ -139,9 +139,22 @@
 		public static function insert_nickname($data) {
 			global $mysqli;
 			
-			$nickname = $mysqli->real_escape_string($data["nickname"]);
-		
-			if(!empty($nickname)) {
+			$stmt = $mysqli->prepare("
+				SELECT id
+				FROM nicknames
+				WHERE
+					`to` = ?
+				AND nickname = ?
+			");
+			
+			$stmt->bind_param("is", $data["user"], $data["nickname"]);
+			$stmt->execute();
+			
+			$res = $stmt->fetch();
+			$stmt->close();
+			
+			if(!$res)  {
+			
 				$stmt = $mysqli->prepare("
 					INSERT INTO nicknames (
 						nickname, `from`, `to`, accepted
@@ -150,24 +163,17 @@
 					)
 				");
 				
-				$stmt->bind_param("sii", $nickname, intval($data["id"]), intval($data["user"]));
+				$stmt->bind_param("sii", $data["nickname"], $data["id"], $data["user"]);
 				$stmt->execute();
 				
 				$res = $stmt->num_rows;
 				$stmt->close();
-				
-				db_close();
-				
-				header("Location: ./dashboard.php?saved");
-				
-				die;
+			}
+			else {
+				return "nickname-already-exists";
 			}
 			
-			db_close();
-			
-			header("Location: ./dashboard.php?failed=nickname");
-			
-			die;
+			return 0;
 		}
 		
 		public static function insert_question($data) {
@@ -186,11 +192,7 @@
 			
 			$stmt->close();
 			
-			db_close();
-			
-			header("Location: ./dashboard.php?saved");
-			
-			die;
+			return 0;
 		}
 		
 		public static function insert_survey($data) {
@@ -209,11 +211,7 @@
 			
 			$stmt->close();
 			
-			db_close();
-			
-			header("Location: ./dashboard.php?saved");
-			
-			die;
+			return 0;
 		}
 		
 		public static function suggest_nickname($data) {
