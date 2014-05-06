@@ -145,7 +145,7 @@
 							<td class="name <?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["prename"] ?></td>
 							<td class="name <?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
 							<td class="<?php echo ($row["birthday"]) 							? "existing" : "missing"?>"><?php echo $row["birthday"] ?></td>
-							<td class="<?php echo ($row["activated"]) 							? "existing" : "missing"?>"><?php echo $row["activated"] ?></td>
+							<td class="<?php echo ($row["activated"]) 							? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "Nein" ?></td>
                             <td class="<?php echo ($row["images"] 		== $count["images"]) 	? "existing" : "missing"?>"><?php echo $row["images"] ?></td>
                             <td class="<?php echo ($row["questions"] 	== $count["questions"]) ? "existing" : "missing"?>"><?php echo $row["questions"] ?></td>
                             <td class="<?php echo ($row["surveys"] 		== $count["surveys"]) 	? "existing" : "missing"?>"><?php echo $row["surveys"] ?></td>
