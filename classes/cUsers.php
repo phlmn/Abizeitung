@@ -93,7 +93,7 @@
 <?php
 		}
 		
-		public static function display_state() {
+		public static function display_state($tutorial = false) {
 			global $mysqli;
 ?>
 				<table class="table table-striped state">
@@ -111,16 +111,33 @@
 					<?php
 						global $mysqli;
 						
-						$stmt = $mysqli->prepare("
-							SELECT id, prename, lastname, birthday, activated
-							FROM users
-							ORDER BY lastname ASC
-						");
-						
-						$stmt->execute();
-						
-						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["activated"]);
-						$stmt->store_result();
+						if($tutorial) {
+							$stmt = $mysqli->prepare("
+								SELECT users.id, users.prename, users.lastname, users.birthday, users.activated, users.email
+								FROM users
+								INNER JOIN students ON students.uid = users.id
+								WHERE students.tutorial = ?
+								ORDER BY users.lastname ASC
+							");
+							
+							$stmt->bind_param("i", $tutorial);
+							$stmt->execute();
+							
+							$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["activated"], $row["email"]);
+							$stmt->store_result();
+						}
+						else {
+							$stmt = $mysqli->prepare("
+								SELECT id, prename, lastname, birthday, activated
+								FROM users
+								ORDER BY lastname ASC
+							");
+							
+							$stmt->execute();
+							
+							$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["activated"]);
+							$stmt->store_result();
+						}
 						
 						$count["images"] 	= db_count("categories");
 						$count["questions"] = db_count("questions", "accepted", "1");
@@ -142,15 +159,21 @@
 							
 						?>
 						<tr>
-							<td class="name <?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["prename"] ?></td>
-							<td class="name <?php echo ($missing)									? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
+							<td class="name <?php echo ($missing)								? "existing" : "missing"?>"><?php echo $row["prename"] ?></td>
+							<td class="name <?php echo ($missing)								? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
 							<td class="<?php echo ($row["birthday"]) 							? "existing" : "missing"?>"><?php echo $row["birthday"] ?></td>
 							<td class="<?php echo ($row["activated"]) 							? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "Nein" ?></td>
                             <td class="<?php echo ($row["images"] 		== $count["images"]) 	? "existing" : "missing"?>"><?php echo $row["images"] ?></td>
                             <td class="<?php echo ($row["questions"] 	== $count["questions"]) ? "existing" : "missing"?>"><?php echo $row["questions"] ?></td>
                             <td class="<?php echo ($row["surveys"] 		== $count["surveys"]) 	? "existing" : "missing"?>"><?php echo $row["surveys"] ?></td>
                             <td class="<?php echo ($missing) ? "existing" : "missing"?> edit">
+                            <?php if($tutorial): ?>
+                            	<?php if(!empty($row["email"])): ?>
+                            	<a title="Kontaktieren" href="mailto:<?php echo $row["email"] ?>"><span class="">@</span></a>
+                                <?php endif; ?>
+                            <?php else: ?>
                             	<a title="Auswertung" href="user-result.php?user=<?php echo $row["id"] ?>"><span class="icon-download"></span></a>
+                            <?php endif; ?>
                             </td>
 						</tr>
 					<?php 

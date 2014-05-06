@@ -3,6 +3,9 @@
 		<div class="left">
 			<ul>
 				<li><a href="dashboard.php" class="title">Abizeitung</a></li>
+                <?php if($data["isteacher"]): ?>
+                <li><a href="teacher-overview.php">Nutzerstatus</a></li>
+                <?php endif; ?>
 			</ul>
 		</div>
 		<div class="right">
