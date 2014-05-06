@@ -528,8 +528,10 @@
 					</div>
 				</div>
 			</div>
-				 
-				 <div class="nicknames box">
+			
+            <?php if(!$data["isteacher"]) : ?>
+            
+			<div class="nicknames box">
 				<h2>Vorgeschlagene Spitznamen</h2>
 				<div class="nickname-list row">
 				<?php if(empty($nicknames)) : ?>
@@ -709,6 +711,8 @@
 				</div>
 				
 			</div>
+            
+            <?php endif; ?>
 				
 			<div class="buttons">
 			
