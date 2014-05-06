@@ -448,9 +448,29 @@
 				</div>
 			<?php endif; endif; ?>
 				<div class="intro">
+                <?php if($data["isteacher"]): ?>
+                <h1>Hallo <?php echo ($data["female"]) ? "Frau " : "Herr "; echo $data["lastname"]; ?></h1>
+                <p class="intro">
+                	Hier können Sie Daten für die Abizeitung angeben bzw. ergänzen. 
+                    Die Daten werden für Ihren Steckbrief verwendet.
+                </p>
+                <p class="intro">
+                	Unter der <a href="teacher-overview.php">Nutzerverwaltung</a> können Sie die Vollständigkeit der Daten Ihrer Schüler einsehen.
+                </p>
+                <p class="intro">
+                	Bitte <strong>vergessen Sie das Speichern nicht</strong>
+                </p>
+                <?php else: ?>
 				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
-				<p class="intro">Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. Die Daten werden für deinen Steckbrief verwendet. Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.</p>
-				<p class="intro">Bitte achte auf Rechtschreibung und <b>vergiss das Speichern nicht</b> ;)</p>
+				<p class="intro">
+                	Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. 
+                    Die Daten werden für deinen Steckbrief verwendet. 
+                    Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.
+                </p>
+				<p class="intro">
+                	Bitte achte auf Rechtschreibung und <strong>vergiss das Speichern nicht</strong> ;)
+                </p>
+                <?php endif; ?>
 			</div>
 				<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
 				<div class="common box">
@@ -465,10 +485,12 @@
 							<div class="col-xs-5 title">Nachname</div>
 							<div class="col-xs-7"><?php echo $data["lastname"] ?></div>
 						</div>
+                        <?php if(!$data["isteacher"]): ?>
 						<div class="row">
 							<div class="col-xs-5 title">Spitzname</div>
 							<div class="col-xs-7"><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></div>
 						</div>
+                        <?php endif; ?>
 						<div class="row">
 							<div class="col-xs-5 title">Geburtsdatum</div>
 							<div class="col-xs-7"><input name="birthday" type="text" form="data_form" value="<?php echo $data["birthday"] ?>" /></div>
@@ -477,6 +499,7 @@
 							<div class="col-xs-5 title">Geschlecht</div>
 							<div class="col-xs-7"><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></div>
 						</div>
+                        <?php if(!$data["isteacher"]): ?>
 						<div class="row">
 							<div class="col-xs-5 title">Tutorium</div>
 							<div class="col-xs-7"><?php if(isset($data["tutorial"]["name"])) echo $data["tutorial"]["name"] ?></div>
@@ -485,6 +508,7 @@
 							<div class="col-xs-5 title">Tutor</div>
 							<div class="col-xs-7"><?php if(isset($data["tutorial"]["tutor"]["lastname"])) echo $data["tutorial"]["tutor"]["lastname"] ?></div>
 						</div>
+                        <?php endif; ?>
 						
 						<div class="buttons">
 							<a class="button" href="javascript:void(suggest('error'))">Hier stimmt etwas nicht...</a>
