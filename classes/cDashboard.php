@@ -15,7 +15,7 @@
 			$stmt->execute();
 			
 			$res = $stmt->affected_rows;
-			$stmt->close;
+			$stmt->close();
 			
 			if($mysqli->error || $res < 0)
 				return true;

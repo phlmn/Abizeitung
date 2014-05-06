@@ -39,6 +39,10 @@
 		}
 		
 		public function add_error($error, $store = false, $page = NULL, $function = "ErrorHandler::add-error", $user = NULL) {
+			if(($error == 0 && !is_string($error)) || empty($error)) {
+				return;
+			}
+			
 			$save = 0;
 			
 			switch($error) {
@@ -67,7 +71,7 @@
 				case "cannot-update-surveys": 	$save = 23; break;
 				case "cannot-find-user": 		$save = 24; break;
 				case "cannot-update-birthday": 	$save = 25; break;
-				case "0": return false; break;
+				case "empty-input": 			$save = 26; break;
 				default: $save = intval($error);
 			}
 			
@@ -109,6 +113,7 @@
 				case 23: 	case "cannot-update-surveys": 	$message = "Die Umfrageergebnisse konnten nicht gespeichert werden"; break;
 				case 24: 	case "cannot-find-user": 		$message = "Der Nutzer wurde nicht gefunden"; break;
 				case 25: 	case "cannot-update-birthday": 	$message = "Das Geburtsdatum konnte nicht gespeichert werden"; break;
+				case 26: 	case "empty-input": 			$message = "Das Textfeld darf nicht leer bleiben."; break;
 				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten";
 			}
 			

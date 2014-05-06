@@ -592,6 +592,7 @@
 			}
 			
 			if(empty($data["nickname"])) {
+				
 				$stmt = $mysqli->prepare("
 					SELECT id
 					FROM nicknames
@@ -621,7 +622,7 @@
 				}
 			}
 			else {
-			
+				
 				$stmt = $mysqli->prepare("
 					SELECT id
 					FROM nicknames
@@ -681,8 +682,9 @@
 				$res = $stmt->num_rows;
 				$stmt->close();
 				
-				if($res > 0)
+				if($res > 0) {
 					return "cannot-update-birthday";
+				}
 			}
 			
 			return 0;

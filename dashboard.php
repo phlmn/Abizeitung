@@ -77,11 +77,21 @@
 		// insert data into database
 		Dashboard::insert_survey($suggest);
 	} else if(isset($_GET["error-report"])) {
-		error_report($_POST["error-category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
+		if(!empty($_POST["text"])) {
+			error_report($_POST["error-category"], $_POST["text"], "dashboard.php", "User-Error-Report", $data["id"]);
+		}
+		else {
+			$errorHandler->add_error("empty-input");
+		}
 		
 		db_close();
-			
-		header("Location: ./dashboard.php?saved");
+		
+		if($errorHandler->is_error()) {
+			header("Location: ./dashboard.php?error" . $errorHandler->export_url_param(true));
+		}
+		else {
+			header("Location: ./dashboard.php?saved");
+		}
 		
 		die;
 	}
