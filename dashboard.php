@@ -458,7 +458,7 @@
                 	Unter der <a href="teacher-overview.php">Nutzerverwaltung</a> können Sie die Vollständigkeit der Daten Ihrer Schüler einsehen.
                 </p>
                 <p class="intro">
-                	Bitte <strong>vergessen Sie das Speichern nicht</strong>
+                	Bitte <strong>vergessen Sie das Speichern nicht</strong> ;)
                 </p>
                 <?php else: ?>
 				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
