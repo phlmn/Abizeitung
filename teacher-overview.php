@@ -29,7 +29,7 @@
 	
 	<body>
 		<?php require("nav-bar.php") ?>
-		<div id="user-management" class="container-fluid">
+		<div id="user-management" class="container">
 			<h1>Nutzerverwaltung</h1>
 			<div class="users box">
                 <?php 
