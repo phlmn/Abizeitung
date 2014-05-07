@@ -170,7 +170,7 @@
 		
 		while($stmt->fetch()) {
 			if(isset($_POST["question_" . $q["id"]])) {
-				if(Dashboard::update_user_questions($data["id"], $q["id"], $mysqli->real_escape_string($_POST["question_" . $q["id"]])))
+				if(Dashboard::update_user_questions($data["id"], $q["id"], $_POST["question_" . $q["id"]]))
 					$fails++;
 			}
 		}
