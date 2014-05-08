@@ -5,7 +5,7 @@
   $ = window.jQuery || window.Zepto || window.$;
 
   $.fn.fancySelect = function(opts) {
-    var isiOS, settings;
+    var isiOS, settings, clicked = false;
     if (opts == null) {
       opts = {};
     }
@@ -64,9 +64,16 @@
         }
       });
       trigger.on('close.fs', function() {
-        trigger.removeClass('open');
-        return options.removeClass('open');
+        var parent = sel.parent();
+	    if(!parent.is(':hover') || (parent.is(':hover') && clicked)) {
+	        clicked = false;
+	        trigger.removeClass('open');
+	        return options.removeClass('open');
+	    }
       });
+      sel.parent().on('mouseout', function() {
+	    sel.trigger('focus');
+	  });
       trigger.on('click.fs', function() {
         var offParent, parent;
         if (!disabled) {
@@ -154,15 +161,16 @@
         }
       });
       options.on('click.fs', 'li', function(e) {
-        var clicked;
-        clicked = $(this);
-        sel.val(clicked.data('raw-value'));
+        var clickedE;
+        clickedE = $(this);
+        sel.val(clickedE.data('raw-value'));
         if (!isiOS) {
           sel.trigger('blur.fs').trigger('focus.fs');
         }
         options.find('.selected').removeClass('selected');
-        clicked.addClass('selected');
-        return sel.val(clicked.data('raw-value')).trigger('change.fs').trigger('blur.fs').trigger('focus.fs');
+        clickedE.addClass('selected');
+        clicked = true;
+        return sel.val(clickedE.data('raw-value')).trigger('change.fs').trigger('blur.fs').trigger('focus.fs');
       });
       options.on('mouseenter.fs', 'li', function() {
         var hovered, nowHovered;
