@@ -85,7 +85,7 @@
 	function db_count($table) {
 		global $mysqli;
 		
-		
+		$select = "*";
 		$where = "";
 		
 		if(func_num_args() > 1) {
@@ -105,10 +105,13 @@
 					}
 				}
 			}
+			if(func_num_args() > $i) {
+				$select = $mysqli->real_escape_string(func_get_arg($i));
+			}
 		}
 		
 		$stmt = $mysqli->prepare("
-			SELECT COUNT(*) 
+			SELECT COUNT(" . $select . ") 
 			FROM " . null_on_empty($table) . 
 			$where
 		);

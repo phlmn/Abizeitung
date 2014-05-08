@@ -145,7 +145,7 @@
 						
 						while($stmt->fetch()): 
 						
-							$row["images"] 		= db_count("images", "uid", $row["id"]);
+							$row["images"] 		= db_count("images", "uid", $row["id"], "DISTINCT category");
 							$row["questions"] 	= db_count("users_questions", "user", $row["id"]);
 							$row["surveys"] 	= db_count("users_surveys", "user", $row["id"], "AND m ", "! 0") + db_count("users_surveys", "user", $row["id"], "AND w ", "! 0");
 							
@@ -159,13 +159,34 @@
 							
 						?>
 						<tr>
-							<td class="name <?php echo ($missing)								? "existing" : "missing"?>"><?php echo $row["prename"] ?></td>
-							<td class="name <?php echo ($missing)								? "existing" : "missing"?>"><?php echo $row["lastname"] ?></td>
-							<td class="<?php echo ($row["birthday"]) 							? "existing" : "missing"?>"><?php echo $row["birthday"] ?></td>
-							<td class="<?php echo ($row["activated"]) 							? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "Nein" ?></td>
-                            <td class="<?php echo ($row["images"] 		== $count["images"]) 	? "existing" : "missing"?>"><?php echo $row["images"] ?></td>
-                            <td class="<?php echo ($row["questions"] 	== $count["questions"]) ? "existing" : "missing"?>"><?php echo $row["questions"] ?></td>
-                            <td class="<?php echo ($row["surveys"] 		== $count["surveys"]) 	? "existing" : "missing"?>"><?php echo $row["surveys"] ?></td>
+							<td class="name <?php echo ($missing)						? "existing" : "missing"?>"><?php echo $row["prename"]; ?></td>
+							<td class="name <?php echo ($missing)						? "existing" : "missing"?>"><?php echo $row["lastname"]; ?></td>
+							<td class="<?php echo ($row["birthday"]) 					? "existing" : "missing"?>"><?php echo $row["birthday"]; ?></td>
+							<td class="<?php echo ($row["activated"]) 					? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "Nein" ?></td>
+                            <td class="<?php echo ($row["images"] >= $count["images"]) 	? "existing" : "missing"?>">
+                            	<div>
+									<?php echo $row["images"]; ?>
+                                    <?php if($row["images"] < $count["images"]): ?>
+                                    <span style="width: <?php echo $row["images"] / $count["images"] * 100; ?>%"></span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td class="<?php echo ($row["questions"] == $count["questions"]) ? "existing" : "missing"?>">
+                            	<div>
+									<?php echo $row["questions"]; ?>
+                                    <?php if($row["questions"] != $count["questions"]): ?>
+                                    <span style="width: <?php echo $row["questions"] / $count["questions"] * 100; ?>%"></span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td class="<?php echo ($row["surveys"] == $count["surveys"]) 	? "existing" : "missing"?>">
+                            	<div>
+									<?php echo $row["surveys"]; ?>
+                                    <?php if($row["surveys"] != $count["surveys"]): ?>
+                                    <span style="width: <?php echo $row["surveys"] / $count["surveys"] * 100; ?>%"></span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
                             <td class="<?php echo ($missing) ? "existing" : "missing"?> edit">
                             <?php if($tutorial): ?>
                             	<?php if(!empty($row["email"])): ?>
