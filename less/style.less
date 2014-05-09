@@ -892,17 +892,32 @@ td.edit a {
 		tbody {
 			tr {
 				td {
-					div {
+					.percent {
 						position: relative;
-						float: left;
-						width: 100%;
 						
-						span {
+						div {
 							position: absolute;
-							height: 8px;
-							bottom: -8px;
-							left: -8px;
-							background: lighten(@color3, 20%);
+							height: 21px;
+							
+							&.missed {
+								left: 0;
+								background: lighten(@color1, 10%);
+								opacity: 0.4;
+							}
+							
+							&.filled {
+								right: 0;
+								background: lighten(@color3, 20%);
+							}
+							
+							&.text {
+								width: 100%;
+								text-align: center;
+								
+								span {
+									font-size: 11px;
+								}
+							}
 						}
 					}
 				}
@@ -926,7 +941,9 @@ td.edit a {
 					
 					div {
 						span {
-							background: lighten(@color3, 15%);
+							&.filled {
+								background: lighten(@color3, 15%);
+							}
 						}
 					}
 				}
