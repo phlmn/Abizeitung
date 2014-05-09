@@ -175,7 +175,7 @@
                                     <div class="filled" style="width: <?php echo $percent["images"]; ?>%"></div>
                                     <div class="missed" style="width: <?php echo 100 - $percent["images"]; ?>%"></div>
                                     <?php endif; ?>
-                                    <div class="text"><?php echo $row["images"]; ?> <span>(<?php echo $percent["images"]; ?>%)</span></div>
+                                    <div class="text"><?php echo $row["images"]; ?> / <?php echo $count["images"]; ?> <span>(<?php echo $percent["images"]; ?>%)</span></div>
                                 </div>
                             </td>
                             <td class="<?php echo ($row["questions"] == $count["questions"]) ? "existing" : "missing"?>">
@@ -184,16 +184,16 @@
                                     <div class="filled" style="width: <?php echo $percent["questions"]; ?>%"></div>
                                     <div class="missed" style="width: <?php echo 100 - $percent["questions"]; ?>%"></div>
                                     <?php endif; ?>
-                                    <div class="text"><?php echo $row["questions"]; ?> <span>(<?php echo $percent["questions"]; ?>%)</span></div>
+                                    <div class="text"><?php echo $row["questions"]; ?> / <?php echo $count["questions"]; ?> <span>(<?php echo $percent["questions"]; ?>%)</span></div>
                                 </div>
                             </td>
-                            <td class="<?php echo ($row["surveys"] == $count["surveys"]) 	? "existing" : "missing"?>">
+                            <td class="<?php echo ($row["surveys"] == $count["surveys"]) ? "existing" : "missing"?>">
                                 <div class="percent">
                                 	<?php if($row["surveys"] < $count["surveys"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["surveys"]; ?>%"></div>
                                     <div class="missed" style="width: <?php echo 100 - $percent["surveys"]; ?>%"></div>
                                     <?php endif; ?>
-                                    <div class="text"><?php echo $row["surveys"]; ?> <span>(<?php echo $percent["surveys"]; ?>%)</span></div>
+                                    <div class="text"><?php echo $row["surveys"]; ?> / <?php echo $count["surveys"]; ?> <span>(<?php echo $percent["surveys"]; ?>%)</span></div>
                                 </div>
                             </td>
                             <td class="<?php echo ($missing) ? "existing" : "missing"?> edit">
