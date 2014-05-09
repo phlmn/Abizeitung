@@ -107,6 +107,7 @@
 						INNER JOIN users ON nicknames.`to` = users.id
 						GROUP BY `to`
 						ORDER BY most DESC
+						LIMIT " . $hurdle . "
 					");
 					
 					$stmt->execute();
@@ -141,6 +142,7 @@
 						INNER JOIN users ON nicknames.`from` = users.id
 						GROUP BY `from`
 						ORDER BY most DESC
+						LIMIT " . $hurdle . "
 					");
 					
 					$stmt->execute();
@@ -212,7 +214,7 @@
 								AND users_surveys.m IS NOT NULL
 								GROUP BY users.id
 								ORDER BY most DESC
-								LIMIT 5;
+								LIMIT " . $hurdle . "
 							");
 							
 							$stmt->bind_param("i", $survey["id"]);
@@ -244,7 +246,7 @@
 								AND users_surveys.w IS NOT NULL
 								GROUP BY users.id
 								ORDER BY most DESC
-								LIMIT 5;
+								LIMIT " . $hurdle . "
 							");
 							
 							$stmt->bind_param("i", $survey["id"]);
