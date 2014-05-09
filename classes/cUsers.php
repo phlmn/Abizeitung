@@ -95,8 +95,21 @@
 		
 		public static function display_state($tutorial = false) {
 			global $mysqli;
+			
+			$userstate = array(
+				db_count("users", "activated", "1"), 
+				db_count("users", "activated", "0")
+			);
+			
+			$res = get_percent($userstate, 0);
 ?>
-				<table class="table table-striped state">
+				<div class="summary">
+                    <div class="progress">
+                    <?php get_progressbar($res["percent"], $res["absolute"], array("Aktiviert:", "Ausstehend:")); ?>
+                    </div>
+                </div>
+                
+                <table class="table table-striped state">
 					<thead>
 						<th>Vorname</th>
 						<th>Nachname</th>
@@ -170,7 +183,7 @@
 							<td class="<?php echo ($row["birthday"]) 					? "existing" : "missing"?>"><?php echo $row["birthday"]; ?></td>
 							<td class="<?php echo ($row["activated"]) 					? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "Nein" ?></td>
                             <td class="<?php echo ($row["images"] >= $count["images"]) 	? "existing" : "missing"?>">
-                                <div class="percent">
+                                <div class="bar">
                                 	<?php if($row["images"] < $count["images"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["images"]; ?>%"></div>
                                     <div class="missed" style="width: <?php echo 100 - $percent["images"]; ?>%"></div>
@@ -179,7 +192,7 @@
                                 </div>
                             </td>
                             <td class="<?php echo ($row["questions"] == $count["questions"]) ? "existing" : "missing"?>">
-                                <div class="percent">
+                                <div class="bar">
                                 	<?php if($row["questions"] < $count["questions"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["questions"]; ?>%"></div>
                                     <div class="missed" style="width: <?php echo 100 - $percent["questions"]; ?>%"></div>
@@ -188,7 +201,7 @@
                                 </div>
                             </td>
                             <td class="<?php echo ($row["surveys"] == $count["surveys"]) ? "existing" : "missing"?>">
-                                <div class="percent">
+                                <div class="bar">
                                 	<?php if($row["surveys"] < $count["surveys"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["surveys"]; ?>%"></div>
                                     <div class="missed" style="width: <?php echo 100 - $percent["surveys"]; ?>%"></div>

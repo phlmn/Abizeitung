@@ -867,6 +867,10 @@ td.edit a {
 }
 
 #user-management {
+	.summary {
+		margin: 20px 0;
+	}
+	
 	.add-user, .edit-user {
 		td {
 			width: 240px;
@@ -892,7 +896,7 @@ td.edit a {
 		tbody {
 			tr {
 				td {
-					.percent {
+					.bar {
 						position: relative;
 						
 						div {
@@ -1184,58 +1188,12 @@ div.surveys {
 
 #results {
 	
-	.progress {
-		height: 40px;
-		border-radius: 0;
-		
-		.progress-bar {
-			line-height: 40px;
-			
-			.percent {
-				opacity: .7;
-				margin-left: 4px;
-			}
-		}	
-	}
-	
 	.name {
 		line-height: 40px;
 		text-align: center;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-	
-	.progress.right {
-		.progress-bar {
-			float: right;
-		}
-	}
-	
-	.progress:nth-child(5n+1) {
-		.progress-bar {
-			.lighter-color(background-color, @color1)
-		}
-	}
-	.progress:nth-child(5n+2) {
-		.progress-bar {
-			.lighter-color(background-color, @color2)
-		}
-	}
-	.progress:nth-child(5n+3) {
-		.progress-bar {
-			.lighter-color(background-color, @color3)
-		}
-	}
-	.progress:nth-child(5n+4) {
-		.progress-bar {
-			.lighter-color(background-color, @color4)
-		}
-	}
-	.progress:nth-child(5n+5) {
-		.progress-bar {
-			.lighter-color(background-color, @color5)
-		}
 	}
 	
 	.surveys {
@@ -1269,6 +1227,57 @@ div.surveys {
 					background-color: @color5;
 				}
 			}
+		}
+	}
+}
+
+/* ===== Progressbar ===== */
+
+#user-management,
+#results {
+	.progress {
+		height: 40px;
+		border-radius: 0;
+		
+		.progress-bar {
+			line-height: 40px;
+			
+			.percent {
+				opacity: .7;
+				margin-left: 4px;
+			}
+		}	
+	}
+	
+	.progress.right {
+		.progress-bar {
+			float: right;
+		}
+	}
+	
+	.progress:nth-child(5n+1) {
+		.progress-bar {
+			.lighter-color(background-color, @color1)
+		}
+	}
+	.progress:nth-child(5n+2) {
+		.progress-bar {
+			.lighter-color(background-color, @color2)
+		}
+	}
+	.progress:nth-child(5n+3) {
+		.progress-bar {
+			.lighter-color(background-color, @color3)
+		}
+	}
+	.progress:nth-child(5n+4) {
+		.progress-bar {
+			.lighter-color(background-color, @color4)
+		}
+	}
+	.progress:nth-child(5n+5) {
+		.progress-bar {
+			.lighter-color(background-color, @color5)
 		}
 	}
 }
