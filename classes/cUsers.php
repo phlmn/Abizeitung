@@ -180,9 +180,10 @@
 						<tr>
 							<td class="name <?php echo ($missing)						? "existing" : "missing"?>"><?php echo $row["prename"]; ?></td>
 							<td class="name <?php echo ($missing)						? "existing" : "missing"?>"><?php echo $row["lastname"]; ?></td>
-							<td class="<?php echo ($row["birthday"]) 					? "existing" : "missing"?>"><?php echo $row["birthday"]; ?></td>
-							<td class="<?php echo ($row["activated"]) 					? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "Nein" ?></td>
+							<td class="<?php echo ($row["birthday"]) 					? "existing" : "missing"?>"><?php echo ($row["birthday"]) ? $row["birthday"] : "-"; ?></td>
+							<td class="<?php echo ($row["activated"]) 					? "existing" : "missing"?>"><?php echo ($row["activated"]) ? "Ja" : "-" ?></td>
                             <td class="<?php echo ($row["images"] >= $count["images"]) 	? "existing" : "missing"?>">
+                            	<?php if($row["activated"]): ?>
                                 <div class="bar">
                                 	<?php if($row["images"] < $count["images"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["images"]; ?>%"></div>
@@ -192,8 +193,10 @@
 										<?php echo $row["images"]; ?> / <?php echo $count["images"]; ?> <span>(<?php echo round($percent["images"]); ?>%)</span>
                                     </div>
                                 </div>
+                                <?php else: ?>-<?php endif; ?>
                             </td>
                             <td class="<?php echo ($row["questions"] == $count["questions"]) ? "existing" : "missing"?>">
+                            	<?php if($row["activated"]): ?>
                                 <div class="bar">
                                 	<?php if($row["questions"] < $count["questions"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["questions"]; ?>%"></div>
@@ -203,8 +206,10 @@
 										<?php echo $row["questions"]; ?> / <?php echo $count["questions"]; ?> <span>(<?php echo round($percent["questions"]); ?>%)</span>
                                     </div>
                                 </div>
+                                <?php else: ?>-<?php endif; ?>
                             </td>
                             <td class="<?php echo ($row["surveys"] == $count["surveys"]) ? "existing" : "missing"?>">
+                            	<?php if($row["activated"]): ?>
                                 <div class="bar">
                                 	<?php if($row["surveys"] < $count["surveys"]): ?>
                                     <div class="filled" style="width: <?php echo $percent["surveys"]; ?>%"></div>
@@ -214,6 +219,7 @@
 										<?php echo $row["surveys"]; ?> / <?php echo $count["surveys"]; ?> <span>(<?php echo round($percent["surveys"]); ?>%)</span>
                                     </div>
                                 </div>
+                                <?php else: ?>-<?php endif; ?>
                             </td>
                             <td class="<?php echo ($missing) ? "existing" : "missing"?> edit">
                             <?php if($tutorial): ?>
