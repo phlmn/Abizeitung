@@ -93,11 +93,54 @@
 <?php
 		}
 		
+		public static function display_admins() {
+			global $mysqli;
+?>
+				<table class="table table-striped">
+					<thead>
+						<th>Vorname</th>
+						<th>Nachname</th>
+						<th>Geburtsdatum</th>
+						<th>Geschlecht</th>
+						<th class="edit"></th>
+					</thead>
+					<tbody>
+					<?php
+						global $mysqli;
+						
+						$stmt = $mysqli->prepare("
+							SELECT users.id, users.prename, users.lastname, users.birthday, users.female
+							FROM users
+							WHERE users.admin = 1
+							ORDER BY users.lastname
+						");
+						
+						$stmt->execute();
+						$stmt->bind_result($row["id"], $row["prename"], $row["lastname"], $row["birthday"], $row["female"]);
+						
+						while($stmt->fetch()): ?>
+						<tr>
+							<td><?php echo $row["prename"] ?></td>
+							<td><?php echo $row["lastname"] ?></td>
+							<td><?php echo $row["birthday"] ?></td>
+							<td><?php echo $row["female"] ? "Weiblich" : "Männlich" ?></td>
+							<td class="edit"><a href="edit-user.php?user=<?php echo $row["id"] ?>"><span class="icon-pencil-squared"></span></a></td>
+						</tr>
+					<?php 
+						endwhile; 
+						
+						$stmt->close();
+					?>
+					</tbody>
+				</table>
+<?php
+		}
+		
 		public static function display_state($tutorial = false) {
 			global $mysqli;
 			
 			$userstate = array(
-				db_count("users", "activated", "1"), 
+				db_count("users", "activated", "1"),
 				db_count("users", "activated", "0")
 			);
 			
