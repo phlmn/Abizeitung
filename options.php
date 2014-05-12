@@ -96,7 +96,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Abizeitung - Fehlermeldungen</title>
+		<title>Abizeitung - Einstellungen</title>
 		<?php head(); ?>
         <?php Options::script(true); ?>
 	</head>
