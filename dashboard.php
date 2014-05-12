@@ -699,6 +699,12 @@
                         <?php endforeach; ?>
                         
                     </div>
+                    
+                    <?php if(db_get_option("questions") == "1"): ?>
+                    <div class="buttons">
+                        <a class="button" href="javascript:void(suggest('question'))"><span class="icon-plus-circled"></span> Frage Vorschlagen</a>
+                    </div>
+                    <?php endif; ?>
 				</div>
 				
 				<div class="surveys box">
@@ -776,6 +782,12 @@
                     <?php endforeach; ?>
                     
                     </div>
+                    
+                    <?php if(db_get_option("surveys") == "1"): ?>
+                    <div class="buttons">
+                        <a class="button" href="javascript:void(suggest('survey'))"><span class="icon-plus-circled"></span> Umfrage Vorschlagen</a>
+                    </div>
+                    <?php endif; ?>
                     
                 </div>
                 

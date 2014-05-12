@@ -45,21 +45,21 @@
                     	<h4>Fragen</h4>
                         <div class="option">
                             <input id="questions_allow" type="radio" name="questions" value="1" <?php if($questions == "1"): ?>checked <?php endif; ?>>
-                            <label for="questions_allow">Die Nutzer dürfen Umfragen vorschlagen</label>
+                            <label for="questions_allow">Die Nutzer dürfen Fragen vorschlagen</label>
                         </div>
                         <div class="option">
                             <input id="questions_denied" type="radio" name="questions" value="2" <?php if($questions == "2"): ?>checked <?php endif; ?>>
-                            <label for="questions_denied">Die Nutzer dürfen <strong>keine</strong> Umfragen vorschlagen</label>
+                            <label for="questions_denied">Die Nutzer dürfen <strong>keine</strong> Fragen vorschlagen</label>
                         </div>
                         
                         <h4>Umfragen</h4>
                         <div class="option">
                             <input id="surveys_allow" type="radio" name="surveys" value="1" <?php if($surveys == "1"): ?>checked <?php endif; ?>>
-                            <label for="surveys_allow">Die Nutzer dürfen Fragen vorschlagen</label>
+                            <label for="surveys_allow">Die Nutzer dürfen Umfragen vorschlagen</label>
                         </div>
                         <div class="option">
                             <input id="surveys_denied" type="radio" name="surveys" value="2" <?php if($surveys == "2"): ?>checked <?php endif; ?>>
-                            <label for="surveys_denied">Die Nutzer dürfen <strong>keine</strong> Fragen vorschlagen</label>
+                            <label for="surveys_denied">Die Nutzer dürfen <strong>keine</strong> Umfragen vorschlagen</label>
                         </div>
                         
                     </div>

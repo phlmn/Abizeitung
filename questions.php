@@ -187,19 +187,27 @@
 					$stmt->close();
 					
 					$stmt = $mysqli->prepare("
-						SELECT id, title
+						SELECT questions.id, questions.title, users.id, users.prename, users.lastname
 						FROM questions
+						LEFT JOIN users ON questions.user = users.id
 						WHERE accepted = 0
 					");
 					
 					$stmt->execute();
-					$stmt->bind_result($questions["id"], $questions["title"]);
+					$stmt->bind_result($questions["id"], $questions["title"], $user["id"], $user["prename"], $user["lastname"]);
 					
 					while($stmt->fetch()):
 				?>
 	            		<tr class="inactive">
-	                    	<td><?php echo $questions["title"] ?></td>
-	                        <td class="edit"><a title="Frage akzeptieren" href="questions.php?accept=<?php echo $questions["id"] ?>"><span class="icon-ok-circled"></span></a></td>
+	                    	<td>
+								<?php echo $questions["title"]; ?>
+                                <?php if($user["id"]): ?>
+                                	<span class="name">(von <a href="edit-user.php?user=<?php echo $user["id"]; ?>"><?php echo $user["prename"] . " " . $user["lastname"]; ?></a>)</span>
+                                <?php endif; ?>
+                            </td>
+	                        <td class="edit">
+                            	<a title="Frage akzeptieren" href="questions.php?accept=<?php echo $questions["id"] ?>"><span class="icon-ok-circled"></span></a>
+                            </td>
 	                    </tr>
 	            <?php 
 					endwhile; 

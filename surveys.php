@@ -204,18 +204,24 @@
 					$stmt->close();
 					
 					$stmt = $mysqli->prepare("
-						SELECT id, title, m, w
+						SELECT surveys.id, surveys.title, surveys.m, surveys.w, users.id, users.prename, users.lastname
 						FROM surveys
+						LEFT JOIN users ON surveys.user = users.id
 						WHERE accepted = 0
 					");
 					
 					$stmt->execute();
-					$stmt->bind_result($surveys["id"], $surveys["title"], $surveys["m"], $surveys["w"]);
+					$stmt->bind_result($surveys["id"], $surveys["title"], $surveys["m"], $surveys["w"], $user["id"], $user["prename"], $user["lastname"]);
 					
 					while($stmt->fetch()):
 				?>
 	            		<tr class="inactive">
-	                    	<td><?php echo $surveys["title"] ?></td>
+	                    	<td>
+								<?php echo $surveys["title"] ?>
+                                <?php if($user["id"]): ?>
+                                	<span class="name">(von <a href="edit-user.php?user=<?php echo $user["id"]; ?>"><?php echo $user["prename"] . " " . $user["lastname"]; ?></a>)</span>
+                                <?php endif; ?>
+                            </td>
 	                        <td class="edit"><?php if($surveys["m"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
 	                        <td class="edit"><?php if($surveys["w"] == 1): ?><span class="icon-ok-circled"></span><?php endif; ?></td>
 	                        <td class="edit"><a title="Frage akzeptieren" href="surveys.php?accept=<?php echo $surveys["id"]; ?>"><span class="icon-ok-circled"></span></a></td>
