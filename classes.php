@@ -398,11 +398,11 @@
 			
 			<div class="groups">
 								
-				<div class="addGroup" onclick="classes.editGroup(0)"></div>
+				<div class="circle addGroup" onclick="classes.editGroup(0)"></div>
 				
 				<?php while($stmt->fetch()): ?>
 				
-				<div data-classid="<?php echo $class["id"] ?>" onclick="classes.showGroup(<?php echo $class["id"] ?>)">
+				<div class="circle" data-classid="<?php echo $class["id"] ?>" onclick="classes.showGroup(<?php echo $class["id"] ?>)">
 					
 					<div class="info">
 						<div class="name"><?php echo $class["name"] ?></div>

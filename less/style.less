@@ -79,7 +79,7 @@ h3, .h3 { font-size: 22px; }
 			position: relative;
 			margin: 20px 0;
 			width: 100%;
-			height: 240px;
+			height: 160px;
 			overflow: hidden;
 			overflow-x: auto;
 			
@@ -1006,6 +1006,7 @@ td.edit a {
 	}
 }
 
+#dashboard,
 #class-management,
 #tutorial-management {
 	margin-right: 340px;
@@ -1013,9 +1014,8 @@ td.edit a {
 	div.groups {
 		.clearfix();
 		.user-select(none);
-			
-		> div {
-			margin: 0 32px 32px 0;
+		
+		> .circle {
 			float: left;
 			border-radius: 4px;
 			width: 100px;
@@ -1028,7 +1028,6 @@ td.edit a {
 			.variate-color(background);
 					
 			&:hover {
-				.scale(1.2, 1.2);
 				opacity: 1;
 			}
 			
@@ -1054,6 +1053,23 @@ td.edit a {
 				}
 			}
 		
+		}
+		
+		> div.circle {
+			margin: 0 32px 32px 0;
+			
+			&:hover {
+				.scale(1.2, 1.2);
+			}
+		}
+		
+		> a.circle {
+			margin: 16px;
+			text-decoration: none;
+			
+			&:first-child {
+				margin-left: 15px;
+			}
 		}
 		
 		> div.addGroup {

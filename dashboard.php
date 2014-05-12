@@ -367,7 +367,7 @@
 		
 		<?php head(); ?>
 		<script src="js/dashboard.js" type="text/javascript"></script>
-		<?php Dashboard::script(); ?>
+		<?php Dashboard::script(true); ?>
 		<script type="text/javascript">
 			<?php 
 				$stmt = $mysqli->prepare("
@@ -448,295 +448,327 @@
 				</div>
 			<?php endif; endif; ?>
 				<div class="intro">
-                <?php if($data["isteacher"]): ?>
-                <h1>Hallo <?php echo ($data["female"]) ? "Frau " : "Herr "; echo $data["lastname"]; ?></h1>
-                <p class="intro">
-                	Hier können Sie Daten für die Abizeitung angeben bzw. ergänzen. 
-                    Die Daten werden für Ihren Steckbrief verwendet.
-                </p>
-                <p class="intro">
-                	Unter der <a href="teacher-overview.php">Nutzerverwaltung</a> können Sie die Vollständigkeit der Daten Ihrer Schüler einsehen.
-                </p>
-                <p class="intro">
-                	Bitte <strong>vergessen Sie das Speichern nicht</strong> ;)
-                </p>
-                <?php else: ?>
-				<h1>Hallo <?php echo $data["prename"] ?>!</h1>
-				<p class="intro">
-                	Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. 
-                    Die Daten werden für deinen Steckbrief verwendet. 
-                    Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.
-                </p>
-				<p class="intro">
-                	Bitte achte auf Rechtschreibung und <strong>vergiss das Speichern nicht</strong> ;)
-                </p>
-                <?php endif; ?>
-			</div>
+					<?php if($data["isteacher"]): ?>
+                    <h1>Hallo <?php echo ($data["female"]) ? "Frau " : "Herr "; echo $data["lastname"]; ?></h1>
+                    <p class="intro">
+                        Hier können Sie Daten für die Abizeitung angeben bzw. ergänzen. 
+                        Die Daten werden für Ihren Steckbrief verwendet.
+                    </p>
+                    <p class="intro">
+                        Unter der <a href="teacher-overview.php">Nutzerverwaltung</a> können Sie die Vollständigkeit der Daten Ihrer Schüler einsehen.
+                    </p>
+                    <p class="intro">
+                        Bitte <strong>vergessen Sie das Speichern nicht</strong> ;)
+                    </p>
+                    <?php else: ?>
+                    <h1>Hallo <?php echo $data["prename"] ?>!</h1>
+                    <p class="intro">
+                        Hier kannst du deine Daten für die Abizeitung angeben bzw. ergänzen. 
+                        Die Daten werden für deinen Steckbrief verwendet. 
+                        Die Ergebnisse der Umfragen kommen auch in die Abizeitung, auf Wunsch wird dein Name geschwärzt.
+                    </p>
+                    <p class="intro">
+                        Bitte achte auf Rechtschreibung und <strong>vergiss das Speichern nicht</strong> ;)
+                    </p>
+                    <?php endif; ?>
+				</div>
+                
 				<form id="data_form" name="data" action="dashboard.php?update" method="post"></form>
 				<div class="common box">
 				<h2>Allgemeines</h2>
-				<div class="row">
-					<div class="col-sm-4 data">
-						<div class="row">
-							<div class="col-xs-5 title">Vorname</div>
-							<div class="col-xs-7"><?php echo $data["prename"] ?></div>
-						</div>
-						<div class="row">
-							<div class="col-xs-5 title">Nachname</div>
-							<div class="col-xs-7"><?php echo $data["lastname"] ?></div>
-						</div>
-                        <?php if(!$data["isteacher"]): ?>
-						<div class="row">
-							<div class="col-xs-5 title">Spitzname</div>
-							<div class="col-xs-7"><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></div>
-						</div>
-                        <?php endif; ?>
-						<div class="row">
-							<div class="col-xs-5 title">Geburtsdatum</div>
-							<div class="col-xs-7"><input name="birthday" type="text" form="data_form" value="<?php echo $data["birthday"] ?>" /></div>
-						</div>
-						<div class="row">
-							<div class="col-xs-5 title">Geschlecht</div>
-							<div class="col-xs-7"><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></div>
-						</div>
-                        <?php if(!$data["isteacher"]): ?>
-						<div class="row">
-							<div class="col-xs-5 title">Tutorium</div>
-							<div class="col-xs-7"><?php if(isset($data["tutorial"]["name"])) echo $data["tutorial"]["name"] ?></div>
-						</div>
-						<div class="row">
-							<div class="col-xs-5 title">Tutor</div>
-							<div class="col-xs-7"><?php if(isset($data["tutorial"]["tutor"]["lastname"])) echo $data["tutorial"]["tutor"]["lastname"] ?></div>
-						</div>
-                        <?php endif; ?>
-						
-						<div class="buttons">
-							<a class="button" href="javascript:void(suggest('error'))">Hier stimmt etwas nicht...</a>
-						</div>
-					</div>
-					
-					<div class="col-sm-4">
-						<div id="photo-enrollment" class="photo" data-toggle="tooltip" data-placement="bottom" title="Kinderfoto">
-							<form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data"></form>
-							  <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-							<input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 'enrollment', '#image-form-enrollment', '#photo-upload-state-enrollment', '#photo-enrollment')" />
-							<div class="upload">
-								<a href="javascript: openImageSelector('#photo-upload-enrollment')">
-								  	<span id="photo-upload-state-enrollment">
-										<span class="icon-upload"></span>
-										<br>Kinderfoto
-										<br>hochladen...
-									  </span>
-								</a>
-							</div>
-						</div>
-					</div>
-					
-					<div class="col-sm-4">
-						  <div id="photo-current" class="photo"	 data-toggle="tooltip" data-placement="bottom" title="Aktuelles Foto">
-						  	<form action="upload.php" id="image-form-current" enctype="multipart/form-data"></form>
-							  <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
-							<input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 'current', '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
-						  	<div class="upload">
-							  	<a href="javascript: openImageSelector('#photo-upload-current')">
-								  	<span id="photo-upload-state-current">
-									  	<span id="photo-upload-state-current">
-										<span class="icon-upload"></span>
-										<br>Aktuelles Foto
-										<br>hochladen...
-									  </span>
-									  </span>
-								  </a>
-							  </div>
-						  </div>
-					</div>
-				</div>
-			</div>
-			
-            <?php if(!$data["isteacher"]) : ?>
+                    <div class="row">
+                        <div class="col-sm-4 data">
+                            <div class="row">
+                                <div class="col-xs-5 title">Vorname</div>
+                                <div class="col-xs-7"><?php echo $data["prename"] ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 title">Nachname</div>
+                                <div class="col-xs-7"><?php echo $data["lastname"] ?></div>
+                            </div>
+                            <?php if(!$data["isteacher"]): ?>
+                            <div class="row">
+                                <div class="col-xs-5 title">Spitzname</div>
+                                <div class="col-xs-7"><input name="nickname" type="text" form="data_form" value="<?php echo $data["nickname"] ?>" /></div>
+                            </div>
+                            <?php endif; ?>
+                            <div class="row">
+                                <div class="col-xs-5 title">Geburtsdatum</div>
+                                <div class="col-xs-7"><input name="birthday" type="text" form="data_form" value="<?php echo $data["birthday"] ?>" /></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 title">Geschlecht</div>
+                                <div class="col-xs-7"><?php echo $data["female"] ? "Weiblich" : "Männlich" ?></div>
+                            </div>
+                            <?php if(!$data["isteacher"]): ?>
+                            <div class="row">
+                                <div class="col-xs-5 title">Tutorium</div>
+                                <div class="col-xs-7"><?php if(isset($data["tutorial"]["name"])) echo $data["tutorial"]["name"] ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-5 title">Tutor</div>
+                                <div class="col-xs-7"><?php if(isset($data["tutorial"]["tutor"]["lastname"])) echo $data["tutorial"]["tutor"]["lastname"] ?></div>
+                            </div>
+                            
+                            
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="col-sm-4">
+                            <div id="photo-enrollment" class="photo" data-toggle="tooltip" data-placement="bottom" title="Kinderfoto">
+                                <form action="upload.php" id="image-form-enrollment" enctype="multipart/form-data"></form>
+                                  <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
+                                <input id="photo-upload-enrollment" class="photo-upload" name="photo" type="file" form="image-form-enrollment" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 'enrollment', '#image-form-enrollment', '#photo-upload-state-enrollment', '#photo-enrollment')" />
+                                <div class="upload">
+                                    <a href="javascript: openImageSelector('#photo-upload-enrollment')">
+                                        <span id="photo-upload-state-enrollment">
+                                            <span class="icon-upload"></span>
+                                            <br>Kinderfoto
+                                            <br>hochladen...
+                                          </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-4">
+                              <div id="photo-current" class="photo"	 data-toggle="tooltip" data-placement="bottom" title="Aktuelles Foto">
+                                <form action="upload.php" id="image-form-current" enctype="multipart/form-data"></form>
+                                  <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get('upload_max_filesize')); ?>" />
+                                <input id="photo-upload-current" class="photo-upload" name="photo" type="file" form="image-form-current" accept="image/x-png,image/jpeg" onchange="uploadImage(<?php echo $data["id"] ?>, 'current', '#image-form-current', '#photo-upload-state-current', '#photo-current')" />
+                                <div class="upload">
+                                    <a href="javascript: openImageSelector('#photo-upload-current')">
+                                        <span id="photo-upload-state-current">
+                                            <span id="photo-upload-state-current">
+                                            <span class="icon-upload"></span>
+                                            <br>Aktuelles Foto
+                                            <br>hochladen...
+                                          </span>
+                                          </span>
+                                      </a>
+                                  </div>
+                              </div>
+                        </div>
+                    </div>
+                    
+                	<?php if(!$data["isteacher"]): ?>
+                    
+                    <h2>Kurse</h2>
+                    <div class="row groups">
+                        <?php
+                            $stmt = $mysqli->prepare("
+                                SELECT classes.id, classes.name, users.prename
+                                FROM students_classes
+                                INNER JOIN classes ON students_classes.class = classes.id
+                                INNER JOIN students ON students_classes.student = students.id
+                                LEFT JOIN teachers ON classes.teacher = teachers.id
+                                LEFT JOIN users ON teachers.uid = users.id
+                                WHERE students.uid = ?
+								ORDER BY classes.name ASC
+                            ");
+                            
+                            $stmt->bind_param("i", $data["id"]);
+                            $stmt->execute();
+                            
+                            $stmt->bind_result($class["id"], $class["name"], $class["teacher"]);
+                            
+                            while($stmt->fetch()):
+                        ?>
+                        <a class="circle" href="javascript:void(suggest('error', '<?php echo "id=" . $class["id"] . "&name=" . $class["name"]; ?>'))" title="Hier stimmt etwas nicht...">
+                            <div class="info">
+                                <div class="name"><?php echo $class["name"]; ?></div>
+                                <div class="teacher"><?php echo ($class["teacher"]) ? $class["teacher"] : "-"; ?></div>
+                            </div>
+                        </a>
+                        <?php 
+                            endwhile; 
+                        
+                            $stmt->close();
+                        ?>
+                    </div>
+                <?php endif; ?>
+                	<div class="buttons">
+                        <a class="button" href="javascript:void(suggest('error'))">Hier stimmt etwas nicht...</a>
+                    </div>
+                </div>
+                
+				<?php if(!$data["isteacher"]) : ?>
             
-			<div class="nicknames box">
-				<h2>Vorgeschlagene Spitznamen</h2>
-				<div class="nickname-list row">
-				<?php if(empty($nicknames)) : ?>
-					<div class="alert">Bisher hat dir niemand einen Spitznamen vorgeschlagen.</div>
-				<?php else: ?>
-					<table class="table table-striped">
-						<thead>
-							<th>Spitzname</th>
-							<th>Vergeben von</th>
-							<th class="accept"></th>
-						</thead>
-						<tbody>
-					<?php foreach($nicknames as $key => $nickname): ?>
-							<tr>
-								<td><?php echo $nickname["nickname"] ?></td>
-								<td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
-								<td class="accept">
-									<input id="accept_<?php echo $key ?>" type="checkbox" value="1" name="accept_<?php echo $key ?>" form="data_form"<?php if($nickname["accepted"]): ?> checked<?php endif; ?>/>
-									<label for="accept_<?php echo $key ?>">Spitzname akzeptieren</label>
-								</td>
-							</tr>
-					<?php endforeach; ?>
-						</tbody>
-				 	</table>
-				<?php endif; ?>
-					
-					<div class="buttons">
-						<a class="button" href="javascript:void(suggest('nickname'))"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
-					</div>
-					
-				</div>
-				<h2>Versendete Spitznamen</h2>
-				<div class="nickname-list row">
-				<?php if(empty($suggestedNicknames)) : ?>
-					<div class="alert">Bisher hast du niemanden einen Spitznamen vorgeschlagen.</div>
-				<?php else: ?>
-					<table class="table table-striped">
-						<thead>
-							<th>Spitzname</th>
-							<th>Vergeben an</th>
-							<th class="edit"></th>
-						</thead>
-						<tbody>
-					<?php foreach($suggestedNicknames as $key => $nickname): ?>
-							<tr>
-								<td><?php echo $nickname["nickname"] ?></td>
-								<td><?php echo $nickname["to"]["prename"] . " " . $nickname["to"]["lastname"]; ?></td>
-								<td class="accept">
-								<?php if($nickname["accepted"] == 0) : ?>
-									<a class="button" href="./dashboard.php?withdraw=nickname&id=<?php echo $key; ?>">
-										<span class="icon-minus-circled"></span> Vorschlag zurückziehen
-									</a>
-								<?php else: ?>
-									Spitzname wurde akzeptiert
-								<?php endif; ?>
-								</td>
-							</tr>
-					<?php endforeach; ?>
-						</tbody>
-				 	</table>
-				<?php endif; ?>
-				</div>
-			</div>
+                <div class="nicknames box">
+                    <h2>Vorgeschlagene Spitznamen</h2>
+                    <div class="nickname-list row">
+                    <?php if(empty($nicknames)) : ?>
+                        <div class="alert">Bisher hat dir niemand einen Spitznamen vorgeschlagen.</div>
+                    <?php else: ?>
+                        <table class="table table-striped">
+                            <thead>
+                                <th>Spitzname</th>
+                                <th>Vergeben von</th>
+                                <th class="accept"></th>
+                            </thead>
+                            <tbody>
+                        <?php foreach($nicknames as $key => $nickname): ?>
+                                <tr>
+                                    <td><?php echo $nickname["nickname"] ?></td>
+                                    <td><?php echo $nickname["from"]["prename"] . " " . $nickname["from"]["lastname"]; ?></td>
+                                    <td class="accept">
+                                        <input id="accept_<?php echo $key ?>" type="checkbox" value="1" name="accept_<?php echo $key ?>" form="data_form"<?php if($nickname["accepted"]): ?> checked<?php endif; ?>/>
+                                        <label for="accept_<?php echo $key ?>">Spitzname akzeptieren</label>
+                                    </td>
+                                </tr>
+                        <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                        
+                        <div class="buttons">
+                            <a class="button" href="javascript:void(suggest('nickname'))"><span class="icon-plus-circled"></span> Spitzname vergeben</a>
+                        </div>
+                        
+                    </div>
+                    <h2>Versendete Spitznamen</h2>
+                    <div class="nickname-list row">
+                    <?php if(empty($suggestedNicknames)) : ?>
+                        <div class="alert">Bisher hast du niemanden einen Spitznamen vorgeschlagen.</div>
+                    <?php else: ?>
+                        <table class="table table-striped">
+                            <thead>
+                                <th>Spitzname</th>
+                                <th>Vergeben an</th>
+                                <th class="edit"></th>
+                            </thead>
+                            <tbody>
+                        <?php foreach($suggestedNicknames as $key => $nickname): ?>
+                                <tr>
+                                    <td><?php echo $nickname["nickname"] ?></td>
+                                    <td><?php echo $nickname["to"]["prename"] . " " . $nickname["to"]["lastname"]; ?></td>
+                                    <td class="accept">
+                                    <?php if($nickname["accepted"] == 0) : ?>
+                                        <a class="button" href="./dashboard.php?withdraw=nickname&id=<?php echo $key; ?>">
+                                            <span class="icon-minus-circled"></span> Vorschlag zurückziehen
+                                        </a>
+                                    <?php else: ?>
+                                        Spitzname wurde akzeptiert
+                                    <?php endif; ?>
+                                    </td>
+                                </tr>
+                        <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                    </div>
+                </div>
 				
-			<div class="questions box">
-			
+				<div class="questions box">
 				<h2>Fragen</h2>
-			
-				<div class="question-list row">
-				<?php
-					foreach($questions as $key => $question): 
-						$text = "";
-						
-						$stmt = $mysqli->prepare("
-							SELECT text 
-							FROM users_questions
-							WHERE user = ? AND question = ?");
-							
-						$stmt->bind_param("ii", intval($data["id"]), $key);
-						$stmt->execute();
-						
-						
-						$stmt->bind_result($text);
-						$stmt->fetch();
-						
-						$stmt->close();					
-					?>
-						<div class="question col-sm-6">
-							<div class="title"><?php echo $question["title"] ?></div>
-							<div class=""><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $text ?></textarea></div>
-						</div><!-- .question -->
-						
-					<?php endforeach; ?>
-					
+                    <div class="question-list row">
+                    <?php
+                        foreach($questions as $key => $question): 
+                            $text = "";
+                            
+                            $stmt = $mysqli->prepare("
+                                SELECT text 
+                                FROM users_questions
+                                WHERE user = ? AND question = ?");
+                                
+                            $stmt->bind_param("ii", intval($data["id"]), $key);
+                            $stmt->execute();
+                            
+                            
+                            $stmt->bind_result($text);
+                            $stmt->fetch();
+                            
+                            $stmt->close();					
+                        ?>
+                            <div class="question col-sm-6">
+                                <div class="title"><?php echo $question["title"] ?></div>
+                                <div class=""><textarea name="question_<?php echo $key ?>" form="data_form"><?php echo $text ?></textarea></div>
+                            </div><!-- .question -->
+                            
+                        <?php endforeach; ?>
+                        
+                    </div>
 				</div>
 				
-			</div>
-				
-			<div class="surveys box">
-			
+				<div class="surveys box">
 				<h2>Umfragen</h2>
-			
-				<div class="survey-list">
+					<div class="survey-list">
 				
-				<?php foreach($surveys as $key => $survey): ?>
-					<div class="row">
-						
-						<div class="col-xs-12 col-sm-4 title"><?php echo $survey["title"] ?></div>
-						
-						<div class="col-xs-12 col-sm-4">
-						
-						<?php if($survey["m"] === true):
-							$answer = 0;
-							if(isset($survey_answers[$key]))
-								$answer = $survey_answers[$key]["m"];		
-						?>
-							<div class="icon-male">
-								<select name="survey_m_<?php echo $key ?>" form="data_form">
-									<option value=" "<?php echo ($answer) ? "" : " selected" ?>>-</option>
-									<?php
-										foreach($students as $student) {
-											if($student["gender"] == "m") {
-												echo "<option value='{$student['uid']}'";
-												
-												if($answer == $student["uid"]) 
-													echo " selected";
-												
-												echo ">";
-												echo "{$student['prename']} {$student['lastname']}";
-												echo "</option>";
-											}
-										}
-									?>
-								</select>
-							</div><!-- .icon-male -->
-						
-						<?php endif; ?>
-						
-						</div><!-- .col-xs-12 .col-sm-4 -->
-						
-						<div class="col-xs-12 col-sm-4">
-						<?php if($survey["w"] === true): 
-							$answer = 0;
-							if(isset($survey_answers[$key]))
-								$answer = $survey_answers[$key]["w"];
-						?>
-							<div class="icon-female">
-							
-								<select name="survey_w_<?php echo $key ?>" form="data_form">
-									<option value=" "<?php echo ($answer) ? "" : " selected" ?>>-</option>
-									<?php
-										foreach($students as $student) {
-											if($student["gender"] == "w") {
-												echo "<option value='{$student['uid']}'";
-												
-												if($answer == $student["uid"]) 
-													echo " selected";
-												
-												echo ">";
-												echo "{$student['prename']} {$student['lastname']}";
-												echo "</option>";
-											}
-										}
-									?>
-								</select>
-								
-							</div><!-- .icon-female -->
-							
-						</div><!-- .col-xs-12 .col-sm-4 -->
-						
-						<?php endif; ?>
-						
-					</div><!-- .suervey-list -->
-					
-				<?php endforeach; ?>
-				
-				</div>
-				
-			</div>
-            
-            <?php endif; ?>
+					<?php foreach($surveys as $key => $survey): ?>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-4 title"><?php echo $survey["title"] ?></div>
+                            <div class="col-xs-12 col-sm-4">
+                            
+                            <?php if($survey["m"] === true):
+                                $answer = 0;
+                                if(isset($survey_answers[$key]))
+                                    $answer = $survey_answers[$key]["m"];		
+                            ?>
+                                <div class="icon-male">
+                                    <select name="survey_m_<?php echo $key ?>" form="data_form">
+                                        <option value=" "<?php echo ($answer) ? "" : " selected" ?>>-</option>
+                                        <?php
+                                            foreach($students as $student) {
+                                                if($student["gender"] == "m") {
+                                                    echo "<option value='{$student['uid']}'";
+                                                    
+                                                    if($answer == $student["uid"]) 
+                                                        echo " selected";
+                                                    
+                                                    echo ">";
+                                                    echo "{$student['prename']} {$student['lastname']}";
+                                                    echo "</option>";
+                                                }
+                                            }
+                                        ?>
+                                    </select>
+                                </div><!-- .icon-male -->
+                            
+                            <?php endif; ?>
+                            
+                            </div><!-- .col-xs-12 .col-sm-4 -->
+                            
+                            <div class="col-xs-12 col-sm-4">
+                            <?php if($survey["w"] === true): 
+                                $answer = 0;
+                                if(isset($survey_answers[$key]))
+                                    $answer = $survey_answers[$key]["w"];
+                            ?>
+                                <div class="icon-female">
+                                
+                                    <select name="survey_w_<?php echo $key ?>" form="data_form">
+                                        <option value=" "<?php echo ($answer) ? "" : " selected" ?>>-</option>
+                                        <?php
+                                            foreach($students as $student) {
+                                                if($student["gender"] == "w") {
+                                                    echo "<option value='{$student['uid']}'";
+                                                    
+                                                    if($answer == $student["uid"]) 
+                                                        echo " selected";
+                                                    
+                                                    echo ">";
+                                                    echo "{$student['prename']} {$student['lastname']}";
+                                                    echo "</option>";
+                                                }
+                                            }
+                                        ?>
+                                    </select>
+                                    
+                                </div><!-- .icon-female -->
+                                
+                            </div><!-- .col-xs-12 .col-sm-4 -->
+                            
+                            <?php endif; ?>
+                            
+                        </div><!-- .suervey-list -->
+                        
+                    <?php endforeach; ?>
+                    
+                    </div>
+                    
+                </div>
+                
+                <?php endif; ?>
 				
 			<div class="buttons">
 			

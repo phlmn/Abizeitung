@@ -303,9 +303,9 @@ if(isset($_GET["tutorial"])) {
 				$stmt->bind_result($tutorial["id"], $tutorial["name"], $tutorial["teacher"]["id"], $tutorial["teacher"]["userid"], $tutorial["teacher"]["lastname"]);
 			?>
 				<div class="groups">
-					<div class="addGroup" onclick="void(tutorials.editGroup(0))"></div>
+					<div class="circle addGroup" onclick="void(tutorials.editGroup(0))"></div>
 					<?php while($stmt->fetch()): ?>
-					<div data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="void(tutorials.showGroup(<?php echo $tutorial["id"] ?>))">
+					<div class="circle" data-tutorialid="<?php echo $tutorial["id"] ?>" onclick="void(tutorials.showGroup(<?php echo $tutorial["id"] ?>))">
 						<div class="info">
 							<div class="name"><?php echo $tutorial["name"] ?></div>
 							<div class="teacher"><?php echo $tutorial["teacher"]["lastname"] ?></div>

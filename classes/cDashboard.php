@@ -328,11 +328,18 @@
                 <h4>Fehler melden</h4>
             </div>
             <div class="modal-body">
-                <textarea name="text" placeholder="Was ist los?"></textarea>
+                <textarea name="text" placeholder="Was ist los?"><?php
+						if(isset($_GET["name"])) {
+							echo "Ich bin nicht im Kurs \"" . $_GET["name"] . "\".";
+						}
+				?></textarea>
             </div>
             <div class="modal-body">
-            	<h4>Kategorie</h4>
+            	<?php if(isset($_GET["id"])): ?>
+                <input type="hidden" name="error-category" value="170<?php echo $_GET["id"]; ?>" />
+                <?php else: ?>
                 <input type="hidden" id="error-category" name="error-category" />
+                <h4>Kategorie</h4>
                 <div class="error-category">
                 	<ul>
                     	<div class="scroll">
@@ -346,6 +353,7 @@
                                         <li value="14">Tutorium</li>
                                         <li value="15">Tutor</li>
                                         <li value="16">Bilder</li>
+                                        <li value="17">Kurse</li>
                                     </div>
                                 </ul>
                             </li>
@@ -368,6 +376,7 @@
                         </div>
                     </ul>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
@@ -430,15 +439,22 @@
 			return false;
 		}
 		
-		public static function script($nojstag = NULL) {
-			if(!$nojstag): ?><script type="text/javascript"><?php endif; ?>
+		public static function script($jstag = false) {
+			if($jstag): ?><script type="text/javascript"><?php endif; ?>
             function suggest(name) {
+				var param = "";
+				
+				if(arguments.length > 1) {
+					for(i = 1; i < arguments.length; i++)
+						param += "&" + arguments[i];
+				}
+				
 				$('#dashboardModal').modal();
-				$('#dashboardModal').load("dashboard.php?suggest=" + name, function() {
+				$('#dashboardModal').load("dashboard.php?suggest=" + name + param.replace(" ", ""), function() {
 					$("#dashboardModal select").fancySelect();
 				});
 			}
-		<?php if(!$nojstag): ?></script><?php endif; ?>
+		<?php if($jstag): ?></script><?php endif; ?>
 <?php
 		}
 	}
@@ -450,12 +466,12 @@
 		### JavaScript modal
 		###
 	
-		<?php Dashboard::script(); ?>
+		<?php Dashboard::script(true); ?>
 		
 		-- or --
 		
 		<script type="text/javascript">
-			<?php Dashboard::script(true); ?>
+			<?php Dashboard::script(); ?>
 		</script>
 		
 		###
