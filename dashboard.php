@@ -322,7 +322,8 @@
 	
 	$stmt = $mysqli->prepare("
 		SELECT id, title
-		FROM questions");
+		FROM questions
+		WHERE accepted = 1");
 		
 	$stmt->execute();
 	$stmt->bind_result($row["id"], $row["title"]);

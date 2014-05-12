@@ -228,17 +228,37 @@
                 <input type="text" name="nickname" placeholder="Spitzname"/>
                 <select name="user">
                 <?php
-                    $stmt = $mysqli->prepare("
-                        SELECT users.id, users.prename, users.lastname
-                        FROM students
-                        LEFT JOIN users ON students.uid = users.id
-                        WHERE 
-                            NOT users.id = ?
-                            AND students.tutorial = ?
-                        ORDER BY users.lastname ASC
-                    ");
+					
+					switch(db_get_option("nicknames")) {
+						case "1":
+							$stmt = $mysqli->prepare("
+								SELECT users.id, users.prename, users.lastname
+								FROM students
+								LEFT JOIN users ON students.uid = users.id
+								WHERE NOT users.id = ?
+								ORDER BY users.lastname ASC
+							");
+							
+							$stmt->bind_param("i", $data["id"]);
+							break;
+						case "3":
+							// Todo: 
+							// select all students from same classes
+							//break;
+						default:
+							$stmt = $mysqli->prepare("
+								SELECT users.id, users.prename, users.lastname
+								FROM students
+								LEFT JOIN users ON students.uid = users.id
+								WHERE 
+									NOT users.id = ?
+									AND students.tutorial = ?
+								ORDER BY users.lastname ASC
+							");
+							
+							$stmt->bind_param("ii", $data["id"], $data["tutorial"]["id"]);
+					}
                     
-                    $stmt->bind_param("ii", intval($data["id"]), intval($data["tutorial"]["id"]));
                     $stmt->execute();
                     
                     $stmt->bind_result($user["id"], $user["prename"], $user["lastname"]);
