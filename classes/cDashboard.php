@@ -334,10 +334,10 @@
 						}
 				?></textarea>
             </div>
+            <?php if(isset($_GET["id"])): ?>
+            <input type="hidden" name="error-category" value="170<?php echo $_GET["id"]; ?>" />
+            <?php else: ?>
             <div class="modal-body">
-            	<?php if(isset($_GET["id"])): ?>
-                <input type="hidden" name="error-category" value="170<?php echo $_GET["id"]; ?>" />
-                <?php else: ?>
                 <input type="hidden" id="error-category" name="error-category" />
                 <h4>Kategorie</h4>
                 <div class="error-category">
@@ -376,8 +376,8 @@
                         </div>
                     </ul>
                 </div>
-                <?php endif; ?>
             </div>
+            <?php endif; ?>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
                 <button type="submit" class="btn btn-default">Speichern</button>
