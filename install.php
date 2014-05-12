@@ -37,6 +37,16 @@
 			$mysqli->select_db($db_name);
 						
 			$res = $mysqli->multi_query("
+				-- TABLE OPTIONS --
+				
+					CREATE TABLE IF NOT EXISTS `options` (
+						`id` 			INT 		NOT NULL 	AUTO_INCREMENT,
+						`name` 			VARCHAR(45) NOT NULL,
+						`value` 		VARCHAR(100) NOT NULL,
+						PRIMARY KEY (`id`),
+						UNIQUE INDEX `name_UNIQUE` (`name` ASC)
+					) ENGINE = InnoDB;
+				
 				-- TABLE CATEGORIES --
 				
 					CREATE TABLE IF NOT EXISTS `categories` (
@@ -320,6 +330,13 @@
 			");
 			
 			while($mysqli->next_result());
+			
+			// Set options
+			
+			db_set_option("nicknames", "2");
+			db_set_option("classes", "2");
+			db_set_option("questions", "2");
+			db_set_option("surveys", "2");
 			
 			$stmt = $mysqli->prepare("
 				INSERT INTO `users` (

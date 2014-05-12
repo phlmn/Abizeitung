@@ -8,8 +8,9 @@ body {
 	background: @colorBg;
 }
 
-a:focus {
-	outline: none;
+a:focus,
+input:focus {
+	outline: none !important;
 }
 
 h1, .h1,
@@ -970,6 +971,22 @@ td.edit a {
 			background: none;
 			border: none;
 			text-align: center;
+		}
+	}
+}
+
+#options {
+	.row {
+		> div {
+			padding: 10px 30px;
+			
+			.option {
+				margin-left: 20px;
+				
+				label {
+					font-weight: normal;
+				}
+			}
 		}
 	}
 }

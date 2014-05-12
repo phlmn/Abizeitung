@@ -35,7 +35,6 @@
 		<div id="user-management" class="container-fluid admin-wrapper">
 			<h1>Nutzerverwaltung</h1>
 			<div class="users box">
-				<h2>Nutzer</h2>
                 <ul class="nav nav-tabs">
                 	<li<?php if($group == "students"): 	?> class="active"<?php endif; ?>><a href="users.php?group=students">Schüler</a></li>
                     <li<?php if($group == "teachers"): 	?> class="active"<?php endif; ?>><a href="users.php?group=teachers">Lehrer</a></li>

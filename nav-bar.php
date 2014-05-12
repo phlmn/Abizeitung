@@ -36,6 +36,13 @@
 		<li><a href="questions.php">Fragen</a></li>
 		<li><a href="surveys.php">Umfragen</a></li>
 		<li><a href="results.php">Auswertung</a></li>
+        <li>
+        	<a href="options.php">Einstellungen</a>
+            <ul>
+            	<li><a href="options.php?group=options">Optionen</a></li>
+            	<li><a href="options.php?group=images">Bilder Kategorien</a></li>
+            </ul>
+        </li>
         <?php $count_errors = db_count("error_report", "solved", "0") ?>
 		<li><a href="errors.php">Fehlermeldungen<?php if($count_errors > 0): ?><span class="activity"><?php echo $count_errors; ?></span><?php endif; ?></a></li>
 	</ul>

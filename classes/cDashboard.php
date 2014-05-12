@@ -219,7 +219,7 @@
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
-        <form method="post" action="dashboard.php?nickname">
+        <form method="post" action="dashboard.php?affected=nickname">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4>Spitzname vergeben</h4>
@@ -267,7 +267,7 @@
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
-        <form method="post" action="dashboard.php?question">
+        <form method="post" action="dashboard.php?affected=question">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4>Frage vorschlagen</h4>
@@ -289,7 +289,7 @@
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
-        <form method="post" action="dashboard.php?survey">
+        <form method="post" action="dashboard.php?affected=survey">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4>Umfrage vorschlagen</h4>
@@ -322,7 +322,7 @@
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
-        <form method="post" action="dashboard.php?error-report">
+        <form method="post" action="dashboard.php?affected=error-report">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4>Fehler melden</h4>

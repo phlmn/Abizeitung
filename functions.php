@@ -82,6 +82,64 @@
 		return -1;
 	}
 	
+	function db_get_option($name) {
+		global $mysqli;
+		
+		$stmt = $mysqli->prepare("
+			SELECT value
+			FROM options
+			WHERE name = ?
+			LIMIT 1
+		");
+		
+		$stmt->bind_param("s", $name);
+		$stmt->execute();
+		
+		$stmt->bind_result($value);
+		
+		if(!$stmt->fetch()) {
+			$stmt->close();
+			
+			return NULL;
+		}
+		
+		return $value;
+		
+		$stmt->close();
+	}
+	
+	function db_set_option($name, $value) {
+		global $mysqli;
+		
+		if(db_get_option($name)) {
+			$stmt = $mysqli->prepare("
+				UPDATE options
+				SET value = ?
+				WHERE name = ?
+				LIMIT 1
+			");
+			
+			$stmt->bind_param("ss", $value, $name);
+			$stmt->execute();
+			
+			$stmt->close();
+		}
+		else {
+			$stmt = $mysqli->prepare("
+				INSERT INTO options (
+					name, value
+				) VALUES (
+					?, ?
+				)
+			");
+			
+			$stmt->bind_param("ss", $name, $value);
+			$stmt->execute();
+			
+			$stmt->close();
+		}
+	}
+	
 	function db_count($table) {
 		global $mysqli;
 		
