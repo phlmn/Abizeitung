@@ -205,8 +205,14 @@
 				array_push($res["absolute"], intval($arg));
 			}
 			
+			$percent = -100;
+			
 			for($i = 0; $i < count($args); $i++) {
-				$res["percent"][$i] = round($res["absolute"][$i] * 100 / $res["all"], intval($precision));
+				$percent += $res["percent"][$i] = round($res["absolute"][$i] * 100 / $res["all"], intval($precision));
+			}
+			
+			if($percent > 0) {
+				$res["percent"][0] = $res["percent"][0] - $percent;
 			}
 		}
 		else {
