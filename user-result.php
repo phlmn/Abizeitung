@@ -155,10 +155,11 @@
 						$stmt = $mysqli->prepare("
 							SELECT file
 							FROM images
+							LEFT JOIN categories ON images.category = categories.id
 							WHERE 
-								uid = ? AND
-								category = 1
-							ORDER BY id DESC
+								images.uid = ? AND
+								categories.name = 'enrollment'
+							ORDER BY images.uploadtime DESC
 							LIMIT 1
 						");
 						
@@ -173,10 +174,11 @@
 						$stmt = $mysqli->prepare("
 							SELECT file
 							FROM images
+							LEFT JOIN categories ON images.category = categories.id
 							WHERE 
-								uid = ? AND
-								category = 2
-							ORDER BY id DESC
+								images.uid = ? AND
+								categories.name = 'current'
+							ORDER BY images.uploadtime DESC
 							LIMIT 1
 						");
 						
