@@ -193,6 +193,8 @@
 	}
 	
 	function get_percent($args, $precision = 2, $all = NULL) {
+		$precision = pow(10, $precision);
+		
 		$res = array(
 			"all" => 0, 
 			"percent" => array(),
@@ -205,20 +207,14 @@
 				array_push($res["absolute"], intval($arg));
 			}
 			
-			$percent = -100;
-			
 			for($i = 0; $i < count($args); $i++) {
-				$percent += $res["percent"][$i] = round($res["absolute"][$i] * 100 / $res["all"], intval($precision));
-			}
-			
-			if($percent > 0) {
-				$res["percent"][0] = $res["percent"][0] - $percent;
+				$res["percent"][$i] = floor($res["absolute"][$i] * 100 * $precision / $res["all"]) / $precision;
 			}
 		}
 		else {
 			$res["all"] = intval($all);
 			$res["absolute"] = intval($args);
-			$res["percent"] = floor(($res["absolute"] * 100 / $res["all"]) * pow(10, $precision)) / pow(10, $precision);
+			$res["percent"] = floor($res["absolute"] * 100 * $precision / $res["all"]) / $precision;
 		}
 		
 		return $res;
