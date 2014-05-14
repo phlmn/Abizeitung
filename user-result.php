@@ -28,7 +28,9 @@
 		SELECT nicknames.id, nicknames.nickname, users.prename, users.lastname, nicknames.accepted
 		FROM nicknames
 		LEFT JOIN users ON nicknames.`from` = users.id
-		WHERE nicknames.`to` = ?
+		WHERE 
+			nicknames.`to` <> nicknames.`from`
+		AND	nicknames.`to` = ?
 	");
 	
 	$stmt->bind_param("i", $user["id"]);
