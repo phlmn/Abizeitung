@@ -235,6 +235,21 @@
 		<?php }
 	}
 	
+	function count_filerows($file) {
+		if(is_file($file)) { 
+		
+			$data = file($file); 
+			
+			$rows = count($data);
+			
+			unset($data);
+			
+			return $rows; 
+		}
+		
+		return NULL;
+	}
+	
 	function null_on_empty($var) {
 		if(empty($var)) {
 			return NULL;	

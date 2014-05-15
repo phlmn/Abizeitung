@@ -118,13 +118,6 @@
 		}
 		
 		public static function display_csv() {
-			function count_filerows ($file) { 
-				$data = file($file); 
-				$rows = count($data); 
-				unset($data);
-				
-				return $data; 
-			}
 			
 			$dir["count"] = 0;
 			$dir["path"] = "./csv/";
@@ -136,6 +129,7 @@
                             <th class="edit"></th>
                             <th>Name</th>
                             <th>Datum</th>
+                            <th>Zeilen</th>
                             <th>Größe</th>
                         </thead>
                         <tbody>
@@ -162,6 +156,7 @@
                                 <td class="edit"><input type="checkbox" id="file_<?php echo $dir["count"]; ?>" name="file_<?php echo $dir["count"]; ?>" /></td>
                                 <td><label for="file_<?php echo $dir["count"]; ?>"><?php echo $file; ?></label></td>
                                 <td><?php echo $info["date"]; ?> <em>(<?php echo $info["time"]; ?>)</em></td>
+                                <td><?php echo count_filerows($dir["path"] . $file) ?></td>
                                 <td><?php echo $info["size"] . " B"; ?></td>
                                 <input type="hidden" name="file_name_<?php echo $dir["count"]; ?>" value="<?php echo $dir["path"] . $file; ?>" />
                             </tr>
