@@ -41,6 +41,7 @@
             <ul>
             	<li><a href="options.php?group=options">Optionen</a></li>
             	<li><a href="options.php?group=images">Bilder Kategorien</a></li>
+                <li><a href="options.php?group=csv">CSV Import</a></li>
             </ul>
         </li>
         <?php $count_errors = db_count("error_report", "solved", "0") ?>

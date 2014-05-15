@@ -73,6 +73,11 @@
 				case "cannot-update-birthday": 	$save = 25; break;
 				case "empty-input": 			$save = 26; break;
 				case "nickname-already-exists": $save = 27; break;
+				case "file-not-existing": 		$save = 28; break;
+				case "files-not-existing": 		$save = 29; break;
+				case "cannot-delete-file": 		$save = 30; break;
+				case "cannot-delete-files": 	$save = 31; break;
+				
 				default: $save = intval($error);
 			}
 			
@@ -114,8 +119,12 @@
 				case 23: 	case "cannot-update-surveys": 	$message = "Die Umfrageergebnisse konnten nicht gespeichert werden."; break;
 				case 24: 	case "cannot-find-user": 		$message = "Der Nutzer wurde nicht gefunden."; break;
 				case 25: 	case "cannot-update-birthday": 	$message = "Das Geburtsdatum konnte nicht gespeichert werden."; break;
-				case 26: 	case "empty-input": 			$message = "Das Textfeld darf nicht leer bleiben."; break;
+				case 26: 	case "empty-input": 			$message = "Das Textfeld / die Auswahl darf nicht leer sein."; break;
 				case 27: 	case "nickname-already-exists": $message = "Dieser Spitzname wurde der Person bereits vorgeschlagen."; break;
+				case 28: 	case "file-not-existing": 		$message = "Eine Datei existiert nicht."; break;
+				case 29: 	case "files-not-existing": 		$message = "Mehrere Dateien existieren nicht."; break;
+				case 30: 	case "cannot-delete-file": 		$message = "Eine Datei konnte nicht gelöscht werden."; break;
+				case 31: 	case "cannot-delete-files": 	$message = "Mehrere Dateien konnten nicht gelöscht werden."; break;
 				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten.";
 			}
 			

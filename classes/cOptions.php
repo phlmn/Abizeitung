@@ -117,6 +117,70 @@
 			$stmt->close();
 		}
 		
+		public static function display_csv() {
+			function count_filerows ($file) { 
+				$data = file($file); 
+				$rows = count($data); 
+				unset($data);
+				
+				return $data; 
+			}
+			
+			$dir["count"] = 0;
+			$dir["path"] = "./csv/";
+			
+?>
+				<form method="post" action="options.php?affected=files">
+                    <table class="table table-striped">
+                        <thead>
+                            <th class="edit"></th>
+                            <th>Name</th>
+                            <th>Datum</th>
+                            <th>Größe</th>
+                        </thead>
+                        <tbody>
+                            <?php
+                            
+                            $dir["dir"] = scandir($dir["path"]);
+                             
+                            foreach ($dir["dir"] as $file):
+                                
+                                if ($file == "." || $file == "..") {
+                                    continue;
+                                }
+                                
+                                $dir["count"]++;
+                                
+                                $info = array(
+                                    "size" => filesize($dir["path"] . $file),
+                                    "date" => date("Y - m - d", filemtime($dir["path"] . $file)),
+                                    "time" => date("H:i:s", filemtime($dir["path"] . $file))
+                                );
+                                                    
+                            ?>
+                            <tr>
+                                <td class="edit"><input type="checkbox" id="file_<?php echo $dir["count"]; ?>" name="file_<?php echo $dir["count"]; ?>" /></td>
+                                <td><label for="file_<?php echo $dir["count"]; ?>"><?php echo $file; ?></label></td>
+                                <td><?php echo $info["date"]; ?> <em>(<?php echo $info["time"]; ?>)</em></td>
+                                <td><?php echo $info["size"] . " B"; ?></td>
+                                <input type="hidden" name="file_name_<?php echo $dir["count"]; ?>" value="<?php echo $dir["path"] . $file; ?>" />
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    
+                    <input type="hidden" name="file_count" value="<?php echo $dir["count"]; ?>" />
+                    
+                    <div class="buttons">
+                    
+                        <input type="submit" value="Ausgewählte Dateien löschen" />
+                        <input type="reset" value="Auswahl aufheben" />
+                
+                    </div><!-- .buttons -->
+                </form>
+<?php
+		}
+		
 		public static function edit_images($id) {
 			if(empty($id))
 				return -1;
@@ -202,6 +266,44 @@
 			$stmt->execute();
 			
 			$stmt->close();
+			
+			return 0;
+		}
+		
+		public static function delete_csv($data) {
+			if(!count($data["files"])) {
+				return "empty-input";
+			}
+			
+			$error["exist"] 	= 0;
+			$error["delete"] 	= 0;
+			
+			foreach($data["files"] as $file) {
+				if(is_file($file)) {
+					if(!unlink($file)) {
+						$error["delete"]++;
+					}
+				}
+				else {
+					$error["exist"]++;
+				}
+			}
+			
+			if($error["exist"] == 1) {
+				return "file-not-existing";
+			}
+			
+			if($error["exist"] > 1) {
+				return "files-not-existing";
+			}
+			
+			if($error["delete"] == 1) {
+				return "cannot-delete-file";
+			}
+			
+			if($error["delete"] > 1) {
+				return "cannot-delete-files";
+			}
 			
 			return 0;
 		}

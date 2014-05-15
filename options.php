@@ -25,6 +25,7 @@
 	
 	if(isset($_GET["affected"])) {
 		$action = NULL;
+		$param = NULL;
 		
 		if(isset($_GET["action"])) {
 			$action = $_GET["action"];
@@ -32,6 +33,9 @@
 		
 		switch($_GET["affected"]) {
 			case "images":
+				
+				$param = "&group=images";
+				
 				if(empty($_GET["id"])) {
 					$errorHandler->add_error("empty-input");
 				}
@@ -55,30 +59,59 @@
 				
 				break;
 				
-				case "options":
+			case "options":
+				
+				$param = "&group=options";
+				
+				if(empty($_POST["nicknames"]) && empty($_POST["classes"]) && empty($_POST["questions"]) && empty($_POST["surveys"])) {
+					$errorHandler->add_error("empty-input");	
+				}
+				else {
+					$data["nicknames"] 	= $_POST["nicknames"];
+					$data["classes"] 	= $_POST["classes"];
+					$data["questions"] 	= $_POST["questions"];
+					$data["surveys"] 	= $_POST["surveys"];
 					
-					if(empty($_POST["nicknames"]) && empty($_POST["classes"]) && empty($_POST["questions"]) && empty($_POST["surveys"])) {
-						$errorHandler->add_error("empty-input");	
+					$errorHandler->add_error(Options::update_options($data));
+				}
+				
+				break;
+				
+			case "files":
+				
+				$param = "&group=csv";
+				
+				$data["files"] = array();
+				
+				if(isset($_POST["file_count"])) {
+					if($_POST["file_count"] > 0) {
+						
+						for($i = 1; $i <= $_POST["file_count"]; $i++) {
+							if(isset($_POST["file_" . $i]) && isset($_POST["file_name_" . $i])) {
+								array_push($data["files"], $_POST["file_name_" . $i]);
+							}
+						}
+						
+						$errorHandler->add_error(Options::delete_csv($data));
 					}
 					else {
-						$data["nicknames"] 	= $_POST["nicknames"];
-						$data["classes"] 	= $_POST["classes"];
-						$data["questions"] 	= $_POST["questions"];
-						$data["surveys"] 	= $_POST["surveys"];
-						
-						$errorHandler->add_error(Options::update_options($data));
+						$errorHandler->add_error("empty-input");
 					}
-					
+				}
+				else {
+					$errorHandler->add_error("empty-input");
+				}
+				
 				break;
 		}
 		
 		db_close();
 			
 		if($errorHandler->is_error()) {
-			header("Location: ./options.php?error" . $errorHandler->export_url_param(true));
+			header("Location: ./options.php?error" . $errorHandler->export_url_param(true) . $param);
 		}
 		else {
-			header("Location: ./options.php?saved");
+			header("Location: ./options.php?saved" . $param);
 		}
 		
 		die;
@@ -121,6 +154,7 @@
 				<ul class="nav nav-tabs">
                 	<li<?php if($group == "options"): 	?> class="active"<?php endif; ?>><a href="options.php?group=options">Optionen</a></li>
                 	<li<?php if($group == "images"): 	?> class="active"<?php endif; ?>><a href="options.php?group=images">Bilder</a></li>
+                    <li<?php if($group == "csv"): 		?> class="active"<?php endif; ?>><a href="options.php?group=csv">CSV Import</a></li>
                 </ul>
                 <?php
 					switch($group) {
@@ -129,6 +163,9 @@
 							break;
 						case "options":
 							Options::display_options();
+							break;
+						case "csv":
+							Options::display_csv();
 							break;
 					}
 				?>
