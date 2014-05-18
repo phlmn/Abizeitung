@@ -139,10 +139,14 @@
 		public static function display_state($tutorial = false) {
 			global $mysqli;
 			
-			$options = array(
-				"questions" => db_get_option("state_questions") / 100,
-				"surveys" 	=> db_get_option("state_surveys") / 100
-			);
+			$state_questions 	= db_get_option("state_questions") / 100;
+			$state_surveys 		= db_get_option("state_surveys") / 100;
+			
+			if($state_questions < 0)
+				$state_questions = 1;
+			
+			if($state_surveys < 0);
+				$state_questions = 1;
 			
 			$userstate = array(
 				db_count("users", "activated", "1"),
@@ -214,8 +218,8 @@
 								$row["birthday"] && 
 								$row["activated"] && 
 								$row["images"] 		>= $count["images"] && 
-								$row["questions"] 	>= $count["questions"] 	* $options["questions"] && 
-								$row["surveys"] 	>= $count["surveys"] 	* $options["surveys"]
+								$row["questions"] 	>= $count["questions"] 	* $state_questions && 
+								$row["surveys"] 	>= $count["surveys"] 	* $state_surveys
 							);
 							
 							$percent = array(
@@ -243,7 +247,7 @@
                                 </div>
                                 <?php else: ?>-<?php endif; ?>
                             </td>
-                            <td class="<?php echo ($row["questions"] >= $count["questions"] * $options["questions"]) ? "existing" : "missing"?>">
+                            <td class="<?php echo ($row["questions"] >= $count["questions"] * $state_questions) ? "existing" : "missing"?>">
                             	<?php if($row["activated"]): ?>
                                 <div class="bar">
                                 	<?php if($row["questions"] < $count["questions"]): ?>
@@ -256,7 +260,7 @@
                                 </div>
                                 <?php else: ?>-<?php endif; ?>
                             </td>
-                            <td class="<?php echo ($row["surveys"] >= $count["surveys"] * $options["surveys"]) ? "existing" : "missing"?>">
+                            <td class="<?php echo ($row["surveys"] >= $count["surveys"] * $state_surveys) ? "existing" : "missing"?>">
                             	<?php if($row["activated"]): ?>
                                 <div class="bar">
                                 	<?php if($row["surveys"] < $count["surveys"]): ?>
