@@ -67,6 +67,9 @@
 					$errorHandler->add_error("empty-input");	
 				}
 				else {
+					$data["state_questions"] 	= (float)$_POST["state_questions"];
+					$data["state_surveys"] 		= (float)$_POST["state_surveys"];
+					
 					$data["nicknames"] 	= $_POST["nicknames"];
 					$data["classes"] 	= $_POST["classes"];
 					$data["questions"] 	= $_POST["questions"];

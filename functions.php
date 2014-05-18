@@ -100,7 +100,7 @@
 		if(!$stmt->fetch()) {
 			$stmt->close();
 			
-			return NULL;
+			return -1;
 		}
 		
 		return $value;
@@ -111,7 +111,7 @@
 	function db_set_option($name, $value) {
 		global $mysqli;
 		
-		if(db_get_option($name)) {
+		if(db_get_option($name) != -1) {
 			$stmt = $mysqli->prepare("
 				UPDATE options
 				SET value = ?

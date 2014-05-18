@@ -5,6 +5,9 @@
 		public static function display_options() {
 			global $mysqli;
 			
+			$state_questions 	= db_get_option("state_questions");
+			$state_surveys 		= db_get_option("state_surveys");
+			
 			$nicknames 	= db_get_option("nicknames");
 			$classes 	= db_get_option("classes");
 			$questions 	= db_get_option("questions");
@@ -13,7 +16,19 @@
 				<form method="post" action="options.php?affected=options">
                 <div class="row">
                 	<div class="col-xs-6">
-                    
+                    	
+                        <h4>Status</h4>
+                        <div class="option">
+                        	<label for="state_questions">Ab</label>
+                        	<input class="percent" id="state_questions" type="text" name="state_questions" value="<?php echo $state_questions; ?>" placeholder="100" />
+                            <label for="state_questions">% Antworten erscheinen die <strong>Fragen</strong> als beantwortet</label>
+                        </div>
+                        <div class="option">
+                        	<label for="state_surveys">Ab</label>
+                        	<input class="percent" id="state_surveys" type="text" name="state_surveys" value="<?php echo $state_surveys; ?>" placeholder="100" />
+                            <label for="state_surveys">% Antworten erscheinen die <strong>Umfragen</strong> als beantwortet</label>
+                        </div>
+                        
                     	<h4>Spitznamen</h4>
                         <div class="option">
                             <input id="nicknames_all" type="radio" name="nicknames" value="1" <?php if($nicknames == "1"): ?>checked <?php endif; ?>>
@@ -26,16 +41,6 @@
                         <div class="option">
                             <input id="nicknames_class" type="radio" name="nicknames" value="3" <?php if($nicknames == "3"): ?>checked <?php endif; ?>>
                             <label for="nicknames_class">Die Nutzer dürfen jedem in <strong>ihren Kursen</strong> einen Spitznamen geben</label>
-                        </div>
-                        
-                        <h4>Kurse</h4>
-                        <div class="option">
-                            <input id="classes_allow" type="radio" name="classes" value="1" <?php if($classes == "1"): ?>checked <?php endif; ?>>
-                            <label for="classes_allow">Die Nutzer dürfen Kurse hinzufügen</label>
-                        </div>
-                        <div class="option">
-                            <input id="classes_denied" type="radio" name="classes" value="2" <?php if($classes == "2"): ?>checked <?php endif; ?>>
-                            <label for="classes_denied">Die Nutzer dürfen <strong>keine</strong> Kurse hinzufügen</label>
                         </div>
                         
                     </div>
@@ -60,6 +65,16 @@
                         <div class="option">
                             <input id="surveys_denied" type="radio" name="surveys" value="2" <?php if($surveys == "2"): ?>checked <?php endif; ?>>
                             <label for="surveys_denied">Die Nutzer dürfen <strong>keine</strong> Umfragen vorschlagen</label>
+                        </div>
+                        
+                        <h4>Kurse</h4>
+                        <div class="option">
+                            <input id="classes_allow" type="radio" name="classes" value="1" <?php if($classes == "1"): ?>checked <?php endif; ?>>
+                            <label for="classes_allow">Die Nutzer dürfen Kurse hinzufügen</label>
+                        </div>
+                        <div class="option">
+                            <input id="classes_denied" type="radio" name="classes" value="2" <?php if($classes == "2"): ?>checked <?php endif; ?>>
+                            <label for="classes_denied">Die Nutzer dürfen <strong>keine</strong> Kurse hinzufügen</label>
                         </div>
                         
                     </div>
@@ -223,6 +238,9 @@
 		}
 		
 		public static function update_options($data) {
+			db_set_option("state_questions", $data["state_questions"]);
+			db_set_option("state_surveys", $data["state_surveys"]);
+			
 			db_set_option("nicknames", $data["nicknames"]);
 			db_set_option("classes", $data["classes"]);
 			db_set_option("questions", $data["questions"]);

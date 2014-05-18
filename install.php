@@ -333,6 +333,9 @@
 			
 			// Set options
 			
+			db_set_option("state_questions", 100);
+			db_set_option("state_surveys", 100);
+			
 			db_set_option("nicknames", "2");
 			db_set_option("classes", "2");
 			db_set_option("questions", "2");
