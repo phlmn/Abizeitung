@@ -18,6 +18,8 @@
 						"tutor_lastname" => NULL
 					);
 					
+					$i = 0;
+					
 					foreach($columns as $field) {
 						
 						if($field == "tutorial") {
@@ -35,6 +37,8 @@
 								"index" => $i
 							));
 						}
+						
+						$i++;
 					}
 					
 					// get content
