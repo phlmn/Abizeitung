@@ -2,7 +2,7 @@
 	
 	class CsvImport {
 		
-		public static function import($user, $file, $delete_file, $columns, $disable) {
+		public static function import($userid, $file, $delete_file, $columns, $disable) {
 			global $mysqli;
 			
 			if(file_exists($file)) {
@@ -67,10 +67,15 @@
 							}
 							
 							if(!$disable[$index]) {
+								$user = array(
+									"unlock_code",
+									"tutorial" => array(
+										"id"
+									)
+								);
+								
 								$user["unlock_code"] = get_unlock_code();
 								$user["tutorial"]["id"] = NULL;
-								
-								global $mysqli;
 								
 								// Insert user
 								
@@ -297,7 +302,7 @@
 												$stmt->close();
 											}
 											else {
-												error_report(0, "cannot-add-tutorial", "csv-import.php", "cCsvImport::import", $user);
+												error_report(0, "cannot-add-tutorial", "csv-import.php", "cCsvImport::import", $userid);
 												
 												return "cannot-add-tutorial";
 											}
@@ -323,7 +328,6 @@
 								$stmt->execute();
 								
 								$stmt->close();
-								
 							}
 						}
 					} 
