@@ -954,19 +954,19 @@ td.edit a {
 			tr:nth-child(2n+1) {
 				td.missing {
 					background: lighten(@color4, 20%);
-					
-					div {
-						span {
-							&.filled {
-								background: lighten(@color3, 15%);
-							}
-						}
-					}
 				}
 				
 				&.solved td,
 				td.existing {
 					background: lighten(@color3, 15%);
+				}
+				
+				td {
+					div {
+						&.filled {
+							background: lighten(@color3, 15%);
+						}
+					}
 				}
 			}
 		}
