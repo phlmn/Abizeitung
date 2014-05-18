@@ -77,6 +77,7 @@
 				case "files-not-existing": 		$save = 29; break;
 				case "cannot-delete-file": 		$save = 30; break;
 				case "cannot-delete-files": 	$save = 31; break;
+				case "cannot-select-file": 		$save = 32; break;
 				
 				default: $save = intval($error);
 			}
@@ -125,6 +126,7 @@
 				case 29: 	case "files-not-existing": 		$message = "Mehrere Dateien existieren nicht."; break;
 				case 30: 	case "cannot-delete-file": 		$message = "Eine Datei konnte nicht gelöscht werden."; break;
 				case 31: 	case "cannot-delete-files": 	$message = "Mehrere Dateien konnten nicht gelöscht werden."; break;
+				case 32: 	case "cannot-select-file": 		$message = "Die Datei kann nicht ausgewählt werden"; break;
 				default: 									$message = "Es ist ein unbekannter Fehler aufgetreten.";
 			}
 			

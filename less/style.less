@@ -1349,21 +1349,35 @@ div.surveys {
 		.item,
 		.column-field {
 			padding: 5px 0;
-			margin: 0 8px;
 			text-align: center;
 			
 			cursor: default;
 		}
 	}
 	
+	label {
+		font-weight: normal;
+	}
+	
+	tr {
+		transition: opacity .2s;
+		
+		&.disable {
+			opacity: 0.5;
+		}
+	}
+	
 	#items {
 		margin-left: 0;
+		padding-left: 36px;
 		
 		.item {
 			float: left;
 			color: #EEE;
 			border: 2px solid lighten(@color1, 5%);
 			background-color: lighten(@color1, 10%);
+			overflow: hidden;
+			text-overflow: ellipsis;
 			cursor: pointer;
 			z-index: 10;
 		}
@@ -1416,6 +1430,19 @@ div.surveys {
 		
 		label {
 			font-weight: normal;
+		}
+	}
+	
+	.select {
+		> div {
+			a {
+				float: left;
+				width: 100%;
+				padding: 50px 0;
+				border: 2px dashed #ddd;
+				text-align: center;
+				font-size: 16px;
+			}
 		}
 	}
 	
