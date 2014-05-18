@@ -36,7 +36,7 @@
 			$disable[$i] = isset($_POST["disable_" . $i]);
 		}
 		
-		$errorHandler->add_error(CsvImport::import($_POST["file"], isset($_GET["delete_file"]), $columns, $disable));
+		$errorHandler->add_error(CsvImport::import($data["id"], $_POST["file"], isset($_GET["delete_file"]), $columns, $disable));
 		
 		db_close();
 		

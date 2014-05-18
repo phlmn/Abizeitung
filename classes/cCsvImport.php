@@ -2,7 +2,7 @@
 	
 	class CsvImport {
 		
-		public static function import($file, $delete_file, $columns, $disable) {
+		public static function import($user, $file, $delete_file, $columns, $disable) {
 			global $mysqli;
 			
 			if(file_exists($file)) {
@@ -293,12 +293,14 @@
 												$stmt->close();
 											}
 											else {
-												"cannot-add-tutorial";
+												error_report(0, "cannot-add-tutorial", "csv-import.php", "cCsvImport::import", $user);
+												
+												return "cannot-add-tutorial";
 											}
 											
 										}
 										else {
-											"cannot-add-tutorial";
+											return "cannot-add-tutorial";
 										}
 									}
 								}
