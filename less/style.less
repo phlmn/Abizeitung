@@ -983,11 +983,35 @@ td.edit a {
 
 #options {
 	.row {
+		padding: 25px 20px;
+		
 		> div {
 			padding: 10px 30px;
 			
+			&.tooltip {
+				padding: 5px;
+			}
+			
 			.option {
 				margin-left: 20px;
+			}
+		}
+		
+		.button {
+			margin: 0 0 10px -20px;
+		}
+		
+		.category {
+			padding: 0;
+		}
+		
+		.thumbnail {
+			float: left;
+			margin: 5px 0 5px 10px;
+			border-radius: 0;
+			
+			img {
+				height: 100px;
 			}
 		}
 	}
@@ -995,6 +1019,7 @@ td.edit a {
 	input.percent {
 		width: 50px;
 		height: 25px;
+		margin-left: 5px;
 	}
 	
 	label {

@@ -162,7 +162,12 @@
                 <?php
 					switch($group) {
 						case "images":
-							Options::display_images();
+							if(isset($_GET["category"])) {
+								Options::get_images($_GET["category"]);
+							}
+							else {
+								Options::display_images();
+							}
 							break;
 						case "options":
 							Options::display_options();

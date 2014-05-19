@@ -99,6 +99,7 @@
 						<th>Kategoriename</th>
 						<th>Anzahl der Bilder</th>
 						<th class="edit"></th>
+                        <th class="edit"></th>
 					</thead>
 					<tbody>
 <?php
@@ -121,15 +122,107 @@
                         	<td><?php echo $category["name"]; ?></td>
                             <td><?php echo db_count("images", "category", $category["id"]); ?></td>
                             <td class="edit">
-                            	<a title="Bearbeiten" href="javascript:void(edit('images', 'id=<?php echo $category["id"] ?>'))"><span class="icon-pencil-squared"></span></a>
+                            	<a title="Bearbeiten" href="javascript:void(edit('images', 'id=<?php echo $category["id"]; ?>'))"><span class="icon-pencil-squared"></span></a>
+                            </td>
+                            <td class="edit">
+                            	<a href="options.php?group=images&category=<?php echo $category["id"]; ?>" title='Vorschau Bilder von Kategorie "<?php echo $category["name"]; ?>"'>
+                                	<span class="icon-list"></span>
+                                </a>
                             </td>
                         </tr>
             <?php
 			
 			endwhile;
 			
+			?>
+            			<tr>
+                        	<td>-</td>
+                            <td>Alle Bilder</td>
+                            <td><?php echo count_files("./photos/", 1, true); ?></td>
+                            <td class="edit"></td>
+                            <td class="edit">
+                            	<a title="Vorschau von allen Bildern" href="options.php?group=images&category=all"><span class="icon-list"></span></a>
+                            </td>
+                        </tr>
+            <?php
+			
 			$stmt->free_result();
 			$stmt->close();
+		}
+		
+		public static function get_images($category) { ?>
+        	<script type="text/javascript">
+				$(document).ready(function() {
+					$("div.row .thumbnail").tooltip();
+				});
+			</script>
+            
+			<div class="row">
+            	
+                <div class="buttons">
+                    <a class="button" href="options.php?group=images"><span class="icon-angle-left"></span> Zurück zur Übersicht</a>
+                </div>
+<?php
+			if($category == "all") {
+				$path = "./photos/";
+
+				foreach(new DirectoryIterator($path) as $dir) {
+
+					if($dir->isDot()) {
+						continue;
+					}
+					
+					if($dir->isDir()) {
+					?>
+                    <h4>Kategorie "<?php echo $dir->getFilename(); ?>"</h4>
+                    <span class="category col-xs-12">
+                    <?php
+						foreach(new DirectoryIterator($path . "/" . $dir->getFilename()) as $image) {
+							if($image->isDot() || $image->isDir()) {
+								continue;
+							}
+							
+							?>
+								<a class="thumbnail" href="<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>" target="_blank">
+									<img src="<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>" />
+								</a>
+							<?php
+						}
+					?>
+                    </span>
+                    <?php
+					}
+				}
+			}
+			else {
+				global $mysqli;
+				
+				$stmt = $mysqli->prepare("
+					SELECT images.file, images.uploadtime, users.prename, users.lastname
+					FROM images
+					LEFT JOIN users on images.uid = users.id
+					WHERE category = ?
+					ORDER BY users.lastname ASC, users.prename ASC
+				");
+				
+				$stmt->bind_param("i", $category);
+				$stmt->execute();
+				
+				$stmt->bind_result($image, $time, $user["prename"], $user["lastname"]);
+				
+				while($stmt->fetch()) {
+					?>
+                        <a class="thumbnail" href="<?php echo $image ?>" target="_blank" title='Hochgeladen von "<?php echo $user["prename"] . " " . $user["lastname"]; ?>" am <?php echo $time; ?>' data-placement="bottom">
+                            <img src="<?php echo $image ?>" />
+                        </a>
+                    <?php
+				}
+				
+				$stmt->close();
+			}
+?>
+			</div>
+<?php
 		}
 		
 		public static function display_csv() {

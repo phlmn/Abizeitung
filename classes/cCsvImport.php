@@ -2,6 +2,104 @@
 	
 	class CsvImport {
 		
+		public static function form_file_upload() { ?>
+			<form method="post" name="data" action="csv-import.php?file=upload" enctype="multipart/form-data">
+			
+				<div class="users box">
+				
+					<h4><em>*.csv</em> - Datei auswählen:</h4>
+					
+					<div class="upload">
+						<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo return_ini_bytes(ini_get("upload_max_filesize")) ?>">
+						<input id="file" name="file" type="file">
+					</div><!-- .upload -->
+					
+					<div class="option">
+						<input id="delete_file" name="delete_file" type="checkbox" value="1" checked>
+						<label for="delete_file">Datei nach Bearbeitung löschen</label>
+					</div><!-- .option -->
+					
+					<div class="option">
+						<input id="caption" name="caption" type="checkbox" value="1">
+						<label for="caption">Erste Reihe ist Überschrift</label>
+					</div><!-- .option -->
+					
+					<button type="submit">Hochladen</button>
+					
+				</div><!-- .users .box -->
+			
+			</form>
+<?php 	}
+		
+		public static function form_file_list($path) {
+			
+			$dir = array(
+				"dir" 	=> scandir($path),
+				"count" => 0
+			);
+?>
+        	<form method="post" name="data" action="csv-import.php?file=list">
+			
+				<div class="users box">
+				
+					<h4><em>*.csv</em> - Datei auswählen:</h4>
+					
+					<div class="upload">
+                        <table class="table table-striped">
+                            <thead>
+                                <th class="edit"></th>
+                                <th>Name</th>
+                                <th>Datum</th>
+                                <th>Zeilen</th>
+                                <th>Größe</th>
+                            </thead>
+                            <tbody>
+                                <?php
+                                 
+                                foreach ($dir["dir"] as $file):
+                                    
+                                    if($file == "." || $file == "..") {
+                                        continue;
+                                    }
+									
+									$dir["count"]++;
+                                    
+                                    $info = array(
+                                        "size" => filesize($path . $file),
+                                        "date" => date("Y - m - d", filemtime($path . $file)),
+                                        "time" => date("H:i:s", filemtime($path . $file))
+                                    );
+                                                        
+                                ?>
+                                <tr>
+                                    <td class="edit"><input type="radio" id="file_<?php echo $dir["count"]; ?>" name="file" value="<?php echo $path . $file; ?>" /></td>
+                                    <td><label for="file_<?php echo $dir["count"]; ?>"><?php echo $file; ?></label></td>
+                                    <td><?php echo $info["date"]; ?> <em>(<?php echo $info["time"]; ?>)</em></td>
+                                    <td><?php echo count_filerows($path . $file) ?></td>
+                                    <td><?php echo $info["size"] . " B"; ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+					</div><!-- .upload -->
+					
+					<div class="option">
+						<input id="delete_file" name="delete_file" type="checkbox" value="1">
+						<label for="delete_file">Datei nach Bearbeitung löschen</label>
+					</div><!-- .option -->
+					
+					<div class="option">
+						<input id="caption" name="caption" type="checkbox" value="1">
+						<label for="caption">Erste Reihe ist Überschrift</label>
+					</div><!-- .option -->
+					
+					<button type="submit">Auswählen</button>
+					
+				</div><!-- .users .box -->
+			
+			</form>
+<?php	}
+		
 		public static function import($userid, $file, $delete_file, $columns, $disable) {
 			global $mysqli;
 			

@@ -235,6 +235,40 @@
 		<?php }
 	}
 	
+	function count_files($path, $layer = 0, $onlyLastLayer = false) {
+		$count = 0;
+		
+		if(file_exists($path)) {
+			foreach(new DirectoryIterator($path) as $file) {
+				if(!$file->isDot()) {
+					if($file->isDir()) {
+						
+						if($layer > 0) {
+							if($onlyLastLayer && $layer > 1) {
+								count_files($path . "/" . $file->getFilename(), $layer - 1, $onlyLastLayer);
+							}
+							else {
+								$count += count_files($path . "/" . $file->getFilename(), $layer - 1, $onlyLastLayer);
+							}
+						}
+					}
+					else {
+						if($onlyLastLayer) {
+							if($layer == 0) {
+								$count++;
+							}
+						}
+						else {
+							$count++;
+						}
+					}
+				}
+			}
+		}
+		
+		return $count;
+	}
+	
 	function count_filerows($file) {
 		if(is_file($file)) { 
 		
