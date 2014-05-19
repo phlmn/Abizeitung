@@ -122,10 +122,10 @@
                         	<td><?php echo $category["name"]; ?></td>
                             <td><?php echo db_count("images", "category", $category["id"]); ?></td>
                             <td class="edit">
-                            	<a title="Bearbeiten" href="javascript:void(edit('images', 'id=<?php echo $category["id"]; ?>'))"><span class="icon-pencil-squared"></span></a>
+                            	<a title="Bearbeiten" href="#" onclick="edit('image', 'id=<?php echo $category["id"]; ?>')"><span class="icon-pencil-squared"></span></a>
                             </td>
                             <td class="edit">
-                            	<a href="options.php?group=images&category=<?php echo $category["id"]; ?>" title='Vorschau Bilder von Kategorie "<?php echo $category["name"]; ?>"'>
+                            	<a href="options.php?group=images&category=<?php echo $category["id"]; ?>&name=<?php echo $category["name"]; ?>" title='Vorschau Bilder von Kategorie "<?php echo $category["name"]; ?>"'>
                                 	<span class="icon-list"></span>
                                 </a>
                             </td>
@@ -150,7 +150,7 @@
 			$stmt->close();
 		}
 		
-		public static function get_images($category) { ?>
+		public static function get_images($category, $name = NULL) { ?>
         	<script type="text/javascript">
 				$(document).ready(function() {
 					$("div.row .thumbnail").tooltip();
@@ -162,6 +162,10 @@
                 <div class="buttons">
                     <a class="button" href="options.php?group=images"><span class="icon-angle-left"></span> Zurück zur Übersicht</a>
                 </div>
+                
+                <?php if($name): ?>
+                <h4>Kategorie "<?php echo $name; ?>"</h4>
+                <?php endif; ?>
 <?php
 			if($category == "all") {
 				$path = "./photos/";
@@ -183,7 +187,7 @@
 							}
 							
 							?>
-								<a class="thumbnail" href="<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>" target="_blank">
+								<a class="thumbnail" href="#" onclick="detail('<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>', 'all')">
 									<img src="<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>" />
 								</a>
 							<?php
@@ -198,7 +202,7 @@
 				global $mysqli;
 				
 				$stmt = $mysqli->prepare("
-					SELECT images.file, images.uploadtime, users.prename, users.lastname
+					SELECT images.id, images.file, images.uploadtime, users.prename, users.lastname
 					FROM images
 					LEFT JOIN users on images.uid = users.id
 					WHERE category = ?
@@ -208,12 +212,12 @@
 				$stmt->bind_param("i", $category);
 				$stmt->execute();
 				
-				$stmt->bind_result($image, $time, $user["prename"], $user["lastname"]);
+				$stmt->bind_result($image["id"], $image["file"], $image["time"], $user["prename"], $user["lastname"]);
 				
 				while($stmt->fetch()) {
 					?>
-                        <a class="thumbnail" href="<?php echo $image ?>" target="_blank" title='Hochgeladen von "<?php echo $user["prename"] . " " . $user["lastname"]; ?>" am <?php echo $time; ?>' data-placement="bottom">
-                            <img src="<?php echo $image ?>" />
+                        <a class="thumbnail" href="#" onclick="detail('<?php echo $image["file"]; ?>', '<?php echo $category; ?>', '<?php echo $image["id"]; ?>')" title='Hochgeladen von "<?php echo $user["prename"] . " " . $user["lastname"]; ?>" am <?php echo $image["time"]; ?>' data-placement="bottom">
+                            <img src="<?php echo $image["file"]; ?>" />
                         </a>
                     <?php
 				}
@@ -311,7 +315,7 @@
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
-        <form method="post" action="options.php?affected=images&id=<?php echo $id ?>">
+        <form method="post" action="options.php?affected=images&id=<?php echo $id; ?>">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4>Kategorie bearbeiten</h4>
@@ -325,6 +329,28 @@
                 <button type="submit" class="btn btn-default">Speichern</button>
             </div>
         </form>
+    </div>
+</div>
+<?php
+		}
+		
+		public static function image_detail($data) {
+?>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <a href="#" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+            <h4>Detailansicht</h4>
+        </div>
+        <div class="modal-body">
+            <img src="<?php echo str_replace("@space@", " ", $data["file"]); ?>" width="100%" />
+        </div>
+        <div class="modal-footer">
+        <?php if($data["id"] > 0): ?>
+            <a class="btn btn-default delete" href="options.php?affected=detail&id=<?php echo $data["id"]; ?>&category=<?php echo $data["category"]; ?>&action=delete" >Löschen</a>
+        <?php endif; ?>
+            <a class="btn btn-default" href="#" data-dismiss="modal">Schließen</a>
+        </div>
     </div>
 </div>
 <?php
@@ -373,6 +399,63 @@
 			
 			$stmt->close();
 			
+			if($mysqli->error)
+				return "error";
+			
+			return 0;
+		}
+		
+		public static function delete_image($id) {
+			global $mysqli;
+			
+			$file = NULL;
+			
+			$stmt = $mysqli->prepare("
+				SELECT file
+				FROM images
+				WHERE id = ?
+			");
+			
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			
+			$stmt->bind_result($file);
+			
+			if(!$stmt->fetch()) {
+				$stmt->close();
+				
+				return "cannot-delete-file";
+				
+				
+			}
+			
+			$stmt->close();
+			
+			
+			if(is_file($file)) {
+				if(!unlink($file)) {
+					return "file-not-existing";
+				}
+			}
+			else {
+				return "cannot-delete-file";
+				
+			}
+			
+			$stmt = $mysqli->prepare("
+				DELETE FROM images
+				WHERE id = ?
+				LIMIT 1
+			");
+			
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			
+			$stmt->close();
+			
+			if($mysqli->error)
+				return "error";
+			
 			return 0;
 		}
 		
@@ -416,19 +499,36 @@
 		
 		public static function script($jstag = false) {
 			if($jstag): ?><script type="text/javascript"><?php endif; ?>
+			
             function edit(group) {
 				var param = "";
+				var countParam;
 				
 				if(arguments.length > 1) {
-					for(i = 1; i < arguments.length; i++)
-						param += "&" + arguments[i];
+					for(countParam = 1; countParam < arguments.length; countParam++)
+						param += "&" + arguments[countParam];
 				}
 				
 				$('#optionsModal').modal();
-				$('#optionsModal').load("options.php?edit=" + group + param.replace(" ", ""), function() {
+				$('#optionsModal').load("options.php?modal=" + group + "&edit" + param.replace(" ", "") + "&countParam=" + countParam, function() {
 					$("#optionsModal select").fancySelect();
 				});
 			}
+			
+			function detail(file, category) {
+				$('#optionsModal').modal();
+				
+				var id = 0;
+				
+				if(arguments.length > 2) {
+					id = arguments[2];
+				}
+				
+				$('#optionsModal').load("options.php?modal=detail&id=" + id + "&file=" + file.replace(/ /g, "@space@") + "&category=" + category, function() {
+					$("#optionsModal select").fancySelect();
+				});
+			}
+			
 		<?php if($jstag): ?></script><?php endif; ?>
 <?php
 		}

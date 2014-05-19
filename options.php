@@ -10,10 +10,24 @@
 
 	$data = UserManager::get_userdata($_SESSION["user"]);
 	
-	if(isset($_GET["edit"])) {
-		switch($_GET["edit"]) {
-			case "images":
-				Options::edit_images($_GET["id"]);
+	if(isset($_GET["modal"])) {
+		switch($_GET["modal"]) {
+			case "image":
+				if(isset($_GET["edit"]) && $_GET["id"]) {
+					Options::edit_images($_GET["id"]);
+				}
+				break;
+			case "detail":
+				$data["id"]			= 0;
+				$data["file"] 		= $_GET["file"];
+				$data["category"] 	= $_GET["category"];
+				
+				if(isset($_GET["id"])) {
+					$data["id"] = $_GET["id"];
+				}
+				
+				Options::image_detail($data);
+				
 				break;
 			default:
 		}
@@ -54,6 +68,21 @@
 							
 							$errorHandler->add_error(Options::update_images($data));
 						}
+					}
+				}
+				
+				break;
+			
+			case "detail":
+				
+				$param = "&group=images&category=" . $_GET["category"];
+				
+				if($action == "delete") {
+					if(isset($_GET["id"])) {
+						$errorHandler->add_error(Options::delete_image($_GET["id"]));
+					}
+					else {
+						$errorHandler->add_error("no-selected-file");
 					}
 				}
 				
@@ -106,6 +135,7 @@
 				}
 				
 				break;
+			
 		}
 		
 		db_close();
@@ -163,7 +193,12 @@
 					switch($group) {
 						case "images":
 							if(isset($_GET["category"])) {
-								Options::get_images($_GET["category"]);
+								if(isset($_GET["name"])) {
+									Options::get_images($_GET["category"], $_GET["name"]);
+								}
+								else {
+									Options::get_images($_GET["category"]);
+								}
 							}
 							else {
 								Options::display_images();
