@@ -142,11 +142,13 @@
 			$state_questions 	= db_get_option("state_questions") / 100;
 			$state_surveys 		= db_get_option("state_surveys") / 100;
 			
-			if($state_questions < 0)
+			if($state_questions < 0) {
 				$state_questions = 1;
+			}
 			
-			if($state_surveys < 0);
-				$state_questions = 1;
+			if($state_surveys < 0) {
+				$state_surveys = 1;
+			}
 			
 			$userstate = array(
 				db_count("users", "activated", "1"),
