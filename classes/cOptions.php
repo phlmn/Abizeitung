@@ -177,6 +177,8 @@
                 <h4>Kategorie "<?php echo $name; ?>"</h4>
                 <?php endif; ?>
 <?php
+			global $mysqli;
+			
 			if($category == "all") {
 				$path = "./photos/";
 
@@ -198,12 +200,32 @@
 							
 							$src = $path . $dir->getFilename() . "/" . $image->getFilename();
 							
+							$title = "Dieses Bild ist keinem Benutzer zugeordnet";
+							
+							$stmt = $mysqli->prepare("
+								SELECT images.uploadtime, users.prename, users.lastname
+								FROM images
+								LEFT JOIN users ON images.uid = users.id
+								WHERE images.file = ?
+							");
+							
+							$stmt->bind_param("s", str_replace("./", "", $src));
+							$stmt->execute();
+							
+							$stmt->bind_result($time, $prename, $lastname);
+							
+							if($stmt->fetch()) {
+								$title = "Hochgeladen von " . $prename . " " . $lastname . " am " . $time;
+							}
+							
+							$stmt->close();
+							
 							if(file_exists($path . $dir->getFilename() . "/thumbnails/" . $image->getFilename())) {
 								$src = $path . $dir->getFilename() . "/thumbnails/" . $image->getFilename();
 							}
 							
 							?>
-								<a class="thumbnail" href="#" onclick="detail('<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>', 'all')">
+								<a class="thumbnail" href="#" onclick="detail('<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>', 'all')" title='<?php echo $title; ?>' data-placement="bottom">
 									<img src="<?php echo $src; ?>" />
 								</a>
 							<?php
@@ -215,12 +237,10 @@
 				}
 			}
 			else {
-				global $mysqli;
-				
 				$stmt = $mysqli->prepare("
 					SELECT images.id, images.file, images.uploadtime, users.prename, users.lastname
 					FROM images
-					LEFT JOIN users on images.uid = users.id
+					LEFT JOIN users ON images.uid = users.id
 					WHERE category = ?
 					ORDER BY users.lastname ASC, users.prename ASC
 				");
