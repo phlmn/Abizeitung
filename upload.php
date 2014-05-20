@@ -1,5 +1,6 @@
 <?php
 require_once("functions.php");
+require_once("classes/cThumbnails.php");
 
 if(!file_exists("photos/"))
 	mkdir("photos/");
@@ -24,12 +25,18 @@ if(!isset($_FILES['photo']['name'])) {
 if($_FILES['photo']['size'] > return_ini_bytes(ini_get("upload_max_filesize")))
 	die("3");
 
-$file = "photos/" . $category["name"] . "/photo_" . time(). "_" . $_FILES['photo']['name'];
+$dir = array(
+	"path" => "photos/" . $category["name"],
+	"file" => "photo_" . time(). "_" . $_FILES['photo']['name']
+);
+
+$file = $dir["path"] . "/" . $dir["file"];
 
 if(!($_FILES['photo']['type'] == "image/jpeg" || $_FILES['photo']['type'] == "image/png"))
 	die("4");
 
 if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) . "/" . $file)) {
+	
 	db_connect();
 	
 	global $mysqli;
@@ -86,6 +93,8 @@ if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) 
 		error_report(7, "cannot add file", "upload.php", NULL, $_GET["user"]);
 		die("7");
 	}
+	
+	$error = Thumbnails::create_thumbnail($dir["path"], $dir["file"]);
 	
 	echo $file;
 } else {

@@ -148,6 +148,16 @@
 			
 			$stmt->free_result();
 			$stmt->close();
+			
+			?>
+            
+            		</tbody>
+                </table>
+                
+                <div class="buttons">
+                	<a class="button" href="options.php?affected=thumbnails">Thumbnails erstellen</a>
+                </div>
+            <?php
 		}
 		
 		public static function get_images($category, $name = NULL) { ?>
@@ -186,9 +196,15 @@
 								continue;
 							}
 							
+							$src = $path . $dir->getFilename() . "/" . $image->getFilename();
+							
+							if(file_exists($path . $dir->getFilename() . "/thumbnails/" . $image->getFilename())) {
+								$src = $path . $dir->getFilename() . "/thumbnails/" . $image->getFilename();
+							}
+							
 							?>
 								<a class="thumbnail" href="#" onclick="detail('<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>', 'all')">
-									<img src="<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>" />
+									<img src="<?php echo $src; ?>" />
 								</a>
 							<?php
 						}
@@ -215,9 +231,17 @@
 				$stmt->bind_result($image["id"], $image["file"], $image["time"], $user["prename"], $user["lastname"]);
 				
 				while($stmt->fetch()) {
+					$src = $image["file"];
+					
+					$path = pathinfo($src);
+					
+					if(file_exists($path["dirname"] . "/thumbnails/" . $path["basename"])) {
+						$src = $path["dirname"] . "/thumbnails/" . $path["basename"];
+					}
+					
 					?>
-                        <a class="thumbnail" href="#" onclick="detail('<?php echo $image["file"]; ?>', '<?php echo $category; ?>', '<?php echo $image["id"]; ?>')" title='Hochgeladen von "<?php echo $user["prename"] . " " . $user["lastname"]; ?>" am <?php echo $image["time"]; ?>' data-placement="bottom">
-                            <img src="<?php echo $image["file"]; ?>" />
+                        <a class="thumbnail" href="#" onclick="detail('<?php echo $image["file"]; ?>', '<?php echo $category; ?>', '<?php echo $image["id"]; ?>', '<?php echo $name; ?>')" title='Hochgeladen von "<?php echo $user["prename"] . " " . $user["lastname"]; ?>" am <?php echo $image["time"]; ?>' data-placement="bottom">
+                            <img src="<?php echo $src; ?>" />
                         </a>
                     <?php
 				}
@@ -227,6 +251,42 @@
 ?>
 			</div>
 <?php
+		}
+		
+		public static function create_thumbnails() {
+			$path = "./photos/";
+			
+			$error = 0;
+
+			foreach(new DirectoryIterator($path) as $dir) {
+
+				if($dir->isDot()) {
+					continue;
+				}
+				
+				if($dir->isDir()) {
+					
+					if(!file_exists($path . "/" . $dir->getFilename() . "/thumbnails")) {
+						mkdir($path . "/" . $dir->getFilename() . "/thumbnails");
+					}
+
+					foreach(new DirectoryIterator($path . "/" . $dir->getFilename()) as $image) {
+						if($image->isDot() || $image->isDir()) {
+							continue;
+						}
+						
+						$error = Thumbnails::create_thumbnail($path . $dir->getFilename(), $image->getFilename());
+					}
+					
+				}
+			}
+			
+			if($error) {
+				return $error;
+			}
+			else {
+				return 0;
+			}
 		}
 		
 		public static function display_csv() {
@@ -347,7 +407,7 @@
         </div>
         <div class="modal-footer">
         <?php if($data["id"] > 0): ?>
-            <a class="btn btn-default delete" href="options.php?affected=detail&id=<?php echo $data["id"]; ?>&category=<?php echo $data["category"]; ?>&action=delete" >Löschen</a>
+            <a class="btn btn-default delete" href="options.php?affected=detail&id=<?php echo $data["id"]; ?>&category=<?php echo $data["category"]; ?>&name=<?php echo $data["name"]; ?>&action=delete" >Löschen</a>
         <?php endif; ?>
             <a class="btn btn-default" href="#" data-dismiss="modal">Schließen</a>
         </div>
@@ -425,22 +485,9 @@
 				$stmt->close();
 				
 				return "cannot-delete-file";
-				
-				
 			}
 			
 			$stmt->close();
-			
-			
-			if(is_file($file)) {
-				if(!unlink($file)) {
-					return "file-not-existing";
-				}
-			}
-			else {
-				return "cannot-delete-file";
-				
-			}
 			
 			$stmt = $mysqli->prepare("
 				DELETE FROM images
@@ -455,6 +502,23 @@
 			
 			if($mysqli->error)
 				return "error";
+				
+			if(file_exists($file)) {
+				
+				$path = pathinfo($file);
+				
+				if(file_exists($path["dirname"] . "/thumbnails/" . $path["basename"])) {
+					unlink($path["dirname"] . "/thumbnails/" . $path["basename"]);
+				}
+					
+				if(!unlink($file)) {
+					return "file-not-existing";
+				}
+			}
+			else {
+				return "cannot-delete-file";
+				
+			}
 			
 			return 0;
 		}
@@ -519,12 +583,17 @@
 				$('#optionsModal').modal();
 				
 				var id = 0;
+				var name = "";
 				
 				if(arguments.length > 2) {
 					id = arguments[2];
+					
+					if(arguments.length > 3) {
+						name = arguments[3];
+					}
 				}
 				
-				$('#optionsModal').load("options.php?modal=detail&id=" + id + "&file=" + file.replace(/ /g, "@space@") + "&category=" + category, function() {
+				$('#optionsModal').load("options.php?modal=detail&id=" + id + "&file=" + file.replace(/ /g, "@space@") + "&category=" + category + "&name=" + name, function() {
 					$("#optionsModal select").fancySelect();
 				});
 			}

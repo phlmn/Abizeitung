@@ -2,6 +2,7 @@
 	session_start();
 	
 	require_once("functions.php");
+	require_once("classes/cThumbnails.php");
 	require_once("classes/cOptions.php");
 	
 	db_connect();
@@ -21,6 +22,7 @@
 				$data["id"]			= 0;
 				$data["file"] 		= $_GET["file"];
 				$data["category"] 	= $_GET["category"];
+				$data["name"]		= $_GET["name"];
 				
 				if(isset($_GET["id"])) {
 					$data["id"] = $_GET["id"];
@@ -73,9 +75,21 @@
 				
 				break;
 			
+			case "thumbnails":
+				
+				$param = "&group=images";
+				
+				$errorHandler->add_error(Options::create_thumbnails());
+				
+				break;
+			
 			case "detail":
 				
 				$param = "&group=images&category=" . $_GET["category"];
+				
+				if(isset($_GET["name"])) {
+					$param .= "&name=" . $_GET["name"];
+				}
 				
 				if($action == "delete") {
 					if(isset($_GET["id"])) {
