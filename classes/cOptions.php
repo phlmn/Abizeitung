@@ -200,10 +200,11 @@
 							
 							$src = $path . $dir->getFilename() . "/" . $image->getFilename();
 							
-							$title = "Dieses Bild ist keinem Benutzer zugeordnet";
+							$title 	= "Dieses Bild ist keinem Benutzer zugeordnet";
+							$onclick = "detail('" . $path . $dir->getFilename() . "/" . $image->getFilename() . "')";
 							
 							$stmt = $mysqli->prepare("
-								SELECT images.uploadtime, users.prename, users.lastname
+								SELECT images.id, images.uploadtime, users.prename, users.lastname
 								FROM images
 								LEFT JOIN users ON images.uid = users.id
 								WHERE images.file = ?
@@ -212,10 +213,11 @@
 							$stmt->bind_param("s", str_replace("./", "", $src));
 							$stmt->execute();
 							
-							$stmt->bind_result($time, $prename, $lastname);
+							$stmt->bind_result($images["id"], $images["time"], $users["prename"], $users["lastname"]);
 							
 							if($stmt->fetch()) {
-								$title = "Hochgeladen von " . $prename . " " . $lastname . " am " . $time;
+								$title = "Hochgeladen von " . $users["prename"] . " " . $users["lastname"] . " am " . $images["time"];
+								$onclick = "detail('" . str_replace("./", "", $src) . "', 'all', '" . $images["id"] . "')";
 							}
 							
 							$stmt->close();
@@ -225,7 +227,7 @@
 							}
 							
 							?>
-								<a class="thumbnail" href="#" onclick="detail('<?php echo $path . $dir->getFilename() . "/" . $image->getFilename(); ?>', 'all')" title='<?php echo $title; ?>' data-placement="bottom">
+								<a class="thumbnail" href="#" onclick="<?php echo $onclick; ?>" title='<?php echo $title; ?>' data-placement="bottom">
 									<img src="<?php echo $src; ?>" />
 								</a>
 							<?php
@@ -426,7 +428,9 @@
             <img src="<?php echo str_replace("@space@", " ", $data["file"]); ?>" width="100%" />
         </div>
         <div class="modal-footer">
-        <?php if($data["id"] > 0): ?>
+        <?php if($data["fileonly"]): ?>
+        	<a class="btn btn-default delete" href="options.php?affected=detail&category=all&file=<?php echo $data["file"]; ?>&action=delete" >Löschen</a>
+        <?php else: ?>
             <a class="btn btn-default delete" href="options.php?affected=detail&id=<?php echo $data["id"]; ?>&category=<?php echo $data["category"]; ?>&name=<?php echo $data["name"]; ?>&action=delete" >Löschen</a>
         <?php endif; ?>
             <a class="btn btn-default" href="#" data-dismiss="modal">Schließen</a>
@@ -485,43 +489,54 @@
 			return 0;
 		}
 		
-		public static function delete_image($id) {
-			global $mysqli;
-			
+		public static function delete_image($data) {
 			$file = NULL;
 			
-			$stmt = $mysqli->prepare("
-				SELECT file
-				FROM images
-				WHERE id = ?
-			");
-			
-			$stmt->bind_param("i", $id);
-			$stmt->execute();
-			
-			$stmt->bind_result($file);
-			
-			if(!$stmt->fetch()) {
+			if($data["id"] > 0) {
+				global $mysqli;
+				
+				$stmt = $mysqli->prepare("
+					SELECT file
+					FROM images
+					WHERE id = ?
+				");
+				
+				$stmt->bind_param("i", $data["id"]);
+				$stmt->execute();
+				
+				$stmt->bind_result($file);
+				
+				if(!$stmt->fetch()) {
+					$stmt->close();
+					
+					return "cannot-delete-file";
+				}
+				
 				$stmt->close();
 				
-				return "cannot-delete-file";
+				$stmt = $mysqli->prepare("
+					DELETE FROM images
+					WHERE id = ?
+					LIMIT 1
+				");
+				
+				$stmt->bind_param("i", $data["id"]);
+				$stmt->execute();
+				
+				$stmt->close();
+				
+				if($mysqli->error)
+					return "error";
 			}
-			
-			$stmt->close();
-			
-			$stmt = $mysqli->prepare("
-				DELETE FROM images
-				WHERE id = ?
-				LIMIT 1
-			");
-			
-			$stmt->bind_param("i", $id);
-			$stmt->execute();
-			
-			$stmt->close();
-			
-			if($mysqli->error)
-				return "error";
+			else {
+				
+				if(isset($data["file"])) {
+					$file = $data["file"];
+				}
+				else {
+					return "no-selected-file";
+				}
+			}
 				
 			if(file_exists($file)) {
 				
@@ -599,21 +614,27 @@
 				});
 			}
 			
-			function detail(file, category) {
+			function detail(file) {
 				$('#optionsModal').modal();
 				
-				var id = 0;
-				var name = "";
+				var param = "";
 				
-				if(arguments.length > 2) {
-					id = arguments[2];
-					
-					if(arguments.length > 3) {
-						name = arguments[3];
-					}
+				switch(arguments.length) {
+					case 4:
+						param += "&name=" + arguments[3];
+					case 3:
+						param += "&id=" + arguments[2];
+					case 2:
+						param += "&category=" + arguments[1];
+					case 1:
+						param += "&file=" + file.replace(/ /g, "@space@");
 				}
 				
-				$('#optionsModal').load("options.php?modal=detail&id=" + id + "&file=" + file.replace(/ /g, "@space@") + "&category=" + category + "&name=" + name, function() {
+				if(arguments.length == 1) {
+					param += "&fileonly";
+				}
+				
+				$('#optionsModal').load("options.php?modal=detail" + param, function() {
 					$("#optionsModal select").fancySelect();
 				});
 			}

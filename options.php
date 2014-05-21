@@ -19,14 +19,21 @@
 				}
 				break;
 			case "detail":
-				$data["id"]			= 0;
-				$data["file"] 		= $_GET["file"];
-				$data["category"] 	= $_GET["category"];
-				$data["name"]		= $_GET["name"];
-				
-				if(isset($_GET["id"])) {
-					$data["id"] = $_GET["id"];
+				if(isset($_GET["fileonly"])) {
+					$data["fileonly"] = true;
 				}
+				else {
+					$data["fileonly"]	= false;
+					$data["id"]			= 0;
+					$data["category"] 	= $_GET["category"];
+					$data["name"] 		= $_GET["name"];
+					
+					if(isset($_GET["id"])) {
+						$data["id"] = $_GET["id"];
+					}
+				}
+				
+				$data["file"] = $_GET["file"];
 				
 				Options::image_detail($data);
 				
@@ -52,10 +59,7 @@
 				
 				$param = "&group=images";
 				
-				if(empty($_GET["id"])) {
-					$errorHandler->add_error("empty-input");
-				}
-				else {
+				if(isset($_GET["id"])) {
 					$data["id"] = $_GET["id"];
 					
 					if($action == "delete") {
@@ -71,6 +75,9 @@
 							$errorHandler->add_error(Options::update_images($data));
 						}
 					}
+				}
+				else {
+					$errorHandler->add_error("empty-input");
 				}
 				
 				break;
@@ -92,8 +99,16 @@
 				}
 				
 				if($action == "delete") {
-					if(isset($_GET["id"])) {
-						$errorHandler->add_error(Options::delete_image($_GET["id"]));
+					if(isset($_GET["id"]) || isset($_GET["file"])) {
+						if(isset($_GET["id"])) {
+							$data["id"] = $_GET["id"];
+						}
+						else {
+							$data["file"] 	= $_GET["file"];
+							$data["id"] 	= 0;
+						}
+						
+						$errorHandler->add_error(Options::delete_image($data));
 					}
 					else {
 						$errorHandler->add_error("no-selected-file");
