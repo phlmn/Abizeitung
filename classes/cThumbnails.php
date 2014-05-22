@@ -2,7 +2,7 @@
 
 	class Thumbnails {
 		
-		public static function create_thumbnail($path, $file, $height = 100) {
+		public static function create_thumbnail($path, $file) {
 			$src = $path . "/" . $file;
 			
 			if(file_exists($src)) {
@@ -21,7 +21,8 @@
 					$info["width"] 	= $size[0];
 					$info["height"] = $size[1];
 					
-					$width = $info["width"] * ($height / $info["height"]);
+					$height = db_get_option("thumbnails_height", 100);
+					$width 	= $info["width"] * ($height / $info["height"]);
 					
 					$image = NULL;
 					switch(strtolower($info["extension"])) {
@@ -53,10 +54,22 @@
 					
 					switch(strtolower($info["extension"])) {
 						case "jpg":
-							imagejpeg($thumbnail, $path . "/thumbnails/" . $file, 50);
+							$qual = abs(db_get_option("thumbnails_quality_jpeg", 50));
+							
+							if($qual > 100) {
+								$qual = 100;
+							}
+							
+							imagejpeg($thumbnail, $path . "/thumbnails/" . $file, $qual);
 							break;
 						case "png":
-							imagepng($thumbnail, $path . "/thumbnails/" . $file, 9);
+							$qual = intval(abs(db_get_option("thumbnails_quality_png", 50) / 10)) + 1;
+							
+							if($qual > 10) {
+								$qual = 10;
+							}
+							
+							imagepng($thumbnail, $path . "/thumbnails/" . $file, 10 - $qual);
 							break;
 						default:
 							return "format";

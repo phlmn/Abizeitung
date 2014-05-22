@@ -125,8 +125,12 @@
 					$errorHandler->add_error("empty-input");	
 				}
 				else {
-					$data["state_questions"] 	= (float)$_POST["state_questions"];
-					$data["state_surveys"] 		= (float)$_POST["state_surveys"];
+					$data["state_questions"] 	= $_POST["state_questions"];
+					$data["state_surveys"] 		= $_POST["state_surveys"];
+					
+					$data["thumbnails_height"] 			= $_POST["thumbnails_height"];
+					$data["thumbnails_quality_png"] 	= $_POST["thumbnails_qual_png"];
+					$data["thumbnails_quality_jpeg"] 	= $_POST["thumbnails_qual_jpeg"];
 					
 					$data["nicknames"] 	= $_POST["nicknames"];
 					$data["classes"] 	= $_POST["classes"];

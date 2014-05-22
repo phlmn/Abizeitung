@@ -5,13 +5,17 @@
 		public static function display_options() {
 			global $mysqli;
 			
-			$state_questions 	= db_get_option("state_questions");
-			$state_surveys 		= db_get_option("state_surveys");
+			$state_questions 		= db_get_option("state_questions", 100);
+			$state_surveys 			= db_get_option("state_surveys", 100);
 			
-			$nicknames 	= db_get_option("nicknames");
-			$classes 	= db_get_option("classes");
-			$questions 	= db_get_option("questions");
-			$surveys 	= db_get_option("surveys");
+			$thumbnails_height 		= db_get_option("thumbnails_height", 100);
+			$thumbnails_qual_png 	= db_get_option("thumbnails_quality_png", 50);
+			$thumbnails_qual_jpeg 	= db_get_option("thumbnails_quality_jpeg", 50);
+			
+			$nicknames 				= db_get_option("nicknames", 2);
+			$classes 				= db_get_option("classes", 2);
+			$questions 				= db_get_option("questions", 2);
+			$surveys 				= db_get_option("surveys", 2);
 ?>
 				<form method="post" action="options.php?affected=options">
                 <div class="row">
@@ -27,6 +31,23 @@
                         	<label for="state_surveys">Ab</label>
                         	<input class="percent" id="state_surveys" type="text" name="state_surveys" value="<?php echo $state_surveys; ?>" placeholder="100" />
                             <label for="state_surveys">% Antworten erscheinen die <strong>Umfragen</strong> als beantwortet</label>
+                        </div>
+                        
+                        <h4>Thumbnails</h4>
+                        <div class="option">
+                        	<label for="thumbnails_height">Thumbnailgröße</label>
+                        	<input class="percent" id="thumbnails_height" type="text" name="thumbnails_height" value="<?php echo $thumbnails_height; ?>" placeholder="100" />
+                            <label for="thumbnails_height">px</label>
+                        </div>
+                        <div class="option">
+                        	<label for="thumbnails_qual_png">Qualität der <strong>*.png</strong> Dateien</label>
+                        	<input class="percent" id="thumbnails_qual_png" type="text" name="thumbnails_qual_png" value="<?php echo $thumbnails_qual_png; ?>" placeholder="50" />
+                            <label for="thumbnails_qual_png">%</label>
+                        </div>
+                        <div class="option">
+                        	<label for="thumbnails_qual_jpeg">Qualität der <strong>*.jpeg</strong> Dateien</label>
+                        	<input class="percent" id="thumbnails_qual_jpeg" type="text" name="thumbnails_qual_jpeg" value="<?php echo $thumbnails_qual_jpeg; ?>" placeholder="50" />
+                            <label for="thumbnails_qual_jpeg">%</label>
                         </div>
                         
                     	<h4>Spitznamen</h4>
@@ -441,13 +462,18 @@
 		}
 		
 		public static function update_options($data) {
-			db_set_option("state_questions", $data["state_questions"]);
-			db_set_option("state_surveys", $data["state_surveys"]);
 			
-			db_set_option("nicknames", $data["nicknames"]);
-			db_set_option("classes", $data["classes"]);
-			db_set_option("questions", $data["questions"]);
-			db_set_option("surveys", $data["surveys"]);
+			db_set_option("state_questions", 			floatval($data["state_questions"]));
+			db_set_option("state_surveys", 				floatval($data["state_surveys"]));
+			
+			db_set_option("thumbnails_height", 			intval($data["thumbnails_height"]));
+			db_set_option("thumbnails_quality_png", 	intval($data["thumbnails_quality_png"]));
+			db_set_option("thumbnails_quality_jpeg", 	intval($data["thumbnails_quality_jpeg"]));
+			
+			db_set_option("nicknames", 					intval($data["nicknames"]));
+			db_set_option("classes", 					intval($data["classes"]));
+			db_set_option("questions", 					intval($data["questions"]));
+			db_set_option("surveys", 					intval($data["surveys"]));
 			
 			return 0;
 		}

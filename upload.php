@@ -86,8 +86,6 @@ if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) 
 	
 	$res = $stmt->affected_rows;
 	$stmt->close();
-	
-	db_close();
 		
 	if(!$res) {
 		error_report(7, "cannot add file", "upload.php", NULL, $_GET["user"]);
@@ -95,6 +93,8 @@ if(move_uploaded_file($_FILES['photo']['tmp_name'], realpath(dirname(__FILE__)) 
 	}
 	
 	$error = Thumbnails::create_thumbnail($dir["path"], $dir["file"]);
+	
+	db_close();
 	
 	echo $file;
 } else {

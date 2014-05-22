@@ -336,6 +336,10 @@
 			db_set_option("state_questions", 100);
 			db_set_option("state_surveys", 100);
 			
+			db_set_option("thumbnails_height", 100);
+			db_set_option("thumbnails_quality_png", 50);
+			db_set_option("thumbnails_quality_jpeg", 50);
+			
 			db_set_option("nicknames", "2");
 			db_set_option("classes", "2");
 			db_set_option("questions", "2");

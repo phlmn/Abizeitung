@@ -82,7 +82,7 @@
 		return -1;
 	}
 	
-	function db_get_option($name) {
+	function db_get_option($name, $default = -1) {
 		global $mysqli;
 		
 		$stmt = $mysqli->prepare("
@@ -100,7 +100,7 @@
 		if(!$stmt->fetch()) {
 			$stmt->close();
 			
-			return -1;
+			return $default;
 		}
 		
 		return $value;
