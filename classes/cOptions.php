@@ -21,81 +21,93 @@
                 <div class="row">
                 	<div class="col-xs-6">
                     	
-                        <h4>Status</h4>
                         <div class="option">
-                        	<label for="state_questions">Ab</label>
-                        	<input class="percent" id="state_questions" type="text" name="state_questions" value="<?php echo $state_questions; ?>" placeholder="100" />
-                            <label for="state_questions">% Antworten erscheinen die <strong>Fragen</strong> als beantwortet</label>
-                        </div>
-                        <div class="option">
-                        	<label for="state_surveys">Ab</label>
-                        	<input class="percent" id="state_surveys" type="text" name="state_surveys" value="<?php echo $state_surveys; ?>" placeholder="100" />
-                            <label for="state_surveys">% Antworten erscheinen die <strong>Umfragen</strong> als beantwortet</label>
-                        </div>
-                        
-                        <h4>Thumbnails</h4>
-                        <div class="option">
-                        	<label for="thumbnails_height">Thumbnailgröße</label>
-                        	<input class="percent" id="thumbnails_height" type="text" name="thumbnails_height" value="<?php echo $thumbnails_height; ?>" placeholder="100" />
-                            <label for="thumbnails_height">px</label>
-                        </div>
-                        <div class="option">
-                        	<label for="thumbnails_qual_png">Qualität der <strong>*.png</strong> Dateien</label>
-                        	<input class="percent" id="thumbnails_qual_png" type="text" name="thumbnails_qual_png" value="<?php echo $thumbnails_qual_png; ?>" placeholder="50" />
-                            <label for="thumbnails_qual_png">%</label>
-                        </div>
-                        <div class="option">
-                        	<label for="thumbnails_qual_jpeg">Qualität der <strong>*.jpeg</strong> Dateien</label>
-                        	<input class="percent" id="thumbnails_qual_jpeg" type="text" name="thumbnails_qual_jpeg" value="<?php echo $thumbnails_qual_jpeg; ?>" placeholder="50" />
-                            <label for="thumbnails_qual_jpeg">%</label>
+                            <h4>Status</h4>
+                            <div>
+                                <label for="state_questions">Ab</label>
+                                <input class="percent" id="state_questions" type="text" name="state_questions" value="<?php echo $state_questions; ?>" placeholder="100" />
+                                <label for="state_questions">% Antworten erscheinen die <strong>Fragen</strong> als beantwortet</label>
+                            </div>
+                            <div>
+                                <label for="state_surveys">Ab</label>
+                                <input class="percent" id="state_surveys" type="text" name="state_surveys" value="<?php echo $state_surveys; ?>" placeholder="100" />
+                                <label for="state_surveys">% Antworten erscheinen die <strong>Umfragen</strong> als beantwortet</label>
+                            </div>
                         </div>
                         
-                    	<h4>Spitznamen</h4>
                         <div class="option">
-                            <input id="nicknames_all" type="radio" name="nicknames" value="1" <?php if($nicknames == "1"): ?>checked <?php endif; ?>>
-                            <label for="nicknames_all">Die Nutzer dürfen jedem einen Spitznamen geben</label>
+                            <h4>Thumbnails</h4>
+                            <div>
+                                <label for="thumbnails_height">Thumbnailgröße</label>
+                                <input class="percent" id="thumbnails_height" type="text" name="thumbnails_height" value="<?php echo $thumbnails_height; ?>" placeholder="100" />
+                                <label for="thumbnails_height">px</label>
+                            </div>
+                            <div>
+                                <label for="thumbnails_qual_png">Qualität der <strong>*.png</strong> Dateien</label>
+                                <input class="percent" id="thumbnails_qual_png" type="text" name="thumbnails_qual_png" value="<?php echo $thumbnails_qual_png; ?>" placeholder="50" />
+                                <label for="thumbnails_qual_png">%</label>
+                            </div>
+                            <div>
+                                <label for="thumbnails_qual_jpeg">Qualität der <strong>*.jpeg</strong> Dateien</label>
+                                <input class="percent" id="thumbnails_qual_jpeg" type="text" name="thumbnails_qual_jpeg" value="<?php echo $thumbnails_qual_jpeg; ?>" placeholder="50" />
+                                <label for="thumbnails_qual_jpeg">%</label>
+                            </div>
                         </div>
+                        
                         <div class="option">
-                            <input id="nicknames_tutorial" type="radio" name="nicknames" value="2" <?php if($nicknames == "2"): ?>checked <?php endif; ?>>
-                            <label for="nicknames_tutorial">Die Nutzer dürfen jedem in <strong>ihrem Tutorium</strong> einen Spitznamen geben</label>
-                        </div>
-                        <div class="option">
-                            <input id="nicknames_class" type="radio" name="nicknames" value="3" <?php if($nicknames == "3"): ?>checked <?php endif; ?>>
-                            <label for="nicknames_class">Die Nutzer dürfen jedem in <strong>ihren Kursen</strong> einen Spitznamen geben</label>
+                            <h4>Spitznamen</h4>
+                            <div>
+                                <input id="nicknames_all" type="radio" name="nicknames" value="1" <?php if($nicknames == "1"): ?>checked <?php endif; ?>>
+                                <label for="nicknames_all">Die Nutzer dürfen jedem einen Spitznamen geben</label>
+                            </div>
+                            <div>
+                                <input id="nicknames_tutorial" type="radio" name="nicknames" value="2" <?php if($nicknames == "2"): ?>checked <?php endif; ?>>
+                                <label for="nicknames_tutorial">Die Nutzer dürfen jedem in <strong>ihrem Tutorium</strong> einen Spitznamen geben</label>
+                            </div>
+                            <div>
+                                <input id="nicknames_class" type="radio" name="nicknames" value="3" <?php if($nicknames == "3"): ?>checked <?php endif; ?>>
+                                <label for="nicknames_class">Die Nutzer dürfen jedem in <strong>ihren Kursen</strong> einen Spitznamen geben</label>
+                            </div>
                         </div>
                         
                     </div>
                
                 	<div class="col-xs-6">
                     
-                    	<h4>Fragen</h4>
-                        <div class="option">
-                            <input id="questions_allow" type="radio" name="questions" value="1" <?php if($questions == "1"): ?>checked <?php endif; ?>>
-                            <label for="questions_allow">Die Nutzer dürfen Fragen vorschlagen</label>
-                        </div>
-                        <div class="option">
-                            <input id="questions_denied" type="radio" name="questions" value="2" <?php if($questions == "2"): ?>checked <?php endif; ?>>
-                            <label for="questions_denied">Die Nutzer dürfen <strong>keine</strong> Fragen vorschlagen</label>
-                        </div>
-                        
-                        <h4>Umfragen</h4>
-                        <div class="option">
-                            <input id="surveys_allow" type="radio" name="surveys" value="1" <?php if($surveys == "1"): ?>checked <?php endif; ?>>
-                            <label for="surveys_allow">Die Nutzer dürfen Umfragen vorschlagen</label>
-                        </div>
-                        <div class="option">
-                            <input id="surveys_denied" type="radio" name="surveys" value="2" <?php if($surveys == "2"): ?>checked <?php endif; ?>>
-                            <label for="surveys_denied">Die Nutzer dürfen <strong>keine</strong> Umfragen vorschlagen</label>
+                    	<div class="option">
+                            <h4>Fragen</h4>
+                            <div>
+                                <input id="questions_allow" type="radio" name="questions" value="1" <?php if($questions == "1"): ?>checked <?php endif; ?>>
+                                <label for="questions_allow">Die Nutzer dürfen Fragen vorschlagen</label>
+                            </div>
+                            <div>
+                                <input id="questions_denied" type="radio" name="questions" value="2" <?php if($questions == "2"): ?>checked <?php endif; ?>>
+                                <label for="questions_denied">Die Nutzer dürfen <strong>keine</strong> Fragen vorschlagen</label>
+                            </div>
                         </div>
                         
-                        <h4>Kurse</h4>
                         <div class="option">
-                            <input id="classes_allow" type="radio" name="classes" value="1" <?php if($classes == "1"): ?>checked <?php endif; ?>>
-                            <label for="classes_allow">Die Nutzer dürfen Kurse hinzufügen</label>
+                            <h4>Umfragen</h4>
+                            <div>
+                                <input id="surveys_allow" type="radio" name="surveys" value="1" <?php if($surveys == "1"): ?>checked <?php endif; ?>>
+                                <label for="surveys_allow">Die Nutzer dürfen Umfragen vorschlagen</label>
+                            </div>
+                            <div>
+                                <input id="surveys_denied" type="radio" name="surveys" value="2" <?php if($surveys == "2"): ?>checked <?php endif; ?>>
+                                <label for="surveys_denied">Die Nutzer dürfen <strong>keine</strong> Umfragen vorschlagen</label>
+                            </div>
                         </div>
+                        
                         <div class="option">
-                            <input id="classes_denied" type="radio" name="classes" value="2" <?php if($classes == "2"): ?>checked <?php endif; ?>>
-                            <label for="classes_denied">Die Nutzer dürfen <strong>keine</strong> Kurse hinzufügen</label>
+                            <h4>Kurse</h4>
+                            <div>
+                                <input id="classes_allow" type="radio" name="classes" value="1" <?php if($classes == "1"): ?>checked <?php endif; ?>>
+                                <label for="classes_allow">Die Nutzer dürfen Kurse hinzufügen</label>
+                            </div>
+                            <div>
+                                <input id="classes_denied" type="radio" name="classes" value="2" <?php if($classes == "2"): ?>checked <?php endif; ?>>
+                                <label for="classes_denied">Die Nutzer dürfen <strong>keine</strong> Kurse hinzufügen</label>
+                            </div>
                         </div>
                         
                     </div>
