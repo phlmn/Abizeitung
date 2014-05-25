@@ -64,6 +64,8 @@
 					
 					if($action == "delete") {
 						$errorHandler->add_error(Options::delete_images($data));
+						
+						$param .= "&detail=delete_images";
 					}
 					else {
 						if(empty($_POST["name"])) {
@@ -84,7 +86,9 @@
 			
 			case "thumbnails":
 				
-				$param = "&group=images";
+				$param = "&group=images&detail=thumbnails";
+				
+				set_time_limit(0);
 				
 				$errorHandler->add_error(Options::create_thumbnails());
 				
@@ -109,6 +113,8 @@
 						}
 						
 						$errorHandler->add_error(Options::delete_image($data));
+						
+						$param .= "&detail=delete_image";
 					}
 					else {
 						$errorHandler->add_error("no-selected-file");
@@ -158,6 +164,8 @@
 						}
 						
 						$errorHandler->add_error(Options::delete_csv($data));
+						
+						$param .= "&detail=delete_csv";
 					}
 					else {
 						$errorHandler->add_error("empty-input");
@@ -204,7 +212,27 @@
 		<?php require("nav-bar.php") ?>
 		<div id="options" class="container-fluid admin-wrapper">
         	<?php if(isset($_GET["saved"])): ?>
-				<div class="alert alert-success">Änderungen gespeichert.</div>
+				<div class="alert alert-success">Änderungen gespeichert.<br />
+            <?php
+			
+				if(isset($_GET["detail"])) {
+					switch($_GET["detail"]) {
+						case "delete_images":
+							echo "Bilder wurden gelöscht.";
+							break;
+						case "delete_image":
+							echo "Bild wurde gelöscht.";
+							break;
+						case "thumbnails":
+							echo "Thumbnails wurden erstellt.";
+							break;
+						case "delete_csv":
+							echo "Die ausgewählten CSV Dateien wurden gelöscht.";
+							break;
+					}
+				}
+			?>
+            	</div>
 			<?php else: if(isset($_GET["error"])): 
 				$errorHandler->import_url_param($_GET);
 			?>
@@ -225,7 +253,10 @@
                 <?php
 					switch($group) {
 						case "images":
-							if(isset($_GET["category"])) {
+							if(isset($_GET["thumbnails"])) {
+								Options::display_thumbnails_info();
+							}
+							elseif(isset($_GET["category"])) {
 								if(isset($_GET["name"])) {
 									Options::get_images($_GET["category"], $_GET["name"]);
 								}

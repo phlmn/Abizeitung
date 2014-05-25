@@ -188,7 +188,7 @@
                 </table>
                 
                 <div class="buttons">
-                	<a class="button" href="options.php?affected=thumbnails">Thumbnails erstellen</a>
+                	<a class="button" href="options.php?group=images&thumbnails">Thumbnails erstellen</a>
                 </div>
             <?php
 		}
@@ -308,7 +308,23 @@
 <?php
 		}
 		
+		public static function display_thumbnails_info() {
+?>
+		<div class="row">
+            <div class="alert alert-warning">
+                Während des Erstellens der Thumbnails wird der Server <strong>nicht erreichbar</strong> sein.<br />
+                Das Erstellen der Thumbnails kann <strong>mehrere Minuten</strong> in Anspruch nehmen.
+            </div>
+        </div>
+        <div class="buttons">
+            <a class="button" href="options.php?affected=thumbnails">Thumbnails erstellen</a>
+            <a class="button" href="options.php?group=images">Zurück</a>
+        </div>
+<?php
+		}
+		
 		public static function create_thumbnails() {
+			
 			$path = "./photos/";
 			
 			$error = 0;
