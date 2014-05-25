@@ -483,7 +483,9 @@
         <?php else: ?>
             <a class="btn btn-default delete" href="options.php?affected=detail&id=<?php echo $data["id"]; ?>&category=<?php echo $data["category"]; ?>&name=<?php echo $data["name"]; ?>&action=delete" >Löschen</a>
         <?php endif; ?>
-        	<a class="btn btn-default" href="<?php echo $file; ?>" target="_blank" download="image"><span class="icon-download"></span>Download</a>
+        	<a class="btn btn-default" href="<?php echo $file; ?>" target="_blank" download>
+            	<span class="icon-download"></span>Download
+            </a>
             <a class="btn btn-default" href="#" data-dismiss="modal">Schließen</a>
         </div>
     </div>
