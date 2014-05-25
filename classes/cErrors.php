@@ -22,6 +22,7 @@
 				FROM error_report
 				LEFT JOIN users ON error_report.user = users.id
 				WHERE error_report.solved = 0
+				ORDER BY error_report.time DESC
 			");
 			
 			$stmt->execute();
@@ -82,6 +83,7 @@
 					FROM error_report
 					LEFT JOIN users ON error_report.user = users.id
 					WHERE error_report.solved = 1
+					ORDER BY error_report.time DESC
 				");
 				
 				$stmt->execute();
