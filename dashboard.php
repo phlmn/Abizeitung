@@ -430,7 +430,10 @@
 				<?php if($current): ?>
 				$('#photo-current .upload a').addClass("alternate");
 				<?php endif; ?>
-				$("div.common *").tooltip();
+				$("div.common .circle").tooltip({
+					html: true,
+					container: "#tooltip"
+				});
 				$("select").fancySelect();
 			});
 		</script>
@@ -805,7 +808,9 @@
 			if($data["admin"] == 1) 
 				echo '</div>';
 		?>
-			
+		
+        <div id="tooltip"></div>
+        
 		<div class="modal fade" id="dashboardModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 		
 	</body>

@@ -196,7 +196,9 @@
 		public static function get_images($category, $name = NULL) { ?>
         	<script type="text/javascript">
 				$(document).ready(function() {
-					$("div.row .thumbnail").tooltip();
+					$("div.row .thumbnail").tooltip({
+						html: true
+					});
 				});
 			</script>
             
