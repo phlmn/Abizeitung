@@ -27,6 +27,7 @@
 					$image = NULL;
 					switch(strtolower($info["extension"])) {
 						case "jpg":
+						case "jpeg":
 							$image = @imagecreatefromjpeg($src);
 							break;
 						case "png":
