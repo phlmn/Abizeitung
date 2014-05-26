@@ -55,6 +55,7 @@
 					
 					switch(strtolower($info["extension"])) {
 						case "jpg":
+						case "jpeg":
 							$qual = abs(db_get_option("thumbnails_quality_jpeg", 50));
 							
 							if($qual > 100) {
